@@ -25,6 +25,6 @@ collections:
       - { label: 'Name', name: 'name', widget: 'string' }
       - { label: 'Start date', name: 'start_date', widget: 'date' }
       - { label: 'Finished?', name: 'finished', widget: 'boolean' }
-      - { label: 'Finish date', name: 'finish_date', widget: date' }
+      - { label: 'Finish date', name: 'finish_date', widget: 'date' }
       - { label: 'External link', name: 'external_link', widget: 'string' }
       - { label: 'Body', name: 'body', widget: 'markdown' }
