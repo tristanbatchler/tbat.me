@@ -9,7 +9,7 @@ title: Projects
       <li>
         <h2>{{ project.name }}</h2>
         <h3>{{ project.started }}&#8212;{{ project.finished }}</h3>
-        <a href={{ project.link }}>{{ project.link }}</a>
+        <a href={{ project.external_link }}>{{ project.external_link }}</a>
         <p>{{ project.content | markdownify }}</p>
       </li>
     {% endfor %}
