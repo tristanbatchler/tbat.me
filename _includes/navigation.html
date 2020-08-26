@@ -3,7 +3,7 @@
     <a href="{{ item.link }}" 
       {% assign itembase = item.link | split: "." %}
       {% assign itembase = itembase[0]} %}
-      {% if page.url == item.link or (page.url contains itembase and item.link != "/")%}class="current"){% endif %}>
+      {% if page.url == item.link or (page.url contains itembase and item.link != "/")%}class="current"{% endif %}>
       {{ item.name }}
     </a>
   {% endfor %}
