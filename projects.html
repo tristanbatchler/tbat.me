@@ -7,7 +7,7 @@ title: Projects
     {% for project in site.projects %}
       <li>
         <h2><a href="{{ project.url }}">{{ project.name }}</a></h2>
-        <h3>{{ project.started }}&#8212;{{ project.finished }}</h3>
+        <h3>{{ project.start_date }}&#8212;{% if project.finished %}{{ project.finish_date }}{% else %}Ongoing{% endif %}</h3>
         <a href="{{ project.external_link }}" target="_blank">{{ project.external_link }}</a>
         <p>{{ project.content | markdownify }}</p>
       </li>

@@ -3,7 +3,7 @@ backend:
 media_folder: 'assets/uploads'
 collections:
   - name: 'posts'
-    label: 'Posts'
+    label: 'Post'
     folder: '_posts/'
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
@@ -12,10 +12,10 @@ collections:
     fields:
       - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'post' }
       - { label: 'Title', name: 'title', widget: 'string' }
-      - { label: 'Publish Date', name: 'date', widget: 'datetime' }
+      - { label: 'Publish Date', name: 'date', widget: 'date' }
       - { label: 'Body', name: 'body', widget: 'markdown' }
   - name: 'project'
-    label: 'Projects'
+    label: 'Project'
     folder: '_projects/'
     create: true
     editor:
@@ -23,7 +23,8 @@ collections:
     fields:
       - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'project' }
       - { label: 'Name', name: 'name', widget: 'string' }
-      - { label: 'Started', name: 'started', widget: 'datetime' }
-      - { label: 'Finished', name: 'finished', widget: 'datetime' }
-      - { label: 'External link', name: 'external_link', widget: 'string'}
+      - { label: 'Start date', name: 'start_date', widget: 'date' }
+      - { label: 'Finished?', name: 'finished', widget: 'boolean' }
+      - { label: 'Finish date', name: 'finish_date', widget: date' }
+      - { label: 'External link', name: 'external_link', widget: 'string' }
       - { label: 'Body', name: 'body', widget: 'markdown' }

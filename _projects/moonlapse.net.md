@@ -1,7 +1,7 @@
 ---
 name: moonlapse.net
-started: 12 Jan 2020
-finished: Ongoing
+start_date: 12 Jan 2020
+finished: false
 external_link: https://moonlapse.net
 ---
 

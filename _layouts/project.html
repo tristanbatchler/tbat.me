@@ -3,7 +3,7 @@ layout: default
 ---
 
 <h1>{{ page.name }}</h1>
-<h2>{{ page.started }}&#8212;{{ page.finished }}</h2>
+<h2>{{ page.start_date }}&#8212;{% if page.finished %}{{ page.finish_date }}{% else %}Ongoing{% endif %}</h2>
 <a href="{{ project.external_link }}" target="_blank">{{ project.external_link }}</a>
 
 {{ content }}
