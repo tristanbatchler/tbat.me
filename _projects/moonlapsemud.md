@@ -1,4 +1,5 @@
 ---
+layout: project
 name: MoonlapseMUD
 started: 14 Dec 2019
 finished: Ongoing

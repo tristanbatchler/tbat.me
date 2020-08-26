@@ -1,4 +1,5 @@
 ---
+layout: project
 name: moonlapse.net
 started: 12 Jan 2020
 finished: Ongoing
