@@ -30,8 +30,14 @@
   </head>
   <body>
     <div id="content">
-      {% include navigation.html %}
+      <div id="header">
+        {% include header.html %}
+      </div>
       {{ content }}
+      <div id="footer">
+        {% include footer.html %}
+        <div id="final"></div>
+      </div>
     </div>
     <script>
       if (window.netlifyIdentity) {

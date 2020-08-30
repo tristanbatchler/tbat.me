@@ -18,16 +18,6 @@ body {
     border-style: solid;
     border-width: 5px;
     border-color: $darkgray;
-
-    nav {
-        text-align: center;
-        a {
-            padding: 15px;
-            &.current {
-                color: $green;
-            }
-        }
-    }
     
     h1 {
         color: $yellow;
@@ -50,24 +40,32 @@ body {
     a {
         color: $magenta;
     }
+}
 
-    .footer {
-        h2 {
-            text-align: center;
-        }
-
-        ul {
-            list-style: none;
-
-            li {
-                float: left;
-                padding: 0 10px;
-            }
-        }
-
-        .final {
-            clear: left;
-            padding-bottom: 10px;
+#header {
+    display: flex;
+    justify-content: center;
+    nav a {
+        padding: 15px;
+        &.current {
+            color: $green;
         }
     }
+}
+
+
+#footer {
+    display: flex;
+    justify-content: center;
+    div.social a {
+        text-decoration: none;
+        color: $white;
+        padding: 15px;
+    }
+    padding-top: 20px;
+}
+
+#final {
+    clear: left;
+    padding-bottom: 10px;
 }
