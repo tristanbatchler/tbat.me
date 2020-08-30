@@ -10,11 +10,11 @@ Much of real and complex analysis and linear algebra are concerned with showing 
 ## Injective?
 An injective function is such that each element in the codomain is mapped to by no more than one element from the domain. To demonstrate this, suppose our function $$f$$ has a domain $$\{ 1, 2, 3 \}$$ and codomain $$\{ 4, 5, 6, 7, 8 \}$$. The following images demonstrate two hypothetical mappings performed by $$f$$, the first one being injective and the next one *not* being injective.
 
-![Injective function](/assets/css/images/posts/2019/02/10/proof-the-composition-of-injective-functions-is-also-injective/injective-function.svg)\
-Figure 1: Here $$f$$ is injective because each element in the codomain is mapped to by only either one or no element from the domain.
+![Injective function](/assets/css/images/posts/2019/02/10/proof-the-composition-of-injective-functions-is-also-injective/injective-function.svg)
+*Figure 1: Here $$f$$ is injective because each element in the codomain is mapped to by only either one or no element from the domain.*
 
-![Non-injective function](/assets/css/images/posts/2019/02/10/proof-the-composition-of-injective-functions-is-also-injective/non-injective-function.svg)\
-Figure 2: Here $$f$$ is not injective because the element $$5$$ in the codomain is being mapped to by two elements from the domain.
+![Non-injective function](/assets/css/images/posts/2019/02/10/proof-the-composition-of-injective-functions-is-also-injective/non-injective-function.svg)
+*Figure 2: Here $$f$$ is not injective because the element $$5$$ in the codomain is being mapped to by two elements from the domain.*
 
 Let’s try to formalise this definition of injectivity so that we can have something tangible to work with in the proof.
 
