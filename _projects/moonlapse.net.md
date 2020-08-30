@@ -1,5 +1,5 @@
 ---
-name: moonlapse.net
+title: moonlapse.net
 start_date: 12 Jan 2020
 finished: false
 external_link: https://moonlapse.net

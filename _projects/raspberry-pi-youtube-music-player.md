@@ -1,6 +1,5 @@
 ---
-layout: project
-name: Raspberry Pi YouTube music player
+title: Raspberry Pi YouTube music player
 description: Find out how I created my very own home music player which outputs
   the sound for any YouTube video (searchable by keyword).
 start_date: 2020-05-25T01:58:48.017Z
