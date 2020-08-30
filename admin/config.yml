@@ -15,7 +15,6 @@ collections:
       - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'post' }
       - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Meta description', name: 'description', widget: 'text' }
-      - { label: 'Publish Date', name: 'date', widget: 'date' }
       - { label: 'Body', name: 'body', widget: 'markdown' }
   - name: 'project'
     label: 'Project'
