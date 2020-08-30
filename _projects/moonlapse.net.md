@@ -1,6 +1,6 @@
 ---
 title: moonlapse.net
-start_date: 12 Jan 2020
+start_date: 2020-01-12T00:00:00.000Z
 finished: false
 external_link: https://moonlapse.net
 description: How and why I transformed a clunky Wordpress site into a lighter, more secure, and more enjoyable static site with Jekyll.
