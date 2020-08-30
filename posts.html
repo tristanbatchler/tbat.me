@@ -8,7 +8,7 @@ description: A list of all the posts on my website. I usually will post interest
   {% for post in site.posts %}
     <li>
       <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
-      <p>{{ post.date | date_to_string }}</p>
+      <p>{{ post.date | date: "%d %b %y" }}</p>
       {{ post.excerpt }}
     </li>
   {% endfor %}
