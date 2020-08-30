@@ -25,7 +25,7 @@ collections:
       preview: false
     fields:
       - { label: 'Layout', name: 'layout', widget: 'hidden', default: 'project' }
-      - { label: 'Name', name: 'name', widget: 'string' }
+      - { label: 'Title', name: 'title', widget: 'string' }
       - { label: 'Meta description', name: 'description', widget: 'text' }
       - { label: 'Start date', name: 'start_date', widget: 'date' }
       - { label: 'Finished?', name: 'finished', widget: 'boolean' }
