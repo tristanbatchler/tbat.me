@@ -45,6 +45,12 @@ body {
     a {
         color: $magenta;
     }
+
+    blockquote {
+        border-left-style: inset;
+        padding-left: 10px;
+        color: $lightgray;
+    }
 }
 
 #header {
