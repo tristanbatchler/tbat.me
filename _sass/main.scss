@@ -2,7 +2,8 @@
 
 body {
     background: #000;
-    font-family: 'Merriweather', serif;
+    font-family: 'Merriweather', sans-serif;
+    line-height: 1.5;
 }
 
 #content {
@@ -51,6 +52,10 @@ body {
         border-left-style: inset;
         padding-left: 10px;
         color: $lightgray;
+    }
+
+    li {
+        padding-bottom: 0.5rem;
     }
 }
 
