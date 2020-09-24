@@ -57,6 +57,14 @@ body {
     li {
         padding-bottom: 0.5rem;
     }
+
+    pre {
+        overflow-x: auto;
+        background-color: black;
+        margin: 10px;
+        padding: 10px;
+    }
+
 }
 
 #header {
