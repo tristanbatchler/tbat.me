@@ -6,7 +6,7 @@ A personal home page and small blog built with Jekyll.
 ```bash
 git clone https://github.com/tristanbatchler/tbat.ch
 sudo pacman -S make gcc ruby rubygems
-echo "# Add ruby gem apps to path \nexport PATH=\"\$PATH:\$HOME/.gem/ruby/2.7.0/bin"\" >> ~/.profile
+echo -e "# Add ruby gem apps to path \nexport PATH=\"\$PATH:\$HOME/.gem/ruby/2.7.0/bin"\" >> ~/.profile
 source ~/.profile
 gem install jekyll bundler
 cd tbat.ch
