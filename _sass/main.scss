@@ -1,34 +1,36 @@
 @import "mixins";
 
-body {
-    background: #000;
-    font-family: 'Merriweather', sans-serif;
+html {
+    background: linear-gradient($blue, $cyan);
+    font-family: 'Roboto', sans-serif;
     line-height: 1.5;
+    overflow: auto;
+    display: block;
+    min-height: 100% !important;
 }
 
 #content {
     color: $foreground;
     background: $background;
 
+
     max-width: 750px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 30px;
     padding: 10px;
+    border-radius: 10px;
 
-    border-radius: 20px;
-    border-style: solid;
-    border-width: 5px;
     border-color: $darkgray;
     
     h1 {
-        color: $yellow;
+        color: $green;
 
         text-align: center;
     }
 
     h2 {
-        color: $green;
+        color: $yellow;
     }
 
     img {
@@ -45,7 +47,12 @@ body {
     }
 
     a {
-        color: $magenta;
+        color: $link;
+        text-decoration: none;
+
+        &:hover {
+            color: darken($link, 20%);
+        }
     }
 
     blockquote {
@@ -54,8 +61,15 @@ body {
         color: $lightgray;
     }
 
-    li {
-        padding-bottom: 0.5rem;
+    ul {
+        &.main-page-list {
+            list-style: none;
+        }
+
+        li {
+            padding-bottom: 0.5rem;
+        }
+
     }
 
     pre {
@@ -73,7 +87,8 @@ body {
     nav a {
         padding: 15px;
         &.current {
-            color: $green;
+            color: darken($link, 20%);
+            font-weight: bold;
         }
     }
 }
@@ -84,7 +99,7 @@ body {
     justify-content: center;
     div.social a {
         text-decoration: none;
-        color: $white;
+        color: $black;
         padding: 15px;
     }
     padding-top: 20px;
