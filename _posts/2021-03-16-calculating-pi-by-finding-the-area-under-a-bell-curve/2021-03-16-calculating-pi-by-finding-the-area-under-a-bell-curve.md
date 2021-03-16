@@ -3,6 +3,8 @@ title: Calculating Pi by finding the area under a bell curve
 description: For Pi Day in 2021, I decided to use a lesser-known method of calculating the digits of Pi.
 ---
 
+For Pi Day in 2021, I decided to use a lesser-known method of calculating the digits of Pi.
+
 ## Recap on probability density functions
 In statistics, a **probability density function** (**PDF**) of a continuous random variable $$r$$ is a curve whose height, at any given sample along the $$x$$-axis, represents the relative likelihood that $$r$$ equals that sample.
 
@@ -99,7 +101,7 @@ Run the program and we see the following plot show up:
 
 It's reassuring to see we have the right shape and we can already tell the mean of around $$68$$ makes sense. 
 
-At the moment, this curve is way to noisy due to all the variances in the raw data we are using. To have any chance of obtaining an accurate area under the curve in a reasonable amount of time, we need to smooth this out.
+At the moment, this curve is way too noisy due to all the variances in the raw data we are using. To have any chance of obtaining an accurate area under the curve in a reasonable amount of time, we need to smooth this out.
 
 For this, we will use a [Savitzky-Golay filter](http://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter_for_smoothing_and_differentiation)
 
@@ -138,7 +140,7 @@ window_size = N_BINS // 5 \
 y = savgol_filter(y, window_size, 2)
 ```
 
-Now, we've read our data and managed to plot a pretty smooth bell curve out of it. Now it's time to "sqish" it down so its peak is exactly $$1$$ and take the area under the curve. Squashing is easy, simply divide `y` by `max(y)`. Just make sure to do this **after** the smoothing to get the best results:
+Now, we've read our data and managed to plot a pretty smooth bell curve out of it. Now it's time to "squish" it down so its peak is exactly $$1$$ and take the area under the curve. Squishing is easy, simply divide `y` by `max(y)`. Just make sure to do this **after** the smoothing to get the best results:
 ```python
 y = y / max(y)
 ```
@@ -150,7 +152,7 @@ Now let's take the area! We will be using the [Trapezoidal method](https://en.wi
 
 The Trapezoidal method is a numerical technique for approximating the definite integral of a function, i.e. the area under its curve. It works by constructing very thin trapezoids that extend from the $$x$$-axis and meet the curve at that point. The above animation does a pretty good job of explaining this, and how using thinner and thinner trapezoids improves the accuracy of the resulting area.
 
-Let's do this now. Add this just under where we've done the squshing:
+Let's do this now. Add this just under where we've done the squishing:
 ```python
 area = np.trapz(y, x=x)
 print(area)
