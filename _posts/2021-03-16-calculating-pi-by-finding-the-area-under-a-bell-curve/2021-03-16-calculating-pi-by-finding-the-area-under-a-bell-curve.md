@@ -18,20 +18,26 @@ The mean average height of strangers is exacly in the centre peak of this PDF, w
 A normal distribution is the kind of distribution you get with a large number of independent samples of a random variable. For example, the heights or weights of random citizens picked off a street.
 
 The general form of normal distribution's PDF is
+
 $$
     y = \frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left( \frac{x - \mu}{\sigma} \right)^2}
 $$
+
 where $$\mu$$ is the mean of the distribution, and $$\sigma$$ is the standard deviation. 
 
 ## The area under a normal distribution
 The factor of $$1/\left( \sigma \sqrt{2 \pi} \right)$$ ensures the area under this curve is exactly $$1$$. The area **must be** $$1$$ since it is the sum of probabilities in a distribution. Without this factor, the peak of the graph would be $$1$$ and the total area would be $$\sigma \sqrt{2 \pi}$$. This is because we have
+
 $$
     \int_{-\infty}^{\infty} {\frac{1}{\sigma \sqrt{2 \pi}} e^{-\frac{1}{2}\left( \frac{x - \mu}{\sigma} \right)^2}} = 1,
 $$
+
 so, moving the constant factor out of the integral and dividing it through on both sides gives
+
 $$
     \int_{-\infty}^{\infty} e^{-\frac{1}{2}\left( \frac{x - \mu}{\sigma} \right)} = \sigma \sqrt{2 \pi}.
 $$
+
 ![The PDF from before, but without the normalisation factor, making its peak 1 and its area a factor of sqrt(2 pi)](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/denormalised-pdf.svg)
 *Figure 2: The PDF from before, but without the normalisation factor, making its peak 1 and its area a factor of $$\sqrt{2\pi}$$.*
 
@@ -66,7 +72,7 @@ print(weights)
 ```
 
 ```shell
-$$ python pi.py
+$ python pi.py
 [65.78331 71.51521 69.39874 ... 64.69855 67.52918 68.87761]
 [112.9925 136.4873 153.0269 ... 118.2655 132.2682 124.8742]
 ```
@@ -140,7 +146,6 @@ y = y / max(y)
 Now let's take the area! We will be using the [Trapezoidal method](https://en.wikipedia.org/wiki/Trapezoidal_rule) to do this.
 
 ![An animation demonstrating the Trapezoidal method](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/trapz-anim.gif)
-
 *Figure 6: An animation demonstrating the Trapezoidal method. Source: [Wikipedia](https://en.wikipedia.org/wiki/Trapezoidal_rule#/media/File:WikiTrap.gif)*
 
 The Trapezoidal method is a numerical technique for approximating the definite integral of a function, i.e. the area under its curve. It works by constructing very thin trapezoids that extend from the $$x$$-axis and meet the curve at that point. The above animation does a pretty good job of explaining this, and how using thinner and thinner trapezoids improves the accuracy of the resulting area.
@@ -153,14 +158,16 @@ print(area)
 
 I got about 4.8:
 ```shell
-$$ python pi.py
+$ python pi.py
 4.769879246777704
 ```
 
 Remember, should expect this number to be equal to 
+
 $$
-    \int_{-\infty}^{\infty} e^{-\frac{1}{2}\left( \frac{x - \mu}{\sigma} \right)} = \sigma \sqrt{2 \pi}
+\int_{-\infty}^{\infty} e^{-\frac{1}{2}\left( \frac{x - \mu}{\sigma} \right)} = \sigma \sqrt{2 \pi}
 $$
+
 where $$\sigma$$ is the standard deviation.
 
 Let's quickly check if this is right:
@@ -172,7 +179,7 @@ print(sigma * math.sqrt(2 * math.pi))
 
 Run this (keeping the previous print statement for the area we calculated so we can compare...)
 ```shell
-$$ python pi.py
+$ python pi.py
 4.769879246777704
 4.766801777169521
 ```
@@ -184,14 +191,14 @@ So it looks like we've got the all clear to make the final calculation. Remember
 
 So here we go:
 ```python
-    pi = (area / sigma) ** 2 / 2
-    print(pi)
+pi = (area / sigma) ** 2 / 2
+print(pi)
 ```
 
 ...
 
 ```shell
-$$ python pi.py
+$ python pi.py
 3.145650416957449
 ```
 
@@ -202,7 +209,7 @@ We got $$\pi$$ to two correct decimal places, I'd say that's a success!
 Let's see if we get the same degree of accuracy if we used weight data instead of height. Let's replace `heights` with `weights` in our code and see what we get...
 
 ```shell
-$$ python pi.py
+$ python pi.py
 3.1192099437490493
 ```
 
