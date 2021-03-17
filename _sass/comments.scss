@@ -17,4 +17,8 @@ div.rembeddit {
         visibility: hidden;
         height: 0;
     }
+
+    div.rembeddit-content {
+        overflow-wrap: anywhere;
+    }
 }
