@@ -1,6 +1,7 @@
 ---
 title: Calculating Pi by finding the area under a bell curve
 description: For Pi Day in 2021, I decided to use a lesser-known method of calculating the digits of Pi.
+redditurl: https://www.reddit.com/r/math/comments/m6obwp/this_year_i_calculated_pi_by_finding_the_area
 ---
 
 For Pi Day in 2021, I decided to use a lesser-known method of calculating the digits of Pi.
