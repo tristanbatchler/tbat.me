@@ -8,7 +8,7 @@ git clone https://github.com/tristanbatchler/tbat.ch
 sudo pacman -S make gcc ruby rubygems
 echo -e "# Add ruby gem apps to path \nexport PATH=\"\$PATH:\$HOME/.gem/ruby/2.7.0/bin"\" >> ~/.profile
 source ~/.profile
-gem install jekyll bundler
+gem install jekyll bundler rouge
 cd tbat.ch
 bundle install
 bundle exec jekyll serve &
