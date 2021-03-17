@@ -24,3 +24,5 @@ defaults:
 url: "https://tbat.ch"
 plugins:
   - jekyll-sitemap
+
+highlighter: rouge
