@@ -222,4 +222,4 @@ So this is definitely one of the least useful ways to calculate $$\pi$$, but I f
 
 If you'd like to know **how** $$\pi$$ shows up here, I would recommend checking out [this video](https://www.youtube.com/watch?v=9CgOthUUdw4).
 
-Thanks for reading!
+Thanks for reading! If you'd like to check out the complete source code, [here's the link to the GitHub repo](https://github.com/tristanbatchler/piday2021)!
