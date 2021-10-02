@@ -1,15 +1,15 @@
-https://tbat.ch
+https://tbat.me
 
 A personal home page and small blog built with Jekyll.
 
 ## Quickstart for Arch Linux
 ```bash
-git clone https://github.com/tristanbatchler/tbat.ch
+git clone https://github.com/tristanbatchler/tbat.me
 sudo pacman -S make gcc ruby rubygems
 echo -e "# Add ruby gem apps to path \nexport PATH=\"\$PATH:\$(ruby -e 'print Gem.user_dir')/bin"\" >> ~/.profile
 source ~/.profile
 gem install jekyll bundler rouge
-cd tbat.ch
+cd tbat.me
 bundle install
 bundle exec jekyll serve &
 xdg-open http://localhost:4000 &
