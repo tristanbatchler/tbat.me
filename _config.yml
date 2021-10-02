@@ -21,7 +21,7 @@ defaults:
     values:
       layout: "default"
 
-url: "https://tbat.ch"
+url: "https://tbat.me"
 plugins:
   - jekyll-sitemap
 
