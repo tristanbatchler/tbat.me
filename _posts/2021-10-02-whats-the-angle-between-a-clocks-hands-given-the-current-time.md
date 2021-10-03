@@ -58,6 +58,7 @@ $$
 $$.
 
 Therefore, our general formula for the angle between hands on a clock (in degrees) given $$m$$ minutes and $$h$$ hours, is:
+
 $$
 \theta = \frac{60h - 11m}{2}^\circ
 $$
