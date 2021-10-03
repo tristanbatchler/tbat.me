@@ -27,7 +27,7 @@ Now, just as before, we will find each respective angle of the hands with respec
 1. The numbers on the clock, 12, and the number of ticks, 60 are both factors of 360, the number of degrees in a full revolution. Continuing to work in degrees will make the math a bit nicer.
 2. Any computer programming applications of this result will work nicer with a formula involving as little floating point representations of numbers as possible. Numbers like $$\pi$$ don't calculate well with other numbers in the CPU and can potentially lead to slower and less precise results.
 
-Let $$\alpha_m \in \mathbb{R} \cap \left[ 0, 2\pi \right)$$ denote the angle of the minute hand with respect to the top of the clock. Similarly $$\alpha_h$$ denotes the angle of the hour hand.
+Let $$\alpha_m \in \mathbb{R} \cap \left[ 0, 360 \right)$$ denote the angle of the minute hand with respect to the top of the clock. Similarly $$\alpha_h$$ denotes the angle of the hour hand.
 
 ### The minutes hand $$\alpha_m$$
 We know there are 60 minutes in a revolution, so $$\alpha_m = \frac{m}{60} \cdot 360^\circ = 6m^\circ$$.
