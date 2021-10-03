@@ -1,7 +1,7 @@
 ---
 title: What's the angle between a clock's hands given the current time?
 description: A clock shows the current time as, say, 4:20. What is the angle between the hour and minute hands?
-redditurl: https://www.reddit.com/r/math/comments/q08o3g/whats_the_angle_between_a_clocks_hands_given_the
+redditurl: https://www.reddit.com/r/learnmath/comments/q090bz
 ---
 
 Here's kind of a fun and interesting question.
