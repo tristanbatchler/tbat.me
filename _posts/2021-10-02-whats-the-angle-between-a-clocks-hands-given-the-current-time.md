@@ -35,12 +35,27 @@ We know there are 60 minutes in a revolution, so $$\alpha_m = \frac{m}{60} \cdot
 ### The hours hand $$\alpha_h$$
 As before, the angle of the hour hand is going to be $$\frac{h}{12} \cdot 360^\circ + \text{a bit}$$.
 
-Here, *a bit* is the "fraction" of $$\frac{1}{12}$$ a revolution; the "fraction" being the "progress" of the minute's hand, i.e. $$\frac{m}{60}$$. In other words, $$\text{a bit} = \left(\frac{1}{12} \cdot 360^\circ \right) \cdot \frac{m}{60} = \left( 30^\circ \right) \cdot \frac{m}{60} = \frac{m}{2}^\circ$$. 
+Here, *a bit* is the "fraction" of $$\frac{1}{12}$$ a revolution; the "fraction" being the "progress" of the minute's hand, i.e. $$\frac{m}{60}$$. In other words: 
+
+$$
+\begin{align*}
+\text{a bit} &= \left(\frac{1}{12} \cdot 360^\circ \right) \cdot \frac{m}{60} \\
+             &= \left( 30^\circ \right) \cdot \frac{m}{60} \\
+             &= \frac{m}{2}^\circ
+\end{align*}
+$$. 
 
 Altogether, $$\alpha_h = \frac{h}{12} \cdot 360^\circ + \frac{m}{2}^\circ = \frac{60h + m}{2}^\circ$$.
 
 ### The angle between them
-$$\alpha_h - \alpha_m =  \frac{60h + m}{2}^\circ - 6m^\circ = \frac{60h + m}{2}^\circ - \frac{12m}{2}^\circ = \frac{60h - 11m}{2}^\circ$$.
+
+$$
+\begin{align*}
+\alpha_h - \alpha_m &= \frac{60h + m}{2}^\circ - 6m^\circ \\
+                    &= \frac{60h + m}{2}^\circ - \frac{12m}{2}^\circ \\
+                    &= \frac{60h - 11m}{2}^\circ
+\end{align*}
+$$.
 
 Therefore, our general formula for the angle between hands on a clock (in degrees) given $$m$$ minutes and $$h$$ hours, is:
 $$
