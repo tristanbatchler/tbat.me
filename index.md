@@ -5,4 +5,4 @@ description: Tristan Batchler's home page. Find all the information you need to 
 
 # Tristan Batchler
 ![A picture of me](/assets/images/headshot.jpg)
-*BSc. Mathematics Major (UQ)*
+*MSc. Mathematics Major (UQ)*
