@@ -4,6 +4,8 @@ sass:
 collections:
   projects:
     output: true
+  coursenotes:
+    output: true
 
 defaults:
   - scope:
@@ -16,6 +18,11 @@ defaults:
       type: "posts"
     values:
       layout: "post"
+  - scope:
+      path: ""
+      type: "coursenotes"
+    values:
+      layout: "coursenote"
   - scope:
       path: ""
     values:
