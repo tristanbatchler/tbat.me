@@ -539,8 +539,8 @@ Now repeat the same process to tell the **RichTextLabel** node to expand horizon
 With the **RichTextLabel** still selected, also check **Scroll Active** and **Scroll Following** closer to the top of the Inspector's properties. This will ensure the chat log automatically scrolls as it fills up.
 
 Now click on the **VBoxContainer** node to select it, and then expand the **Anchor** menu on the right-hand side Inspector. Enter the following values:
-|  |  |
-|---|---|
+
+|:--|--:|
 | **Left** | 0 |
 | **Top** | 0.67 |
 | **Right** | 1 |
