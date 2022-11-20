@@ -7,9 +7,9 @@ redditurl:
 Hello and welcome to my first entry in what will probably be a five-part blog and accompanying video series on how to set up a fully functional game server using Python. With the help of Godot, clients will be able to connect from any device. To prove this to you, here is the fully working game embedded in my own website (connecting to an external server).
 
 ---
-<center>
-<iframe frameborder="0" src="https://itch.io/embed-upload/6861673?color=333333" allowfullscreen="" width="640" height="500"><a href="https://tristanbatchler.itch.io/godot-python-mmo-tech-demo">Play Godot Python MMO Tech Demo on itch.io</a></iframe>
-</center>
+<div class="container">
+<iframe frameborder="0" src="https://tristanbatchler.github.io/" class="responsive-iframe"><a href="https://tristanbatchler.itch.io/godot-python-mmo-tech-demo">Play the Godot Python MMO!</a></iframe>
+</div>
 ---
 
 This tutorial series assumes you are comfortable with Python, and have a very basic knowledge of Godot (i.e., you have familiarised yourself with the basic layout of the software—just search for a Godot introduction video if you need to).
