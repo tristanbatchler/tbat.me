@@ -21,7 +21,7 @@ This tutorial series assumes you are comfortable with Python, and have a very ba
 ## Overview of the architecture
 We will be using the following technologies:
 * [Autobahn Twisted](https://autobahn.readthedocs.io/en/latest/index.html#introduction) for Python to run the server code
-* [Django](https://www.djangoproject.com/) for Python to talk to the sqlite3 database
+* [Django](https://www.djangoproject.com/) for Python to talk to the [SQLite 3](https://www.sqlite.org/index.html) database
 * [Godot](https://godotengine.org/) game engine to run the front end, and export to desktop, mobile, or web
 
 I chose Autobahn Twisted because it supports the WebSocket protocol, which is what we need to use if we are to export the game for the web. 
@@ -154,7 +154,7 @@ class GameServerProtocol(WebSocketServerProtocol):
     def __init__(self):
         super().__init__()
         self._packet_queue: queue.Queue[tuple['GameServerProtocol', packet.Packet]] = queue.Queue()
-        self._state: callable = self.PLAY
+        self._state: callable = None
 
     def PLAY(self, sender: 'GameServerProtocol', p: packet.Packet):
         pass
@@ -174,6 +174,11 @@ class GameServerProtocol(WebSocketServerProtocol):
     # Override
     def onConnect(self, request):
         print(f"Client connecting: {request.peer}")
+
+    # Override
+    def onOpen(self):
+        print(f"Websocket connection open.")
+        self._state = self.PLAY
 
     # Override
     def onClose(self, wasClean, code, reason):
@@ -445,6 +450,8 @@ func _handle_network_error():
 ```
 *When you save this code, you will be asked to "Save Scene As...". Just click **Save** here to save your scene as **Main.tscn**.*
 
+Note that, if you chose to change your port number in the [Putting it all together](#putting-it-all-together) section, you will need to use that same port number in this script too.
+
 This file is kind of analogous to `server/protocol.py` in that is contains most of the logic and our state machine. Notice we have a state function called `PLAY` that doesn't contain anything yet, we will fill this out soon.
 
 Aside from that, our `client/main.gd` script simply contains functions for receiving network data and passing it on to our state function.
@@ -674,4 +681,4 @@ With that said, I'll see you in the next part where we will add a database, logi
 
 
 ## Get in touch / connect with community
-**If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is on [the home page](/)), or [join the Discord](https://discord.gg/6vN2re8T) to chat with me and other students!**
+**If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is in the footer below), or [join the Discord](https://discord.gg/6vN2re8T) to chat with me and other students!**
