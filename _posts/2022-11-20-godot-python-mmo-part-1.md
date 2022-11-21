@@ -146,7 +146,7 @@ Here is a rundown of the above code, but you don't have to read it if you don't 
 Create a new file inside your server folder called `protocol.py`.
 ```python
 import queue
-import packet
+from server import packet
 from autobahn.twisted.websocket import WebSocketServerProtocol
 
 
@@ -552,6 +552,8 @@ Now click on the **VBoxContainer** node to select it, and then expand the **Anch
 | **Top** | 0.67 |
 | **Right** | 1 |
 | **Bottom** | 1 |
+
+Ensure the Margin properties are all set to 0.
 
 If you like, you can select the **Label** node and type a prompt into the **Text** property in the Inspector on the right. I chose `[SAY]:`
 
