@@ -285,32 +285,32 @@ var payloads: Array
 
 
 func _init(_action: String, _payloads: Array):
-	action = _action
-	payloads = _payloads
+    action = _action
+    payloads = _payloads
 
 
 func tostring() -> String:
-	var serlialize_dict: Dictionary = {"a": action}
-	for i in range(len(payloads)):
-		serlialize_dict["p%d" % i] = payloads[i]
-	var data: String = JSON.print(serlialize_dict)
-	return data
+    var serlialize_dict: Dictionary = {"a": action}
+    for i in range(len(payloads)):
+        serlialize_dict["p%d" % i] = payloads[i]
+    var data: String = JSON.print(serlialize_dict)
+    return data
 
 
 static func json_to_action_payloads(json_str: String) -> Array:
-	var action: String
-	var payloads: Array = []
-	var obj_dict: Dictionary = JSON.parse(json_str).result
+    var action: String
+    var payloads: Array = []
+    var obj_dict: Dictionary = JSON.parse(json_str).result
 
-	for key in obj_dict.keys():
-		var value = obj_dict[key]
-		if key == "a":
-			action = value
-		elif key[0] == "p":
-			var index: int = key.split_floats("p", true)[1]
-			payloads.insert(index, value)
+    for key in obj_dict.keys():
+        var value = obj_dict[key]
+        if key == "a":
+            action = value
+        elif key[0] == "p":
+            var index: int = key.split_floats("p", true)[1]
+            payloads.insert(index, value)
 
-	return [action, payloads]
+    return [action, payloads]
 ```
 
 *When you save this script, it will give you a warning that there is no root node, but you can safely ignore that message for now.*
@@ -334,52 +334,52 @@ var _client = WebSocketClient.new()
 
 
 func _ready():
-	_client.connect("connection_closed", self, "_closed")
-	_client.connect("connection_error", self, "_closed")
-	_client.connect("connection_established", self, "_connected")
-	_client.connect("data_received", self, "_on_data")
+    _client.connect("connection_closed", self, "_closed")
+    _client.connect("connection_error", self, "_closed")
+    _client.connect("connection_established", self, "_connected")
+    _client.connect("data_received", self, "_on_data")
 
 
 func connect_to_server(hostname: String, port: int) -> void:
-	# Connects to the server or emits an error signal.
-	# If connected, emits a connect signal.
-	var websocket_url = "ws://%s:%d" % [hostname, port]
-	var err = _client.connect_to_url(websocket_url)
-	if err:
-		print("Unable to connect")
-		set_process(false)
-		emit_signal("error")
+    # Connects to the server or emits an error signal.
+    # If connected, emits a connect signal.
+    var websocket_url = "ws://%s:%d" % [hostname, port]
+    var err = _client.connect_to_url(websocket_url)
+    if err:
+        print("Unable to connect")
+        set_process(false)
+        emit_signal("error")
 
 
 func send_packet(packet: Packet) -> void:
-	# Sends a packet to the server
-	_send_string(packet.tostring())
+    # Sends a packet to the server
+    _send_string(packet.tostring())
 
 
 func _closed(was_clean = false):
-	print("Closed, clean: ", was_clean)
-	set_process(false)
-	emit_signal("disconnected", was_clean)
+    print("Closed, clean: ", was_clean)
+    set_process(false)
+    emit_signal("disconnected", was_clean)
 
 
 func _connected(proto = ""):
-	print("Connected with protocol: ", proto)
-	emit_signal("connected")
+    print("Connected with protocol: ", proto)
+    emit_signal("connected")
 
 
 func _on_data():
-	var data: String = _client.get_peer(1).get_packet().get_string_from_utf8()
-	print("Got data from server: ", data)
-	emit_signal("data", data)
+    var data: String = _client.get_peer(1).get_packet().get_string_from_utf8()
+    print("Got data from server: ", data)
+    emit_signal("data", data)
 
 
 func _process(delta):
-	_client.poll()
+    _client.poll()
 
 
 func _send_string(string: String) -> void:
-	_client.get_peer(1).put_packet(string.to_utf8())
-	print("Sent string ", string)
+    _client.get_peer(1).put_packet(string.to_utf8())
+    print("Sent string ", string)
 ```
 
 This file provides an API for connecting to a server and sending it packets. The details are a bit gritty, but luckily we don't have to worry about it when we are actually coding our game!
@@ -414,39 +414,39 @@ var state: FuncRef
 
 
 func _ready():
-	_network_client.connect("connected", self, "_handle_client_connected")
-	_network_client.connect("disconnected", self, "_handle_client_disconnected")
-	_network_client.connect("error", self, "_handle_network_error")
-	_network_client.connect("data", self, "_handle_network_data")
-	add_child(_network_client)
-	_network_client.connect_to_server("127.0.0.1", 8081)
+    _network_client.connect("connected", self, "_handle_client_connected")
+    _network_client.connect("disconnected", self, "_handle_client_disconnected")
+    _network_client.connect("error", self, "_handle_network_error")
+    _network_client.connect("data", self, "_handle_network_data")
+    add_child(_network_client)
+    _network_client.connect_to_server("127.0.0.1", 8081)
 
-	state = funcref(self, "PLAY")
+    state = funcref(self, "PLAY")
 
 
 func PLAY(p):
-	pass
+    pass
 
 
 func _handle_client_connected():
-	print("Client connected to server!")
+    print("Client connected to server!")
 
 
 func _handle_client_disconnected(was_clean: bool):
-	OS.alert("Disconnected %s" % ["cleanly" if was_clean else "unexpectedly"])
-	get_tree().quit()
+    OS.alert("Disconnected %s" % ["cleanly" if was_clean else "unexpectedly"])
+    get_tree().quit()
 
 
 func _handle_network_data(data: String):
-	print("Received server data: ", data)
-	var action_payloads: Array = Packet.json_to_action_payloads(data)
-	var p: Packet = Packet.new(action_payloads[0], action_payloads[1])
-	# Pass the packet to our current state
-	state.call_func(p)
+    print("Received server data: ", data)
+    var action_payloads: Array = Packet.json_to_action_payloads(data)
+    var p: Packet = Packet.new(action_payloads[0], action_payloads[1])
+    # Pass the packet to our current state
+    state.call_func(p)
 
 
 func _handle_network_error():
-	OS.alert("There was an error")
+    OS.alert("There was an error")
 ```
 *When you save this code, you will be asked to "Save Scene As...". Just click **Save** here to save your scene as **Main.tscn**.*
 
@@ -571,27 +571,27 @@ signal message_sent(message)
 
 
 func _ready():
-	input_field.connect("text_entered", self, "text_entered")
+    input_field.connect("text_entered", self, "text_entered")
 
 
 func _input(event: InputEvent):
-	if event is InputEventKey and event.pressed:
-		match event.scancode:
-			KEY_ENTER:
-				input_field.grab_focus()
-			KEY_ESCAPE:
-				input_field.release_focus()
+    if event is InputEventKey and event.pressed:
+        match event.scancode:
+            KEY_ENTER:
+                input_field.grab_focus()
+            KEY_ESCAPE:
+                input_field.release_focus()
 
 
 func add_message(text: String):
-	chat_log.bbcode_text += text + "\n"
+    chat_log.bbcode_text += text + "\n"
 
 
 func text_entered(text: String):
-	if len(text) > 0:
-		input_field.text = ""
+    if len(text) > 0:
+        input_field.text = ""
 
-		emit_signal("message_sent", text)
+        emit_signal("message_sent", text)
 ```
 This code simply adds support for pressing enter or escape on the keyboard to focus in or out of the chatbox. It also provides a function for adding a new message to the log and a signal to emit signifying a new message has been sent off.
 
@@ -618,8 +618,8 @@ _chatbox.connect("message_sent", self, "send_chat")
 Let's now define that function:
 ```gdscript
 func send_chat(text: String):
-	var p: Packet = Packet.new("Chat", [text])
-	_network_client.send_packet(p)
+    var p: Packet = Packet.new("Chat", [text])
+    _network_client.send_packet(p)
     _chatbox.add_message(text)
 ```
 
@@ -651,8 +651,8 @@ Open Godot again, and open our favourite script, `res://Main.gd`. Let's replace 
 func PLAY(p):
     match p.action:
         "Chat":
-			var message: String = p.payloads[0]
-			_chatbox.add_message(message)
+            var message: String = p.payloads[0]
+            _chatbox.add_message(message)
 ```
 
 This is quite similar to the `PLAY` function in `server/protocol.py`. Godot's `match` keyword works like a switch statement in other languages, or an `if`-`elif` chain in Python. Basically we are telling Godot, "while we're in the `PLAY` state, if we get a Chat packet, then add it to the chat log". Pretty simple.

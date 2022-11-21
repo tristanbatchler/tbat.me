@@ -4,7 +4,7 @@ description: How to expand upon our foundation and incorporate a working databas
 redditurl: 
 ---
 
-Welcome back to the tutorial series focusing in making an MMO with Godot and Python. In the [previous lesson](/2022/11/20/godot-python-mmo-part-1.html), we set up a most basic chatroom using a very robust framework for communicating packets between client and server.
+Welcome back to the tutorial series focused on making an MMO with Godot and Python. In the [previous lesson](/2022/11/20/godot-python-mmo-part-1.html), we set up a most basic chatroom using a very robust framework for communicating packets between client and server.
 
 In this lesson, we will focus on bringing a database into the mix, and demonstrate its usefulness by allowing someone to register an account, and log in to the chatroom. Other users will then know who they're talking to!
 
@@ -12,13 +12,15 @@ In this lesson, we will focus on bringing a database into the mix, and demonstra
 
 I highly recommend you go through the [first lesson]((/2022/11/20/godot-python-mmo-part-1.html)) if you haven't already. If do you want to start here without viewing the previous lesson, however, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 1** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.1.zip).
 
----
+## A sneak peak
+Here's a quick look at what we'll be finishing up by the end of this lesson:
+![A demo of what's to come...](/assets/css/images/posts/2022/11/21/godot-python-mmo-part-2/demo.gif)
 
 ## A quick note
 From here on out, I will stop adding a disclaimer about Windows vs. non-Windows systems and the difference between `python` vs. `python3`. I will always just say `python`. I will also always assume you are running commands from inside the `server/` directory of your project folder with the Virtual Environment activated, unless otherwise stated.
 
 ## Setting up the database
-As hinted in the first lesson, we will be using [Django](https://www.djangoproject.com/) to drive the database, which will be [SQLite 3](https://www.sqlite.org/index.html). SQL Lite has been chosen because its drivers come by default in Python, and is very portable so requires very little setup.
+As hinted in the first lesson, we will be using [Django](https://www.djangoproject.com/) to drive the database, which will be [SQLite 3](https://www.sqlite.org/index.html). I chose SQL Lite because its drivers come by default in Python, and the database itself is very portable.
 
 Open up your project folder and create two new files in the `server/` directory:
 * `manage.py`, and
@@ -71,6 +73,18 @@ if __name__ == '__main__':
     execute_from_command_line(sys.argv)
 ```
 
+
+> **⚠ Warning ⚠**
+> 
+> Part of our new `manage.py` script defines the settings for the database, so we need to run it every time before we start the server. Therefore, it is 
+> **crucial** you include this as the very first import of `__main__.py`, so it's the first thing that gets run every time we start the server.
+
+ Add this to the very beginning of `__main__.py`:
+ ```python
+ import manage
+ ```
+
+
 Next, open `models.py` and paste the following code:
 ```python
 from django.db import models
@@ -80,14 +94,6 @@ class User(models.Model):
     password = models.CharField(max_length=99)
 ```
 
-### A very important note 
-Part of our new `manage.py` script defines the settings for the database, so we need to run it every time before we start the server. Therefore, it is **crucial** you include this as the very first import of `__main__.py`, so it's the first thing that gets run every time we start the server.
-`__main__.py`:
-```python
-import manage
-```
-
-### Back to it...
 `models.py` is unsurprisingly where we will define all the data, and relationships between things in our game. We start with the most basic thing we need right now—the concept of a user. Note we do not need to specify some kind of ID for our user, because Django will take care of that for us. We are indicating the username needs to be unique, and its max length is 20, however.
 
 Let's use our `manage.py` tool to create the database now. Run the following commands:
@@ -123,7 +129,7 @@ The first two packets are the most simple. They will be sent only when the serve
 
 Inside `packet.py`, add the following new members to the `Action` enum:
 ```python
-OK = enum.auto()
+Ok = enum.auto()
 Deny = enum.auto()
 Login = enum.auto()
 Register = enum.auto()
@@ -133,7 +139,7 @@ Also add the following packet definitions:
 ```python
 class OKPacket(Packet):
     def __init__(self):
-        super().__init__(Action.OK)
+        super().__init__(Action.Ok)
 
 class DenyPacket(Packet):
     def __init__(self, reason: str):
@@ -147,7 +153,7 @@ class RegisterPacket(Packet):
     def __init__(self, username: str, password: str):
         super().__init__(Action.Register, username, password)
 ```
-Note the `Deny` packet takes in a `reason` string, which we can send to the client to display to the user. For example, if the client tries to register a new user, but the username is already taken, we can send them a `Deny` packet with a reason of `"This username is already taken"` (which is what we will do).
+Note the `Deny` packet takes in a `reason` string, which we can send to the client to display to the user. For example, if the client tries to register a new user, but the username is already taken, we can send them a `Deny` packet with a reason of "This username is already taken" (which is what we will do).
 
 That's it for now. As you can see, it is very straightforward to define new packets like these.
 
@@ -218,9 +224,9 @@ Add a new **User Interface** root node. Then add the following child nodes until
             * Button2
 
 Now rename the following nodes:
-|From|To|
 
-|--|--|
+|From|To|
+|:--|:--|
 |Control|Login|
 |Label|Label_Username|
 |LineEdit|LineEdit_Username|
@@ -242,8 +248,8 @@ Set the Anchor properties to the following for the **VBoxContainer** node, and e
 This should situate the elements nicely in the center of the view and will behave responsively on all device screen sizes.
 
 Next, select each label and button and enter the following **Text** properties:
-|Node|Text property|
 
+|Node|Text property|
 |--|--|
 |Label_Username|Username: |
 |Label_Password|Password: |
@@ -269,15 +275,15 @@ signal login(username, password)
 signal register(username, password)
 
 func _ready():
-	password_field.secret = true
-	login_button.connect("pressed", self, "_login")
-	register_button.connect("pressed", self, "_register")
+    password_field.secret = true
+    login_button.connect("pressed", self, "_login")
+    register_button.connect("pressed", self, "_register")
 
 func _login():
-	emit_signal("login", username_field.text, password_field.text)
+    emit_signal("login", username_field.text, password_field.text)
 
 func _register():
-	emit_signal("register", username_field.text, password_field.text)
+    emit_signal("register", username_field.text, password_field.text)
 ```
 
 We define two signals: login and register, and simply tie functions to emit these signals using the entered text whenever a button is pressed.
@@ -309,14 +315,14 @@ state = null
 Now let's add those handler functions:
 ```gdscript
 func _handle_login_button(username: String, password: String):
-	state = funcref(self, "LOGIN")
-	var p: Packet = Packet.new("Login", [username, password])
-	_network_client.send_packet(p)
+    state = funcref(self, "LOGIN")
+    var p: Packet = Packet.new("Login", [username, password])
+    _network_client.send_packet(p)
 
 func _handle_register_button(username: String, password: String):
-	state = funcref(self, "REGISTER")
-	var p: Packet = Packet.new("Register", [username, password])
-	_network_client.send_packet(p)
+    state = funcref(self, "REGISTER")
+    var p: Packet = Packet.new("Register", [username, password])
+    _network_client.send_packet(p)
 ```
 
 Note these functions are saying "when the login button is pressed, change to the `LOGIN` state, and send a login packet" (and same for the register button). We change the the (not yet defined) `LOGIN`/`REGISTER` states so that, when the server sends back an `Ok` or `Deny` packet, we will be expecting them and know what to do with them.
@@ -324,34 +330,34 @@ Note these functions are saying "when the login button is pressed, change to the
 Define our two new states now and you'll see what I mean:
 ```gdscript
 func LOGIN(p):
-	match p.action:
-		"Ok":
-			_enter_game()
-		"Deny":
-			var reason: String = p.payloads[0]
-			OS.alert(reason)
+    match p.action:
+        "Ok":
+            _enter_game()
+        "Deny":
+            var reason: String = p.payloads[0]
+            OS.alert(reason)
 
 func REGISTER(p):
-	match p.action:
-		"Ok":
-			OS.alert("Registration successful")
-		"Deny":
-			var reason: String = p.payloads[0]
-			OS.alert(reason)
+    match p.action:
+        "Ok":
+            OS.alert("Registration successful")
+        "Deny":
+            var reason: String = p.payloads[0]
+            OS.alert(reason)
 ```
 We are just using `OS.alert` to relay messages for now, but we can pretty things up later. Also note, we haven't defined the `_enter_game()` function yet, so let's do that now!
 
 ```gdscript
 func _enter_game():
-	state = funcref(self, "PLAY")
+    state = funcref(self, "PLAY")
 
-	# Remove the login screen
-	remove_child(_login_screen)
+    # Remove the login screen
+    remove_child(_login_screen)
 
-	# Instance the chatbox
-	_chatbox = Chatbox.instance()
-	_chatbox.connect("message_sent", self, "send_chat")
-	add_child(_chatbox)
+    # Instance the chatbox
+    _chatbox = Chatbox.instance()
+    _chatbox.connect("message_sent", self, "send_chat")
+    add_child(_chatbox)
 ```
 
 We will also need to remove the `_chatbox.connect("message_sent", self, "send_chat")` line in its old place in the `_ready` function, since the game will have no idea what `_chatbox` is at that point.
@@ -361,7 +367,7 @@ At this point, we can test our game! Let's run the server and press the **play b
 
 Try registering a new user and logging in with it. If you are successful, you will be taken to the chatroom again, and things should still be working on that front.
 
-No we're in a good position to start sending usernames along with chat messages, so we can see who we're talking to! After that, we will wrap up this lesson.
+Now we're in a good position to start sending usernames along with chat messages, so we can see who we're talking to! After that, we will wrap up this lesson.
 
 ## Who are you?
 Let's make a slight modification to the Chat packet to allow sending a username along with the message. This is something the client will be able to display.
@@ -386,31 +392,34 @@ _username = username
 Next, modify the `send_chat` function to send the username along with the chat message. We will also tell it to send our username along to the `_chatbox.add_message` function (which we will modify next to support).
 ```gdscript
 func send_chat(text: String):
-	var p: Packet = Packet.new("Chat", [_username, text])
-	_network_client.send_packet(p)
-	_chatbox.add_message(_username, text)
+    var p: Packet = Packet.new("Chat", [_username, text])
+    _network_client.send_packet(p)
+    _chatbox.add_message(_username, text)
 ```
 
 But first let's change the `PLAY` function to correctly interpret the new packet structure:
 ```gdscript
 func PLAY(p):
-	match p.action:
-		"Chat":
-			var username: String = p.payloads[0]
-			var message: String = p.payloads[1]
-			_chatbox.add_message(username, message)
+    match p.action:
+        "Chat":
+            var username: String = p.payloads[0]
+            var message: String = p.payloads[1]
+            _chatbox.add_message(username, message)
 ```
 
 Finally, let's jump over to `res://Chatbox.gd` to modify the `add_message` function.
 ```gdscript
 func add_message(username: String, text: String):
-	chat_log.bbcode_text += username + ' says: "' + text + '"\n'
+    chat_log.bbcode_text += username + ' says: "' + text + '"\n'
 ```
 
+## Let's test it all out!
+Restart your server and run two or more game clients and see if you can hold a conversation with yourself. If you made it this far, congratulations! You have a working chatroom that handles user registration and login. It even stores the information in a database so, even if the server needs to reboot, the application can just retrieve the persistent information it needs.
+
+If you got a bit lost, remember you can always download this code from [the official GitHub repository's releases section](https://github.com/tristanbatchler/official-godot-python-mmo/releases). Just download the source code zip asset and merge it with your code from last lesson (or else follow the instructions for how to set up a virtual environment and install prerequisites from the last lesson).
+
 ## Conclusion
-That's it!
-
-
+That's it! In the next lesson, we will be moving towards our long-term goal of getting a working game up and running. All the hard work we've been doing so far is going to really pay off. Thanks a lot for reading!
 
 ## Get in touch / connect with community
 **If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is in the footer below), or [join the Discord](https://discord.gg/6vN2re8T) to chat with me and other students!**

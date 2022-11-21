@@ -114,3 +114,21 @@ iframe.responsive-iframe {
     padding-top: 72%;
     margin: auto;
 }
+
+table {
+    th, td {
+        padding: 5px 15px;
+    } 
+
+    thead tr th {
+        font-weight: bold;
+        color: $green;
+        border-bottom: 1px solid;
+    }
+
+    tbody tr {
+        &:nth-of-type(even) {
+            background-color: darken($background, 5%);
+        }
+    }
+}
