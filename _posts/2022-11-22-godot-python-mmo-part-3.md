@@ -404,7 +404,9 @@ def _update_position(self) -> bool:
     return True
 ```
 
-This is the function which updates the position of our player based on its target. Note we are using delta time here (you will need to add `self._last_delta_time_checked: float = None` in the constructor). We use delta time to ensure we are moving the correct amount each time this function is called, which is not every tick. Instead, we will call this function any time the packet queue is empty, so we don't inundate the server with too many calculations if it should be processing more important things. 
+This is the function which updates the position of our player based on its target. Note we are using delta time here (you will need to add `self._last_delta_time_checked: float = None` in the `protocol.py` constructor, and we will need to replace the value of `20` in `__main__.py` with a class member variable called `tickrate`). 
+
+We use delta time to ensure we are moving the correct amount each time this function is called, which is not every tick. Instead, we will call this function any time the packet queue is empty, so we don't inundate the server with too many calculations if it should be processing more important things. 
 
 Some things to note:
     * The `70` in this file needs to match the player's speed variable in Godot's `Actor.gd` file otherwise the player and server will easily go out of sync.
