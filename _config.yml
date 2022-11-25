@@ -28,8 +28,23 @@ defaults:
     values:
       layout: "default"
 
-url: "https://tbat.me"
 plugins:
   - jekyll-sitemap
+  - jekyll-seo-tag
 
 highlighter: rouge
+
+
+title: "Tristan Batchler's home page"
+tagline: "A site for Tristan Batchler's details, and various computer science and maths blogs and articles"
+description: "Find all the details you need to know about Tristan Batchler here. I am a detail oriented masters student skilled in systems and the technical support role with over seven years' professional experience in IT and software. I also write about tech and mathematics in my blog!"
+url: "https://tbat.me"
+author: "Tristan Batchler"
+social:
+    name: Tristan Batchler
+    links:
+      - https://www.linkedin.com/in/tristanbatchler
+      - https://github.com/tristanbatchler
+      - https://www.youtube.com/channel/UCk16fwaXxD4JUkxzwFc8PQg 
+google_site_verification: "_4lemCjWeskGPkc0vFRR8MxPnEjnEjUzbFTK9HaeP7M"
+locale: "en_AU"
