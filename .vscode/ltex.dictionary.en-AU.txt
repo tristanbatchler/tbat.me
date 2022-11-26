@@ -1,0 +1,13 @@
+Pythonic
+venv
+enum
+FileSystem
+tscn
+Chatbox
+chatbox
+CanvasLayer
+VBoxContainer
+RichTextLabel
+HBoxContainer
+LineEdit
+Runnable
