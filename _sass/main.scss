@@ -67,6 +67,14 @@ body {
         padding: 10px;
     }
 
+    code {
+        font-size: larger;
+        background-color: black;
+        color: $lightgray;
+        border-radius: 0.2em;
+        padding: 1px 3px 3px;
+    }
+
 }
 
 #header {
