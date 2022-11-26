@@ -14,8 +14,9 @@ Hello and welcome to my first entry in what will probably be a five-part blog an
 
 This tutorial series assumes you are comfortable with Python, and have a very basic knowledge of Godot (i.e., you have familiarised yourself with the basic layout of the software—just search for a Godot introduction video if you need to).
 
-[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/playlist?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH).
-
+---
+[If you prefer, you can view this lesson on YouTube](https://youtu.be/0PEFkDAokRI). The YouTube video is a different experience, and does contain slightly more explanation for each line of code. **If you are not 100% comfortable with Python or Godot, the best way to follow this lesson is to watch you video, and use this blog as a reference.**
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/0PEFkDAokRI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---
 
 ## Overview of the architecture
@@ -69,6 +70,8 @@ pip install django
 That's it for the dependencies! Let's start getting our hands dirty by writing some real code now.
 
 Open your `server` folder with Visual Studio Code. You will want to install the Python extensions if you don't have them already. I highly recommend [this one](https://marketplace.visualstudio.com/items?itemName=ms-python.python).
+
+You will want to tell VS Code where your virtual environment is too, so it doesn't complain when you try to import things that aren't in your base Python install. To do this, click the button at the very lower-left corner of your VS Code window which says the Python version (**Python 3.x.x**). Then you will see a dropdown appear in the top-middle of the Window. Click **Enter interpreter path > Find** and navigate to your `server/venv/` folder. Inside this folder, navigate to `Scripts/` (Windows) or `bin/` (Unix-based) and select `python`. Finally click **Select Interpreter**. You should now see in the lower-left, it says **('venv': venv)**.
 
 ### Tip for the lazy
 At this point, if you don't want to go through all the code, visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases). Here you will see all valid states of the project which correspond to different points along this tutorial series. For example, if you want to skip all the initial setup work and want to get your hands dirty straight away, download the **Initial template code** by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.0.zip).
@@ -131,6 +134,9 @@ def from_json(json_str: str) -> Packet:
 ```
 This file simply provides a way to construct and deconstruct packets (information sent between a client and server).
 
+![Packet structure](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/diagram.svg)
+*The structure of packets sent over the network in our MMO.*
+
 I know you're probably thinking this looks like a lot. It is! I want to start with a very robust and extensible system, so it's a breeze to add new packets later.
 
 Our packets contain the following:
@@ -146,7 +152,7 @@ Here is a rundown of the above code, but you don't have to read it if you don't 
 Create a new file inside your server folder called `protocol.py`.
 ```python
 import queue
-from server import packet
+import packet
 from autobahn.twisted.websocket import WebSocketServerProtocol
 
 
@@ -272,6 +278,8 @@ That was a lot to get through, and now we have to get the infrastructure set up 
 
 ## Setting up the client
 For a nice change of pace, let's open up Godot! You will be met with the Project Manager. Just click **New Project** and enter **client** for the Project Name, and the path to your project folder. Click on **Create Folder** and it will create a folder called **client**, and it should be sitting right next to your **server** folder in your main project folder. If that all sounds good to you, click **Create & Edit**.
+
+![Packet structure](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/godot-project-manager.png)
 
 ### Packets (again)!
 To get some of the more boring boilerplate set up as quickly as possible, right click your **res://** folder in the FileSystem (lower-left) and click **New Script**. Set the path to `res://packet.gd` and click **Create**.
@@ -558,6 +566,8 @@ Ensure the Margin properties are all set to 0.
 If you like, you can select the **Label** node and type a prompt into the **Text** property in the Inspector on the right. I chose `[SAY]:`
 
 You'll notice everything looks about right now, so save the scene.
+![Packet structure](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/chatbox-scene.png)
+*The Chatbox scene should take up the bottom third of the screen as indicated by the faint blue line.*
 
 Let's attach a new script to our root **Chatbox** node to add some functionality. Right click the root node and select **Attach Script**, leave the path as default (res://Chatbox.gd) and click **Create**. Clear out all the pre-generated code and replace it with the following:
 ```gdscript
@@ -659,6 +669,10 @@ This is quite similar to the `PLAY` function in `server/protocol.py`. Godot's `m
 
 That's it! We have successfully implemented a chat feature into our game. Don't worry, we will be keeping this for our game once we continue to add features, although we will be modifying it slightly down the track.
 
+*Note: if you get an error in Godot saying `Mixed tabs and spaces in indentation`, you can fix this by clicking the **Editor** menu at the top, then click **Editor Settings**. Scroll down and select **Text Editor > Indent** on the left. Then change the **Type** to **Spaces** and click **Close**.
+![Tabs to spaces](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/spaces.png)
+
+
 ### Let's chat!
 Let's test our new chatroom. If your server is still running from the last test, simply open the terminal and press `CTRL+C` to interrupt the program. Then simply re-run `python .` (if you're in the server directory and have the Virtual Environment loaded). See [the **A quick test**](#a-quick-test) section for a reminder on how to do this.
 
@@ -670,7 +684,14 @@ It's not actually possible to click the same play button we've been using twice.
 
 To do this, just click **Project** at the top and then **Export...**. In the Export window, click *Add...* and the **HTML5**.
 
-Leave all settings default and click **Export Project**, create a new folder called **HTML5** (or anything you like really) and click **Save**. Then you can close the Export window and you'll see a new button at the top-right which will run the exported HTML5 project in your browser.
+You will need to download an export template, so click **Manage Export Templates** at the bottom of the Export window.
+![Export screen 1](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/html5-1.png)
+
+On the next window, leave **Best available mirror** selected and click **Download and Install**. This may take some time, as the template files are about half a gigabyte, so you might want to make a cup of coffee in the meantime ☕
+
+Once the HTML5 template is installed, you can come back to the Export window with the HTML5 (Runnable) preset selected, leave all settings default and click **Export Project**, create a new folder called **HTML5** (or anything you like really) and click **Save**. 
+
+Then you can close the Export window and you'll see a new button at the top-right which will run the exported HTML5 project in your browser.
 
 You can click this new HTML5 button as many times as you want to keep opening new browser tabs. You can do this while the Desktop version of your game is running too, so you can get a really good test of the chatbox.
 
