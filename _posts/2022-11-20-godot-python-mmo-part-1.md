@@ -71,7 +71,7 @@ That's it for the dependencies! Let's start getting our hands dirty by writing s
 
 Open your `server` folder with Visual Studio Code. You will want to install the Python extensions if you don't have them already. I highly recommend [this one](https://marketplace.visualstudio.com/items?itemName=ms-python.python).
 
-You will want to tell VS Code where your virtual environment is too, so it doesn't complain when you try to import things that aren't in your base Python install. To do this, click the button at the very lower-left corner of your VS Code window which says the Python version (**Python 3.x.x**). Then you will see a dropdown appear in the top-middle of the Window. Click **Enter interpreter path > Find** and navigate to your `server/venv/` folder. Inside this folder, navigate to `Scripts/` (Windows) or `bin/` (Unix-based) and select `python`. Finally click **Select Interpreter**. You should now see in the lower-left, it says **('venv': venv)**.
+You will want to tell VS Code where your virtual environment is too, so it doesn't complain when you try to import things that aren't in your base Python install. To do this, click the button at the very lower-left corner of your VS Code window which says the Python version (**Python 3.x.x**). Then you will see a dropdown appear in the top-middle of the Window. Click **Enter interpreter path > Find** and navigate to your `server/venv/` folder. Inside this folder, navigate to `Scripts/` (Windows) or `bin/` (Unix-based) and select `python`. Finally, click **Select Interpreter**. You should now see in the lower-left, it says **('venv': venv)**.
 
 ### Tip for the lazy
 At this point, if you don't want to go through all the code, visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases). Here you will see all valid states of the project which correspond to different points along this tutorial series. For example, if you want to skip all the initial setup work and want to get your hands dirty straight away, download the **Initial template code** by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.0.zip).
@@ -140,7 +140,7 @@ This file simply provides a way to construct and deconstruct packets (informatio
 I know you're probably thinking this looks like a lot. It is! I want to start with a very robust and extensible system, so it's a breeze to add new packets later.
 
 Our packets contain the following:
-1. An **Action**, which is a symantic way of saying "I want this packet to be interpreted this way"!
+1. An **Action**, which is a semantic way of saying "I want this packet to be interpreted this way"!
 1. **Payloads**, which is a list of additional information associated with the packet.
 
 Here is a rundown of the above code, but you don't have to read it if you don't want to:
@@ -149,7 +149,7 @@ Here is a rundown of the above code, but you don't have to read it if you don't 
 * The `from_json` function accepts a string and constructs it into a packet. It is the exact inverse of the `Packet.__str__` function. It is able to reconstruct the original packet subclass by using reflection, but this only works if the subclasses are named according to our `ActionPacket` rule.
 
 ### The protocol
-Create a new file inside your server folder called `protocol.py`.
+Create a new file inside your `server/` folder called `protocol.py`.
 ```python
 import queue
 import packet
@@ -221,7 +221,7 @@ Note the `PLAY` function acts as a state our protocol can be in. At the moment, 
 You don't need to worry about any of the other functions for now. A lot of them are overrides of the parent `WebSocketServerProtocol` function, but all help let us focus on our state functions like `PLAY`. Functions in this file will load data up for us by adding a sender-packet pair into a queue each time data is received. Then, each tick, the protocol calls our state function with the first sender-packet pair from the queue, ready for processing.
 
 ### Putting it all together
-We need a central authority to create all our protocols and let them handle their clients. We call this a protocol **factory**, and is the main entry point for our server program. To finish up our server boilercode, create `__main__.py` in the `server` folder. Your project structure should look like this now:
+We need a central authority to create all our protocols and let them handle their clients. We call this a protocol **factory**, and is the main entry point for our server program. To finish up our server boilerplate, create `__main__.py` in the `server` folder. Your project structure should look like this now:
 * `server/`
     * `venv/`
     * `__main__.py`
@@ -268,7 +268,7 @@ if __name__ == '__main__':
     reactor.run()
 ```
 
-The key thing to note about this file is we first define our `GameFactory` class, which is a subclass of Autobahn Twisted's `WebSocketServerFactory`. I want to tell this factory that its job is to build game server protocol instances, so I set `self.protocol` accordinly in the constructor.
+The key thing to note about this file is we first define our `GameFactory` class, which is a subclass of Autobahn Twisted's `WebSocketServerFactory`. I want to tell this factory that its job is to build game server protocol instances, so I set `self.protocol` accordingly in the constructor.
 
 I also wanted all protocols to process packets from their queue 20 times per second, so I create a looping call to fire the `tick` function every twentieth of a second (which, in turn, tells all protocols to fire their own `tick` function and process all their packets).
 
@@ -282,7 +282,7 @@ For a nice change of pace, let's open up Godot! You will be met with the Project
 ![Packet structure](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/godot-project-manager.png)
 
 ### Packets (again)!
-To get some of the more boring boilerplate set up as quickly as possible, right click your **res://** folder in the FileSystem (lower-left) and click **New Script**. Set the path to `res://packet.gd` and click **Create**.
+To get some of the more boring boilerplate set up as quickly as possible, right-click your **res://** folder in the FileSystem (lower-left) and click **New Script**. Set the path to `res://packet.gd` and click **Create**.
 
 In this `packet.gd` script, replace the pre-generated code with the following:
 ```gdscript
@@ -393,9 +393,9 @@ func _send_string(string: String) -> void:
 This file provides an API for connecting to a server and sending it packets. The details are a bit gritty, but luckily we don't have to worry about it when we are actually coding our game!
 
 ### Wrapping it all up
-Inside the 2D editor (you may need to click the **2D** button at the top) create a **2D Scene** Root Node, right click your new **Node2D** node, and click **Rename** and call it **Main**. 
+Inside the 2D editor (you may need to click the **2D** button at the top) create a **2D Scene** Root Node, right-click your new **Node2D** node, and click **Rename** and call it **Main**. 
 
-Next, right click on your **Main** node again, and this time click **Attach Script**. If you renamed the node before, your new script's path should be `res://Main.gd`. Now click **Create**. 
+Next, right-click on your **Main** node again, and this time click **Attach Script**. If you renamed the node before, your new script's path should be `res://Main.gd`. Now click **Create**. 
 
 
 Your project folder should now look like this (among some other files created by pip, Python and Godot):
@@ -456,7 +456,7 @@ func _handle_network_data(data: String):
 func _handle_network_error():
     OS.alert("There was an error")
 ```
-*When you save this code, you will be asked to "Save Scene As...". Just click **Save** here to save your scene as **Main.tscn**.*
+*When you save this code, you will be asked to "Save Scene As". Just click **Save** here to save your scene as **Main.tscn**.*
 
 Note that, if you chose to change your port number in the [Putting it all together](#putting-it-all-together) section, you will need to use that same port number in this script too.
 
@@ -469,7 +469,7 @@ Now we are finally ready to start creating a simple chatroom!
 ## A quick test
 Now is probably a good idea to test our server and client to make sure there's nothing wrong.
 
-*If you didn't save before, try saving your Godot project now, and you will be asked to "Save Scene As...". Just click **Save** here to save your scene as **Main.tscn**.*
+*If you didn't save before, try saving your Godot project now, and you will be asked to "Save Scene As". Just click **Save** here to save your scene as **Main.tscn**.*
 
 Open up your terminal again and ensure you still have the green `(venv)` prompt showing. If not, or if you closed your terminal, just open a new terminal in the `server/` folder, and run `./venv/bin/activate` (`./venv/Scripts/activate` on Windows PowerShell).
 
@@ -484,9 +484,9 @@ You should see something like the following if all worked correctly, indicating 
 2022-11-20 13:53:34+1000 [-] GameFactory starting on 8081
 2022-11-20 13:53:34+1000 [-] Starting factory <__main__.GameFactory object at 0x000002235959BC40>
 ```
-If you see an error here, I would double check all the files are copy and pasted exactly as how I presented them above. I would also double check you are in the `server` folder and ran the Virtual Environment properly.
+If you see an error here, I would double-check all the files are copy and pasted exactly as how I presented them above. I would also double-check you are in the `server` folder and ran the Virtual Environment properly.
 
-Now go back to Godot and click the **play button** at the top right. It will ask you to set a main scene, so just click **Select Current**. Your game window should pop up and you will be met with a blank grey screen if you got no errors. Now check the **Output** panel in the Godot editor again and you should see the following output
+Now go back to Godot and click the **play button** at the top right. It will ask you to set a main scene, so just click **Select Current**. Your game window should pop up, and you will be met with a blank grey screen if you got no errors. Now check the **Output** panel in the Godot editor again, and you should see the following output:
 ```
 Connected with protocol:
 Client connected to server!
@@ -532,11 +532,11 @@ This is all we need to do in terms of creating our new packet! Let's move on, ba
 ### Creating the Chatbox scene in Godot
 We need a new scene in Godot to store all the UI elements for our chatbox. This makes it easy to instance it in our main scene later.
 
-In the Godot editor, right click the **res://** folder in the FileSystem tab (bottom left) and select **New Scene**. Call the new scene **Chatbox** and click **OK**.
+In the Godot editor, right-click the **res://** folder in the FileSystem tab (bottom left) and select **New Scene**. Call the new scene **Chatbox** and click **OK**.
 
-Ensure you are in the **2D** view (button at the top-middle of the editor) and click **User Interface** under **Create Root Node**. Right click on the new **Control** node and rename it to **Chatbox**.
+Ensure you are in the **2D** view (button at the top-middle of the editor) and click **User Interface** under **Create Root Node**. Right-click on the new **Control** node and rename it to **Chatbox**.
 
-Now right click the **Chatbox** node, and create the following new nested children nodes (leave their names default) so your scene tree looks like this:
+Now right-click the **Chatbox** node, and create the following new nested children nodes (leave their names default) so your scene tree looks like this:
 * Chatbox
     * CanvasLayer
         * VBoxContainer
@@ -563,13 +563,13 @@ Now click on the **VBoxContainer** node to select it, and then expand the **Anch
 
 Ensure the Margin properties are all set to 0.
 
-If you like, you can select the **Label** node and type a prompt into the **Text** property in the Inspector on the right. I chose `[SAY]:`
+If you like, you can select the **Label** node and type a prompt into the **Text** property in the Inspector on the right. I chose `[SAY]:`.
 
 You'll notice everything looks about right now, so save the scene.
 ![Packet structure](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/chatbox-scene.png)
 *The Chatbox scene should take up the bottom third of the screen as indicated by the faint blue line.*
 
-Let's attach a new script to our root **Chatbox** node to add some functionality. Right click the root node and select **Attach Script**, leave the path as default (res://Chatbox.gd) and click **Create**. Clear out all the pre-generated code and replace it with the following:
+Let's attach a new script to our root **Chatbox** node to add some functionality. Right-click the root node and select **Attach Script**, leave the path as default (res://Chatbox.gd) and click **Create**. Clear out all the pre-generated code and replace it with the following:
 ```gdscript
 extends Control
 
@@ -605,7 +605,7 @@ func text_entered(text: String):
 ```
 This code simply adds support for pressing enter or escape on the keyboard to focus in or out of the chatbox. It also provides a function for adding a new message to the log and a signal to emit signifying a new message has been sent off.
 
-Now that we're done with the Chatbox scene, save it and double click on **Main.tscn** in your FileSystem in the bottom-left to go back to the main scene.
+Now that we're done with the Chatbox scene, save it and double-click on **Main.tscn** in your FileSystem in the bottom-left to go back to the main scene.
 
 While we're in the main scene, click and drag the new **Chatbox.tscn** scene from the FileSystem and drop it just under the root **Main** node in the Scene tree of the Main scene. Your scene tree should now look like this:
 * Main
@@ -650,7 +650,7 @@ def PLAY(self, sender: 'GameServerProtocol', p: packet.Packet):
 ```
 Here we are telling the protocol to broadcast your message if it came from your client. The `exclude_self` flag ensures the protocol won't send the same message back to its own client.
 
-If the packet **didn't** come from the protocol's own client, then it came from some other client's protocol and we need to tell our client about it. In this case, the `else` clause takes care of it.
+If the packet **didn't** come from the protocol's own client, then it came from some other client's protocol, and we need to tell our client about it. In this case, the `else` clause takes care of it.
 
 Note the first `if` statement is checking the packet's action. This ensures we won't accidentally interpret some other packet as a chat packet, and it also is a nice way to ensure we are only processing allowed packet types depending on which state we are in. Later on, we will have different states that won't need chat packets, so we won't need to check for them there!
 
@@ -680,9 +680,9 @@ Once the server's running, click the **play button** in the top-right of the God
 
 You will be able to enter a message into the chatbox and see it printed to the log. But that's not much proof our chatroom is really working. In order to convince ourselves, we will need to run another client simultaneously and let them talk to each other.
 
-It's not actually possible to click the same play button we've been using twice. I found the easiest way to run multiple instances of our game is actually to export to HTML5 and then you will have access to another button at the top-right where you can launch an instance of your game from a web browser.
+It's not actually possible to click the same play button we've been using twice. I found the easiest way to run multiple instances of our game is actually to export to HTML5, and then you will have access to another button at the top-right where you can launch an instance of your game from a web browser.
 
-To do this, just click **Project** at the top and then **Export...**. In the Export window, click *Add...* and the **HTML5**.
+To do this, just click **Project** at the top and then **Export**. In the Export window, click **Add** and the **HTML5**.
 
 You will need to download an export template, so click **Manage Export Templates** at the bottom of the Export window.
 ![Export screen 1](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/html5-1.png)
@@ -695,7 +695,7 @@ Then you can close the Export window and you'll see a new button at the top-righ
 
 You can click this new HTML5 button as many times as you want to keep opening new browser tabs. You can do this while the Desktop version of your game is running too, so you can get a really good test of the chatbox.
 
-You should be able to type something and see it appear in the other clients' chatlogs. How exciting! If you don't see this, I would recommend checking the terminal for Python errors, checking the Godot Debugger for Godot errors, and generally checking all the code was copy and pasted correctly.
+You should be able to type something and see it appear in the other clients' chat logs. How exciting! If you don't see this, I would recommend checking the terminal for Python errors, checking the Godot Debugger for Godot errors, and generally checking all the code was copy and pasted correctly.
 
 ## Conclusion
 Well that's it. It was a very long journey to achieve what doesn't look like much, but I want you to keep in mind: **this is a very over-engineered chatroom**. The surrounding architecture allows for very easy customisation and new features. This is the foundation for which we will build the rest of the project, so it's important we get it right!

@@ -1,0 +1,25 @@
+{"rule":"TOO_LONG_SENTENCE","sentence":"^\\QThis tutorial series assumes you are comfortable with Python, and have a very basic knowledge of Godot (i.e., you have familiarised yourself with the basic layout of the software—just search for a Godot introduction video if you need to).\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_AU","sentence":"^\\QI chose Autobahn Twisted because it supports the WebSocket protocol, which is what we need to use if we are to export the game for the web.\\E$"}
+{"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QGodot's extensive export options\\E$"}
+{"rule":"TOO_LONG_SENTENCE","sentence":"^\\QOpen a terminal (if you are using Windows, make sure it is PowerShell and not CMD) in the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q folder and run the following commands (note you may need to use \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q rather than \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q especially if you are running a Unix-based OS):\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QTip for the lazy\nAt this point, if you don't want to go through all the code, visit the Releases section of the official GitHub repository.\\E$"}
+{"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QRelease v0.0 assets\\E$"}
+{"rule":"YOUR","sentence":"^\\QYou'll have to unzip the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q file, copy the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q and \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q folders, and paste them into your project directory (your existing \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q folder should be kept).\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qsection.\\E$"}
+{"rule":"MASS_AGREEMENT","sentence":"^\\QThe protocol\nCreate a new file inside your \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q folder called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QYour project structure should look like this now:\n\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\n\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\n\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\n\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\n\\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
+{"rule":"TOO_LONG_SENTENCE","sentence":"^\\QI also wanted all protocols to process packets from their queue 20 times per second, so I create a looping call to fire the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q function every twentieth of a second (which, in turn, tells all protocols to fire their own \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q function and process all their packets).\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QClick on Create Folder and it will create a folder called client, and it should be sitting right next to your server folder in your main project folder.\\E$"}
+{"rule":"SOME_OF_THE","sentence":"^\\QIf you got errors, or didn't see some of the expected output, I would recommend checking the Debugger tab of the bottom panel in Godot's editor for clues.\\E$"}
+{"rule":"SENT_START_CONJUNCTIVE_LINKING_ADVERB_COMMA","sentence":"^\\QFinally we can begin coding ourselves.\\E$"}
+{"rule":"PASSED_PAST","sentence":"^\\QThis gets passed up to the base class as the payload, and we also ensure we tell the base class the action is of type \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"MASS_AGREEMENT","sentence":"^\\QPacket structure The Chatbox scene should take up the bottom third of the screen as indicated by the faint blue line.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_AU","sentence":"^\\QRight-click the root node and select Attach Script, leave the path as default (res://Chatbox.gd) and click Create.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_AU","sentence":"^\\QIn Godot, open the Main.gd script and add a reference to the Chatbox node just between the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q and \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q declarations:\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QNow we just need to tell the client how to receive and process new messages and we're done!\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\QGodot's \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q keyword works like a switch statement in other languages, or an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q-\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q chain in Python.\\E$"}
+{"rule":"PUNCTUATION_PARAGRAPH_END","sentence":"^\\QTabs to spaces\\E$"}
+{"rule":"TOO_LONG_SENTENCE","sentence":"^\\QI found the easiest way to run multiple instances of our game is actually to export to HTML5, and then you will have access to another button at the top-right where you can launch an instance of your game from a web browser.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QThen you can close the Export window and you'll see a new button at the top-right which will run the exported HTML5 project in your browser.\\E$"}
+{"rule":"EXTREME_ADJECTIVES","sentence":"^\\QYou can do this while the Desktop version of your game is running too, so you can get a really good test of the chatbox.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QYou should be able to type something and see it appear in the other clients' chatlogs.\\E$"}
