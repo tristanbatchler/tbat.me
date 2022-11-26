@@ -1,7 +1,7 @@
 ---
 title: Godot Python MMO Part 1
 description: How to begin creating an MMO with Godot and Python!
-redditurl: https://www.reddit.com/r/godot/comments/z54w5r/making_an_mmo_with_godot_python_the_first_lesson
+redditurl: https://www.reddit.com/r/Python/comments/z551ru/making_an_mmo_with_python_and_godot_the_first/
 ---
 
 Hello and welcome to my first entry in what will probably be a five-part blog and accompanying video series on how to set up a fully functional game server using Python. With the help of Godot, clients will be able to connect from any device. To prove this to you, here is the fully working game embedded in my own website (connecting to an external server).
