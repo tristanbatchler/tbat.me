@@ -107,16 +107,16 @@ python manage.py migrate
 
 You should see the following output:
 ```powershell
+(venv) python manage.py makemigrations
+Migrations for 'server':
+  migrations\0001_initial.py
+    - Create model User
+
 (venv) python manage.py migrate       
 Operations to perform:
   Apply all migrations: server
 Running migrations:
   Applying server.0001_initial... OK
-
-(venv) python manage.py makemigrations
-Migrations for 'server':
-  migrations\0001_initial.py
-    - Create model User
 ```
 
 We have successfully set up our database, which stores users, their usernames, and passwords. In the future, we will add more tables to our database, and modify existing ones. Django really helps us manage this with its powerful migrations. More on that in the next lesson, though.
