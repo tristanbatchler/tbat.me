@@ -12,10 +12,10 @@ Hello and welcome to my first entry in what will probably be a five-part blog an
 </div>
 ---
 
-This tutorial series assumes you are comfortable with Python, and have a very basic knowledge of Godot (i.e., you have familiarised yourself with the basic layout of the software—just search for a Godot introduction video if you need to).
+The first half of this post is focused purely on setting up the framework upon which the rest of our game features will be built. It assumes you are quite comfortable with Python and GDScript. Anyone less than comfortable is still encouraged to read up to and including the [tip for the lazy](#tip-for-the-lazy) section for instructions to get the bare minimum setup and skip to the less scary part. 
 
 ---
-[If you prefer, you can view this lesson on YouTube](https://youtu.be/0PEFkDAokRI). The YouTube video is a different experience, and does contain slightly more explanation for each line of code. **If you are not 100% comfortable with Python or Godot, the best way to follow this lesson is to watch you video, and use this blog as a reference.**
+[If you prefer, you can view this lesson on YouTube](https://youtu.be/0PEFkDAokRI). The YouTube video is a different experience, and does contain slightly more explanation for each line of code. **If you are not 100% comfortable with Python or Godot, the best way to follow this lesson is to watch the YouTube video, and use this blog as a reference.**
 <center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/0PEFkDAokRI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---
 
