@@ -4,17 +4,17 @@ description: How to expand upon our foundation and incorporate a working databas
 redditurl: 
 ---
 
-Welcome back to the tutorial series focused on making an MMO with Godot and Python. In the [previous lesson](/2022/11/20/godot-python-mmo-part-1.html), we set up a most basic chatroom using a very robust framework for communicating packets between client and server.
+Welcome back to the tutorial series focused on making an MMO with Godot and Python. In the [previous lesson](/2022/11/20/godot-python-mmo-part-1), we set up a most basic chatroom using a very robust framework for communicating packets between client and server.
 
 In this lesson, we will focus on bringing a database into the mix, and demonstrate its usefulness by allowing someone to register an account, and log in to the chatroom. Other users will then know who they're talking to!
 
 [If you prefer, you can view this lesson on YouTube](https://www.youtube.com/playlist?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH).
 
-I highly recommend you go through the [first lesson]((/2022/11/20/godot-python-mmo-part-1.html)) if you haven't already. If do you want to start here without viewing the previous lesson, however, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 1** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.1.zip).
+I highly recommend you go through the [first lesson](/2022/11/20/godot-python-mmo-part-1) if you haven't already. If do you want to start here without viewing the previous lesson, however, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 1** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.1.zip).
 
-## A sneak peak
+## A sneak peek
 Here's a quick look at what we'll be finishing up by the end of this lesson:
-![A demo of what's to come...](/assets/css/images/posts/2022/11/21/godot-python-mmo-part-2/demo.gif)
+![A demo of what's to come…](/assets/css/images/posts/2022/11/21/godot-python-mmo-part-2/demo.gif)
 
 ## A quick note
 From here on out, I will stop adding a disclaimer about Windows vs. non-Windows systems and the difference between `python` vs. `python3`. I will always just say `python`. I will also always assume you are running commands from inside the `server/` directory of your project folder with the Virtual Environment activated, unless otherwise stated.
@@ -125,7 +125,7 @@ By now, we should be starting to get a bit more comfortable designing and adding
 * `Register`
 * `Login`
 
-The first two packets are the most simple. They will be sent only when the server wants to tell the client it's either OK to proceed, or to tell it "no, you can't do that". The register and login packets are pretty self-explanatory.
+The first two packets are the simplest. They will be sent only when the server wants to tell the client it's either OK to proceed, or to tell it "no, you can't do that". The register and login packets are pretty self-explanatory.
 
 Inside `packet.py`, add the following new members to the `Action` enum:
 ```python
@@ -137,7 +137,7 @@ Register = enum.auto()
 
 Also add the following packet definitions:
 ```python
-class OKPacket(Packet):
+class OkPacket(Packet):
     def __init__(self):
         super().__init__(Action.Ok)
 
@@ -207,21 +207,21 @@ Now is probably a good time to try running the server again and see if we get an
 ## Adding the login room in Godot
 Let's change it up a bit and head over to Godot where we will create a new scene for logging in. This scene will be instanced within our main scene to begin with, and we can remove it in code once we have successfully logged in.
 
-In Godot, right click the **res://** folder in the FileSystem and select **New Scene**. Call this new scene **Login** and click **OK**.
+In Godot, right-click the **res://** folder in the FileSystem and select **New Scene**. Call this new scene **Login** and click **OK**.
 
 Add a new **User Interface** root node. Then add the following child nodes until your scene tree looks like this:
 * Control
     * CanvasLayer
         * VBoxContainer
-        * GridContainer
-            * Label
-            * LineEdit
-            * Label2
-            * LineEdit2
-    * CenterContainer
-        * HBoxContainer
-            * Button
-            * Button2
+            * GridContainer
+                * Label
+                * LineEdit
+                * Label2
+                * LineEdit2
+            * CenterContainer
+                * HBoxContainer
+                    * Button
+                    * Button2
 
 Now rename the following nodes:
 
@@ -245,7 +245,7 @@ Set the Anchor properties to the following for the **VBoxContainer** node, and e
 | **Right** | 0.8 |
 | **Bottom** | 0.6 |
 
-This should situate the elements nicely in the center of the view and will behave responsively on all device screen sizes.
+This should situate the elements nicely in the centre of the view and will behave responsively on all device screen sizes.
 
 Next, select each label and button and enter the following **Text** properties:
 
@@ -260,7 +260,7 @@ Finally, select the **GridContainer** and change the **Columns** property to **2
 
 
 ## Scripting the Login scene in Godot!
-Time for some Godot scripting! Right click on the root node of the **Login** scene and select **Attach Script**. Leave the default path of `res://Login.gd` as-is and click **Create**.
+Time for some Godot scripting! Right-click on the root node of the **Login** scene and select **Attach Script**. Leave the default path of `res://Login.gd` as-is and click **Create**.
 
 Enter the following code in `res://Login.gd`:
 ```gdscript
@@ -325,9 +325,9 @@ func _handle_register_button(username: String, password: String):
     _network_client.send_packet(p)
 ```
 
-Note these functions are saying "when the login button is pressed, change to the `LOGIN` state, and send a login packet" (and same for the register button). We change the the (not yet defined) `LOGIN`/`REGISTER` states so that, when the server sends back an `Ok` or `Deny` packet, we will be expecting them and know what to do with them.
+Note these functions are saying "when the login button is pressed, change to the `LOGIN` state, and send a login packet" (and same for the register button). We change the (not yet defined) `LOGIN`/`REGISTER` states so that, when the server sends back an `Ok` or `Deny` packet, we will be expecting them and know what to do with them.
 
-Define our two new states now and you'll see what I mean:
+Define our two new states now, and you'll see what I mean:
 ```gdscript
 func LOGIN(p):
     match p.action:
