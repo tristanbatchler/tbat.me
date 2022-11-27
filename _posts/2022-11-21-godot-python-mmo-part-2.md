@@ -8,7 +8,10 @@ Welcome back to the tutorial series focused on making an MMO with Godot and Pyth
 
 In this lesson, we will focus on bringing a database into the mix, and demonstrate its usefulness by allowing someone to register an account, and log in to the chatroom. Other users will then know who they're talking to!
 
-[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/playlist?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH).
+---
+[If you prefer, you can view this lesson on YouTube](https://youtu.be/-7f2VXA7CUM).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/-7f2VXA7CUM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+---
 
 I highly recommend you go through the [first lesson](/2022/11/20/godot-python-mmo-part-1) if you haven't already. If do you want to start here without viewing the previous lesson, however, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 1** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.1.zip).
 
