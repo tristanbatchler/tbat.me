@@ -205,7 +205,7 @@ def onOpen(self):
     self._state = self.LOGIN
 ```
 
-Now is probably a good time to try running the server again and see if we get any errors. It's important to test your program every chance you get for errors so they don't build up too much. Remember, if you get an error you don't know how to fix, you can always ask on the [Discord](https://discord.gg/6vN2re8T)!
+Now is probably a good time to try running the server again and see if we get any errors. It's important to test your program every chance you get for errors so they don't build up too much. Remember, if you get an error you don't know how to fix, you can always ask on the [Discord](https://discord.gg/tzUpXtTPRd)!
 
 ## Adding the login room in Godot
 Let's change it up a bit and head over to Godot where we will create a new scene for logging in. This scene will be instanced within our main scene to begin with, and we can remove it in code once we have successfully logged in.
