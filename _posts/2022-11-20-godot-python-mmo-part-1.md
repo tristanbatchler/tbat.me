@@ -67,6 +67,11 @@ pip install autobahn[twisted]
 pip install django
 ```
 
+*Note if you are using Mac (or Linux with `zsh`), the first one probably won't work due to the square brackets. In that case, try escaping the square brackets like this*
+```zsh
+pip install autobahn\[twisted\]
+```
+
 That's it for the dependencies! Let's start getting our hands dirty by writing some real code now.
 
 Open your `server` folder with Visual Studio Code. You will want to install the Python extensions if you don't have them already. I highly recommend [this one](https://marketplace.visualstudio.com/items?itemName=ms-python.python).
