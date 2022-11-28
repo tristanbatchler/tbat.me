@@ -29,7 +29,7 @@ Open up your project folder and create two new files in the `server/` directory:
 * `manage.py`, and
 * `models.py`.
 
-Additionally, create a folder called `migrations/` and place a single, empty file inside called `__init__.py`. This file is required for database updates to occur later on, but we do not need to do anything with it. Your server directory should look like this now:
+Also inside the `server/` folder, create a folder called `migrations/` and place a single, empty file inside called `__init__.py`. This file is required for database updates to occur later on, but we do not need to do anything with it. Your server directory should look like this now:
 * `server/`
     * `migrations/`
         * `__init__.py`
