@@ -58,13 +58,18 @@ If you are using Windows, the next command will be
 ```
 For everyone else, this is
 ```powershell
-./venv/bin/activate
+source ./venv/bin/activate
 ```
 
 If done properly, you will see your terminal has a green `(venv)` prompt. Now you are free to install all the dependencies with the following commands one at a time (if you are using a Unix-based OS, you may need to type `pip3` instead of `pip`):
 ```powershell
 pip install autobahn[twisted]
 pip install django
+```
+
+*Note if you are using Mac (or Linux with `zsh`), the first one probably won't work due to the square brackets. In that case, try escaping the square brackets like this*
+```zsh
+pip install autobahn\[twisted\]
 ```
 
 That's it for the dependencies! Let's start getting our hands dirty by writing some real code now.
@@ -471,7 +476,7 @@ Now is probably a good idea to test our server and client to make sure there's n
 
 *If you didn't save before, try saving your Godot project now, and you will be asked to "Save Scene As". Just click **Save** here to save your scene as **Main.tscn**.*
 
-Open up your terminal again and ensure you still have the green `(venv)` prompt showing. If not, or if you closed your terminal, just open a new terminal in the `server/` folder, and run `./venv/bin/activate` (`./venv/Scripts/activate` on Windows PowerShell).
+Open up your terminal again and ensure you still have the green `(venv)` prompt showing. If not, or if you closed your terminal, just open a new terminal in the `server/` folder, and run `./venv/bin/activate` (`source ./venv/Scripts/activate` on Windows PowerShell).
 
 Now run the following command (again, you may need to use `python3` if you are running a Unix-based OS):
 ```powershell
@@ -704,4 +709,4 @@ With that said, I'll see you in the next part where we will add a database, logi
 
 
 ## Get in touch / connect with community
-**If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is in the footer below), or [join the Discord](https://discord.gg/6vN2re8T) to chat with me and other students!**
+**If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is in the footer below), or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other students!**

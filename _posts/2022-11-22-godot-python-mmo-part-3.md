@@ -447,4 +447,4 @@ In addition to this, think about *why* problems #2 and #3 might be occurring. Yo
 Thanks again for reading/watching! If you've managed to make it through this lesson, you should be seriously proud of yourself. This was a tough one, but as I mentioned earlier, the remainder of this series will be much more chilled out. We're nearly there, so stay tuned for more!
 
 ## Get in touch / connect with community
-**If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is in the footer below), or [join the Discord](https://discord.gg/6vN2re8T) to chat with me and other students!**
+**If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is in the footer below), or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other students!**
