@@ -29,7 +29,7 @@ Open up your project folder and create two new files in the `server/` directory:
 * `manage.py`, and
 * `models.py`.
 
-Additionally, create a folder called `migrations/` and place a single, empty file inside called `__init__.py`. This file is required for database updates to occur later on, but we do not need to do anything with it. Your server directory should look like this now:
+Also inside the `server/` folder, create a folder called `migrations/` and place a single, empty file inside called `__init__.py`. This file is required for database updates to occur later on, but we do not need to do anything with it. Your server directory should look like this now:
 * `server/`
     * `migrations/`
         * `__init__.py`
@@ -107,16 +107,16 @@ python manage.py migrate
 
 You should see the following output:
 ```powershell
+(venv) python manage.py makemigrations
+Migrations for 'server':
+  migrations\0001_initial.py
+    - Create model User
+
 (venv) python manage.py migrate       
 Operations to perform:
   Apply all migrations: server
 Running migrations:
   Applying server.0001_initial... OK
-
-(venv) python manage.py makemigrations
-Migrations for 'server':
-  migrations\0001_initial.py
-    - Create model User
 ```
 
 We have successfully set up our database, which stores users, their usernames, and passwords. In the future, we will add more tables to our database, and modify existing ones. Django really helps us manage this with its powerful migrations. More on that in the next lesson, though.
@@ -205,7 +205,7 @@ def onOpen(self):
     self._state = self.LOGIN
 ```
 
-Now is probably a good time to try running the server again and see if we get any errors. It's important to test your program every chance you get for errors so they don't build up too much. Remember, if you get an error you don't know how to fix, you can always ask on the [Discord](https://discord.gg/6vN2re8T)!
+Now is probably a good time to try running the server again and see if we get any errors. It's important to test your program every chance you get for errors so they don't build up too much. Remember, if you get an error you don't know how to fix, you can always ask on the [Discord](https://discord.gg/tzUpXtTPRd)!
 
 ## Adding the login room in Godot
 Let's change it up a bit and head over to Godot where we will create a new scene for logging in. This scene will be instanced within our main scene to begin with, and we can remove it in code once we have successfully logged in.
