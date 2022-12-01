@@ -166,6 +166,7 @@ class GameServerProtocol(WebSocketServerProtocol):
         super().__init__()
         self._packet_queue: queue.Queue[tuple['GameServerProtocol', packet.Packet]] = queue.Queue()
         self._state: callable = None
+        self._state = self.PLAY
 
     def PLAY(self, sender: 'GameServerProtocol', p: packet.Packet):
         pass
@@ -189,7 +190,6 @@ class GameServerProtocol(WebSocketServerProtocol):
     # Override
     def onOpen(self):
         print(f"Websocket connection open.")
-        self._state = self.PLAY
 
     # Override
     def onClose(self, wasClean, code, reason):

@@ -197,12 +197,9 @@ The logic is quite easy to follow. First we handle the Login packet, checking if
 
 On the other hand, if we get a Register packet, we check if the username already exists. If so, we tell the client no bueno. If not, we create a new user model with the information from the packet, save it to the database, and tell the client they were successful. Note here we do not change states, because we know the player will probably want to log in with their newly registered user, and they need to remain in the `LOGIN` state to do so.
 
-The last thing we need to do is to make the protocol be in the `LOGIN` state as soon as it opens, since logging in or registering is the first thing the client will be trying to do when it connects. Change the `onOpen` function to:
+The last thing we need to do is ensure the protocol is in the `LOGIN` state as soon as it opens, since logging in or registering is the first thing the client will be trying to do when it connects. Add this to the `__init__` constructor of `protocol.py` to:
 ```python
-# Override
-def onOpen(self):
-    print(f"Websocket connection open.")
-    self._state = self.LOGIN
+self._state = self.LOGIN
 ```
 
 Now is probably a good time to try running the server again and see if we get any errors. It's important to test your program every chance you get for errors so they don't build up too much. Remember, if you get an error you don't know how to fix, you can always ask on the [Discord](https://discord.gg/tzUpXtTPRd)!
