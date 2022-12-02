@@ -436,7 +436,7 @@ If any of this doesn't work for you, and you've checked the server output, Godot
 
 There are a couple of things to note:
 1. When you log out and log in again, you will always just start again in the top-right corner.
-2. When a new player joins, you will see them pop up right away, but new players won't see you unless you move. In other words, if you are staying perfectly still when someone new joins, you will be invisible to them.
+2. When a new player joins and starts moving, you will see them pop up right away, but new players won't see you unless you move. In other words, if you are staying perfectly still when someone new joins, you will be invisible to them.
 3. In addition to point 2, an invisible actor who suddenly moves will appear to come out of the top-left corner and move to their proper position.
 
 ## Homework
