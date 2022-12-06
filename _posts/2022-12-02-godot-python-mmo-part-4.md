@@ -1,5 +1,5 @@
 ---
-title: Godot Python MMO Part 3
+title: Godot Python MMO Part 4
 description: Let's fix a couple bugs in our game before we polish up the client side and close things off!
 redditurl: 
 ---
@@ -322,12 +322,12 @@ Let's first do a quick test to make sure everything is working as usual. If so, 
 
 Your phone will need to be connected to Wi-Fi on the same network your computer is running. You will also need to know your computer's local IP address. This means you will need to open a new terminal (keep the old one still open and running) and run the following depending on your OS:
 
-#### Mac/Linux
+### Mac/Linux
 ```bash
 ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'
 ```
 
-#### Windows
+### Windows
 ```powershell
 (Get-NetIPAddress | Where-Object {$_.AddressState -eq "Preferred" -and $_.ValidLifetime -lt "24:00:00"}).IPAddress
 ```
