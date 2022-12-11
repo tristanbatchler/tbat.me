@@ -39,7 +39,7 @@ The rest of the series will be focused on adding some very simple (but easily ex
 
 ## Setting up the server
 Without further ado, let's begin setting up the back end! For this, we will need some prerequisites:
-1. Ensure you have [a fairly modern version of Python 3](https://www.python.org/downloads/) installed on your device (I am using Python 3.9.1, but I don't think it really matters as long as it's above ~3.6).
+1. Ensure you have [Python 3.8 or above](https://www.python.org/downloads/) installed on your device.
 1. [Download and install Visual Studio Code](https://code.visualstudio.com/download) (if you don't have it already).
 1. Create a new folder somewhere on your device. This is where we will store all of our game code.
 1. Create a subfolder and name it `server`.
