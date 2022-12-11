@@ -139,7 +139,6 @@ def get_delta_dict(model_dict_before: dict, model_dict_after: dict):
     delta: dict = {}
 
     for k in model_dict_before.keys() & model_dict_after.keys():  # Intersection of keysets
-        print("Looking at key", k)
         v_before = model_dict_before[k]
         v_after = model_dict_after[k]
 
