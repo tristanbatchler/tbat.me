@@ -54,3 +54,7 @@
 {"rule":"TOO_LONG_SENTENCE","sentence":"^\\QIf any of this doesn't work for you, and you've checked the server output, Godot's debug log, and still can't figure it out, I would recommend downloading the official source code for the game up to the end of this lesson and comparing your own code against it.\\E$"}
 {"rule":"LC_AFTER_PERIOD","sentence":"^\\QA hint is to use Django's model.save function somewhere in this code!\\E$"}
 {"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QThis does cause them to send us their model a second time, but by then, they will be known to us so we don't get stuck in an infinite loop.\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QAs always, you can visit the Releases section of the official GitHub repository, and download the End of lesson 4 code by expanding Assets and downloading Source code (zip).\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QClick the Animation Looping icon so we can see a good preview of our animation.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_AU","sentence":"^\\QIn Godot, angles are measured in Radians by default, starting at \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q$ on the positive \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\pi\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q-\\pi$$.\\E$"}
+{"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QChange the region back to the first guy (this will help keep a future calculation simple), and let's also make a copy of our Sprite and AnimationPlayer nodes so we can use them elsewhere.\\E$"}
