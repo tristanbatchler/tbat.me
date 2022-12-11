@@ -4,7 +4,7 @@ description: Let's fix a couple bugs in our game before we polish up the client 
 redditurl: 
 ---
 
-Welcome back to yet another lesson! In the [previous lesson](/2022/11/22/godot-python-mmo-part-3.html), we finished setting up up actors who can move around in the game, kicking off our long-term goal.
+Welcome back to yet another lesson! In the [previous lesson](/2022/11/22/godot-python-mmo-part-3.html), we finished setting up our actors who can move around in the game, kicking off our long-term goal.
 
 In this lesson, we will discuss the lesson 3 homework solutions, and focus on ironing out any bugs and making small improvements.
 
@@ -361,7 +361,7 @@ You should still be able to log in to your game if you run it on your PC without
 ## Conclusion
 We're getting very close to the end of this course. In the next part, we will be focusing on allowing the user to choose an avatar during registration, and prettying up the client side with graphics.
 
-After part 5 is released, I will be creating ad-hoc lessons per request so you guys can vote for what you want. The polls will be posted to [my YouTube channel](http://www.youtube.com/channel/UCk16fwaXxD4JUkxzwFc8PQg) every week or so, so [make sure you're subscribed](http://www.youtube.com/channel/UCk16fwaXxD4JUkxzwFc8PQg) to get notified and vote for the next feature you want to see me implement.
+After part 5 is released, I will be creating ad-hoc lessons per request so you guys can vote for what you want. The polls will be posted to [my YouTube channel](http://www.youtube.com/channel/UCk16fwaXxD4JUkxzwFc8PQg) every week or so, so [make sure you're subscribed](https://www.youtube.com/@tristanbatchler) to get notified and vote for the next feature you want to see me implement.
 
 See you in the next part!
 
