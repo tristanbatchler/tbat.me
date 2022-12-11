@@ -93,7 +93,7 @@ Let's duplicate our animation to easily create the next animation.
 
 Now repeat that duplication process to add animations for **walk_up** and **walk_right**.
 
-### Scripting the animations
+## Scripting the animations
 Now that we have our four animations for walking in each direction, it's time to get them animating in our game!
 
 Open the `Actor.gd` script, and we will add the `else` clause to our `_physics_process` function's `if (target - body.position).length() > 5` statement:
