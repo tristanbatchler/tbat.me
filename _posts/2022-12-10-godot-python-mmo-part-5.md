@@ -9,8 +9,8 @@ Welcome to the final lesson in the core series of the Godot Python MMO! In the [
 In this lesson, we will be finishing things off by adding some much-needed graphics, and allowing players to express themselves by choosing their own avatars during registration!
 
 ---
-[If you prefer, you can view this lesson on YouTube](https://youtu.be/?????).
-<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/?????)." title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+[If you prefer, you can view this lesson on YouTube](https://youtu.be/kfzb9tD3BKU).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/kfzb9tD3BKU)." title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---
 
 As always, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 4** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.4.zip). You will need to refer to parts [1](/2022/11/20/godot-python-mmo-part-1.html) and [2](/2022/11/21/godot-python-mmo-part-2.html) to set up the virtual environment, set up the database, and run the server (if you haven't already).
