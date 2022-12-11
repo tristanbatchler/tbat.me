@@ -5,13 +5,12 @@ description: A course intended for intermediate-to-advanced users of Python and 
 start_date: 2022-11-20T00:00:00.000Z
 finished: true
 finish_date: 2022-12-11T00:00:00.000Z
-external_link: https://youtube.com/playlist?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH
 ---
 This is a completely free, five-lesson course intended for intermediate-to-advanced users of Python and beginners of Godot / networking. 
 
-I introduce my unique framework for an authorative websockets server, and teach how to create a highly cross-platform client with the Godot engine. 
+I introduce my unique framework for an authorative websockets server, and teach how to integrate it with a relational database with [Django](https://www.djangoproject.com/), and a highly cross-platform client with [the Godot engine](https://godotengine.org/). 
 
-Videos which follow these posts are also published on YouTube.
+Videos which follow these posts are also published on [YouTube](https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH).
 
 ## YouTube Playlist
 <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -24,15 +23,17 @@ Videos which follow these posts are also published on YouTube.
 1. [Avatar selection / adding graphics](/2022/12/10/godot-python-mmo-part-5.html)
 
 ## Interactive demo
+<center>
 <div class="container">
 <iframe frameborder="0" src="https://tristanbatchler.github.io/" class="responsive-iframe"><a href="https://tristanbatchler.itch.io/godot-python-mmo-tech-demo">Play the Godot Python MMO!</a></iframe>
 </div>
+</center>
 
 ## Official GitHub releases
 If you want to download the final, finished project (or the project as-is at the end of any lesson), you can download a [release from the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases). 
 
 ## Community
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is in the footer below), or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other students!
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the [YouTube videos](https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH), [email me](mailto:info@tbat.me), or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other students!
 
 ## Thanks
 Finally, I just wanted to say thank you so much for following along. This has been the biggest project I've undertaken so far and a lot of work has gone into this. If this series has helped you out and you would like to give something back to me feel free to buy me a coffee (or a beer) 🙂
