@@ -130,7 +130,7 @@ func _process(delta):
 
 This is Godot's built-in `_process` function, which runs each frame. It is different from `_physics_process` in that it runs as much as possible, and should be used for non-physics based calculations. In this case, we are using it to play our animations according to the direction we are moving in.
 
-It works by identifying which quadrant our player's direction lies in. In Godot, angles are measured in [Radians](https://en.wikipedia.org/wiki/Radian) by default, starting at $$0$$ on the positive $$x$$-axis, and increasing clockwise to $$\pi$$ and decreating counter-clockwise to $$-\pi$$. The quadrants we are interested in are the ranges:
+It works by identifying which quadrant our player's direction lies in. In Godot, angles are measured in [Radians](https://en.wikipedia.org/wiki/Radian) by default, starting at $$0$$ on the positive $$x$$-axis, and increasing clockwise to $$\pi$$ and decreasing counter-clockwise to $$-\pi$$. The quadrants we are interested in are the ranges:
 * $$-\pi/4 \leq \theta \lt \pi/4$$,
 * $$\pi/4 \leq \theta \lt 3\pi/4$$,
 * $$-3\pi/4 \leq \theta \lt -\pi/4$$,
