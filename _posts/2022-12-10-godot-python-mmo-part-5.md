@@ -242,9 +242,9 @@ func _ready():
     login_button.connect("pressed", self, "_login")
 	register_button.connect("pressed", self, "_choose_avatar")
 
-	avatar_left.connect("pressed", self, "_next_avatar")
+	avatar_right.connect("pressed", self, "_next_avatar")
 	avatar_ok.connect("pressed", self, "_register")
-	avatar_right.connect("pressed", self, "_prev_avatar")
+	avatar_left.connect("pressed", self, "_prev_avatar")
 ```
 
 Here is the `_choose_avatar` function and its helpers:
