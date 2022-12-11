@@ -13,7 +13,9 @@ I introduce my unique framework for an authorative websockets server, and teach 
 Videos which follow these posts are also published on [YouTube](https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH).
 
 ## YouTube Playlist
-<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<center>
+<iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHz8PvTWpFYGag0L6AdYgLH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
 
 ## Accompanying blog posts
 1. [Infrastructure setup and basic chatroom](/2022/11/20/godot-python-mmo-part-1.html)
