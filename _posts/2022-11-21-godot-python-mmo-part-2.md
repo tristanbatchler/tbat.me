@@ -179,7 +179,7 @@ def LOGIN(self, sender: 'GameServerProtocol', p: packet.Packet):
         username, password = p.payloads
         if models.User.objects.filter(username=username, password=password).exists():
             self._user = models.User.objects.get(username=username)
-            self.send_client(packet.OkPacket)
+            self.send_client(packet.OkPacket())
             self._state = self.PLAY
         else:
             self.send_client(packet.DenyPacket("Username or password incorrect"))
