@@ -300,14 +300,14 @@ elif p.action == packet.Action.Target:
 ```
 When our protocol receives a ModelData packet, we simply relay it back to our client for Godot to process. If we receive a Target packet, we just store it for now, and we'll come back to it later. We should also add this to the `__init__` constructor for the protocol just so we know what `_player_target` is:
 ```python
-self._player_target: list[float] = None
+self._player_target: list = None
 ```
 
 Now we have all the functionality we need to send targets, process actor model updates, and display these in the game. The only thing we're missing is the ability for the server to update actor positions each tick and broadcast model updates back to the other clients! To do this though, we will need some maths. Create a new file in `server/` called `utils.py` which will serve as a place to throw all our random static functions in so they don't clutter our more important logic in other files:
 ```python
 import math
 
-def direction_to(current: list[float], target: list[float]) -> list[float]:
+def direction_to(current: list, target: list) -> list:
     "Return the vector with unit length pointing in the direction from current to target"
     if target == current:
         return [0, 0]
