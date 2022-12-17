@@ -96,7 +96,7 @@ Finally, let's address problem #2:
 
 This one's a little trickier, but it's nothing we can't handle.
 
-Firstly, we need to make sure newly connecting clients are broadcasting their model to everyone who is already connected—not just themselves. So replace the `send_client` call for the initial `ModelDelta` packet in the `LOGIN` state to a `broadcast` call:
+Firstly, we need to make sure newly connecting clients are broadcasting their model to everyone who is already connected—not just themselves. So replace the `send_client` call for the initial `ModelData` packet in the `LOGIN` state to a `broadcast` call:
 ```python
 self.broadcast(packet.ModelDataPacket(models.create_dict(self._actor)))
 ```
@@ -124,9 +124,9 @@ Note that sending the other protocol our own actor model (1) will, in turn, trig
 It turns out, this small change to `protocol.py` completely fixes problem #2. When someone new joins, they broadcast their model to everyone. Then, everyone will broadcast their own models in return (just one time), hence preventing anyone from staying "invisible".
 
 ## Improving performance
-We can lessen the amount of data we are sending over the network by only sending the relevant changes to existing models, rather than sending the full model every time. We will call this a `DeltaModel` now instead of a `DataModel`. A `DeltaModel` *might* contain the full data, like when you send it to someone for the first time, but more generally, it can contain less than the full data.
+We can lessen the amount of data we are sending over the network by only sending the relevant changes to existing models, rather than sending the full model every time. We will call this a `ModelDelta` now instead of a `ModelData`. A `ModelDelta` *might* contain the full data, like when you send it to someone for the first time, but more generally, it can contain less than the full data.
 
-Let's start by renaming our `DataModel` action/packet to `DeltaModel`. The best way to do this is probably to click the **Search** button in VS Code on the left, type `DataModel` in the **Search** box, and then type `DeltaModel` in the **Replace** box. Then click the **Replace all** button.
+Let's start by renaming our `ModelData` action/packet to `ModelDelta`. The best way to do this is probably to click the **Search** button in VS Code on the left, type `ModelData` in the **Search** box, and then type `ModelDelta` in the **Replace** box. Then click the **Replace all** button.
 
 Next, we need a new function to calculate the delta based on some before-and-after model information. In `models.py`, add the following new function:
 ```python
