@@ -39,7 +39,7 @@ The rest of the series will be focused on adding some very simple (but easily ex
 
 ## Setting up the server
 Without further ado, let's begin setting up the back end! For this, we will need some prerequisites:
-1. Ensure you have [Python 3.8 or above](https://www.python.org/downloads/) installed on your device.
+1. Ensure you have [Python 3.7 or above](https://www.python.org/downloads/) installed on your device.
 1. [Download and install Visual Studio Code](https://code.visualstudio.com/download) (if you don't have it already).
 1. Create a new folder somewhere on your device. This is where we will store all of our game code.
 1. Create a subfolder and name it `server`.
@@ -64,8 +64,10 @@ source ./venv/bin/activate
 If done properly, you will see your terminal has a green `(venv)` prompt. Now you are free to install all the dependencies with the following commands one at a time (if you are using a Unix-based OS, you may need to type `pip3` instead of `pip`):
 ```powershell
 pip install autobahn[twisted]
-pip install django
+pip install Django==2.1.*
 ```
+
+Note we are using Django 2.1 specifically here, since it is the most compatible version for Linux servers.
 
 *Note if you are using Mac (or Linux with `zsh`), the first one probably won't work due to the square brackets. In that case, try escaping the square brackets like this*
 ```zsh
