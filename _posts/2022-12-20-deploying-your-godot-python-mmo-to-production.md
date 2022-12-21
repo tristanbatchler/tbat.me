@@ -374,6 +374,98 @@ If you see the above output, then your server is running! You can now connect to
 
 If you get any errors at this point, or don't see any output in your AWS EC2 terminal, there could be many reasons. If you see no output in your server terminal, double check you have allowed port 8081 through the security group settings, and you ran `sudo ufw allow 8081`. If you are getting a specific error, try Googling it for clues and carefully read over this guide again. If you are still stuck, feel free to [join the Discord](https://discord.gg/tzUpXtTPRd) and ask for help!
 
+## Keeping the server certificates renewed
+Let's Encrypt certificates expire after just 90 days, and it can be a hassle to need to renew them every time before they expire. To make our lives easier, we will set up a recurring job to renew the certificate, copy them into our `server/certs/` directory, and change the ownership for us. To do this, we will need to get our hands dirty writing a bash script and setting up a cron job.
+
+Here's the script, which you should put in the Ubuntu server's `/bin/` directory. So go ahead and type `sudo nano /bin/copy-certs.sh` and paste the following code into the script:
+```bash
+#!/bin/sh
+
+set -e
+
+if [ "$(id -u)" -ne 0 ]; then 
+    echo "$(date) Please run this script as root."
+    exit 1
+fi
+
+if [ "$#" -ne 2 ]; then
+    echo "$(date) Must supply a project directory and a user who is running the game server."
+    echo "$(date) If you are unsure which arguments to choose, cd into your project directory and run \"\$(pwd) \$USER\""
+    exit 1
+fi
+
+project_dir="$1"
+server_usr="$2"
+
+if [ ! -d "$project_dir" ]; then
+    echo "$(date) Project directory $project_dir does not exist. Check you spelled it correctly and you've cloned your project into the correct location."
+    exit 1
+fi
+
+server_dir="$project_dir/server"
+if [ ! -d "$project_dir" ]; then
+    echo "$(date) Project directory exists, but could not find server folder ($server_dir). Check you cloned the repository correctly and haven't accidentally moved or deleted something."
+    exit 1
+fi
+
+# Run the Let's Encrypt renewals if they're up for renewal
+echo "$(date) Attempting to renew Let's Encrypt certificates..."
+certbot renew
+
+# Copy the renewed certificates into the game server directory
+certs_dir="$server_dir/certs"
+if [ ! -d "$certs_dir" ]; then
+    echo "$(date) Certificates folder not found. Automatically creating $certs_dir..."
+    mkdir "$certs_dir"
+    chown "$server_usr" "$certs_dir"
+fi
+
+echo "$(date) Attempting to copy Let's Encrypt certificates to $certs_dir"
+cp /etc/letsencrypt/live/godmmo.tx2600.net/fullchain.pem "$certs_dir/server.crt"
+cp /etc/letsencrypt/live/godmmo.tx2600.net/privkey.pem "$certs_dir/server.key"
+echo "$(date) Done"
+
+echo "$(date) Attempting to change ownership of $certs_dir/server.crt and $certs_dir/server.key to $server_usr"
+chown "$server_usr" "$certs_dir/server.crt"
+chown "$server_usr" "$certs_dir/server.key"
+echo "$(date) Done"
+
+exit 0
+```
+
+Save the script by pressing `Ctrl+X`, then `Y`, then `Enter`.
+
+Now we need to make the script executable:
+```bash
+sudo chmod +x /bin/copy-certs.sh
+```
+
+Finally, run this code:
+```bash
+echo "0 0 * * * /bin/copy-certs.sh $(pwd) $USER"
+```
+
+It should look something like this (if not exactly like this)
+```
+0 0 * * * /bin/copy-certs.sh /home/ubuntu/repo-name ubuntu
+```
+
+The output of this command is the cron job we need to set up. Copy the output of the command and then run `sudo crontab -e` to open the cronjob editor. Paste the output of the command in a new line at the bottom of the file, and save it (`Ctrl+X`, then `Y`, then `Enter` if you're using nano).
+
+This is telling the server to run our script every day at midnight, which will renew the certificates if they're up for renewal, and copy them into our game server directory. You should test it out by manually running the latter half of the output of the command we ran earlier as the root user (using the `sudo` command). Overall, you should try running something like this:
+```bash
+sudo /bin/copy-certs.sh /home/ubuntu/repo-name ubuntu
+```
+
+If you see something like this, everything should be good to go:
+```
+Wed Dec 21 05:11:15 UTC 2022 Attempting to copy Let's Encrypt certificates to /home/ubuntu/official-godot-python-mmo/server/certs
+Wed Dec 21 05:11:15 UTC 2022 Done
+Wed Dec 21 05:11:15 UTC 2022 Attempting to change ownership of /home/ubuntu/official-godot-python-mmo/server/certs/server.crt and /home/ubuntu/official-godot-python-mmo/server/certs/server.key to ubuntu
+Wed Dec 21 05:11:15 UTC 2022 Done
+```
+![Renewing certificates](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/renew.png)
+
 ## Client hosting
 Now we're ready to save our client files and distribute them to our users. I think the best way to do this is via [itch.io](https://itch.io/). Itch.io is a great platform for distributing games, and it's free to use.
 
