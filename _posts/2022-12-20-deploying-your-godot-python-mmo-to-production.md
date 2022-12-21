@@ -389,7 +389,7 @@ Scroll down to the **Uploads** section, and click on the red **Upload files** bu
 Now, you are free to tweak all the other fields on this page to your liking. Remember you can always come back and edit these later. Once you're happy, click the **Save & view page** button at the bottom of the page. You should now see your game listed on your itch.io profile page!
 
 Try clicking the **Run game** button to see if it works!
-[Wow!](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/wow.png)
+![Wow!](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/wow.png)
 
 Hopefully it's all working at this point! Now, you will want to click the **Edit game** tab up the top so you can go back and tweak a couple of things (notably the **Embed options** width/height). Once you're happy, scroll to the bottom and click **Public** under **Visibility & access** and hit **Save**. Now, your game is live and ready to be played by anyone!
 
