@@ -4,5 +4,5 @@ description: Tristan Batchler's home page. Find all the information you need to 
 ---
 
 # Tristan Batchler
-![A picture of me](/assets/images/headshot.jpg)
+<img class="headshot" src="/assets/images/headshot.jpg" alt="A picture of me">
 *MSc. Mathematics Major (UQ)*
