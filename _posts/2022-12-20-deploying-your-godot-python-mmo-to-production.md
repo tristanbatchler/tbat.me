@@ -246,7 +246,7 @@ On the **Edit inbound rules** page, click the **Add rule** button, and select **
 ![Custom TCP](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/custom-tcp.png)
 
 ## Obtaining a domain name
-Head back to the [AWS console](https://console.aws.amazon.com/console/home) and click on **Services > Computer > EC2 > Instances** to get back to the instance you've created. Click on the **Details** tab, and you should see the **Public IPv4 address** of your server. Take note of this IP address, as we will need it later.
+Head back to the [AWS console](https://console.aws.amazon.com/console/home) and click on **Services > Compute > EC2 > Instances** to get back to the instance you've created. Click on the **Details** tab, and you should see the **Public IPv4 address** of your server. Take note of this IP address, as we will need it later.
 
 To keep the costs as low as possible, we will be using a free domain service called FreeDNS. This service allows you to register a subdomain for free, and point it to your server's IP address. To do this, head to [https://freedns.afraid.org/](https://freedns.afraid.org/), and click the **Sign up Free** button at the bottom. 
 ![FreeDNS](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/freedns.png)
