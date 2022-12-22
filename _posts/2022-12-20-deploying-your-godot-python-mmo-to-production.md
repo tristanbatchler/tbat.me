@@ -15,7 +15,7 @@ As always, you can visit [the **Releases** section of the official GitHub reposi
 
 ## A sneak peek
 Here's an embed of our game fully published to [itch.io](https://mmotbat.itch.io/godot-python-mmo). You can play it directly in your browser here, from anywhere in the world! At the end of this lesson, you too will be able to publish your own game to itch.io, and share it with your friends and family!
-<iframe style="max-width: 750px; width: 100%;" width="560" height="315" frameborder="0" src="https://itch.io/embed/1846790" width="552"><a href="https://mmotbat.itch.io/godot-python-mmo">Godot Python MMO by mmotbat</a></iframe>
+<iframe frameborder="0" src="https://itch.io/embed-upload/7042440?color=333333" allowfullscreen="" style="max-width: 750px; width: 100%;" width="560" height="315"><a href="https://mmotbat.itch.io/godot-python-mmo">Play Godot Python MMO on itch.io</a></iframe>
 
 
 ## Encryption at rest
