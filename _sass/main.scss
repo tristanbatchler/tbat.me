@@ -78,6 +78,19 @@ body {
         & > code {
             display: block;
         }
+
+        button {
+            float: right;
+            padding: 5px;
+            background-color: $darkgray;
+            color: $lightgray;
+            border: none;
+            border-radius: 0 0 0 5px;
+            cursor: pointer;
+            &:hover {
+                background-color: $magenta;
+            }
+        }
     }
 
     code {
