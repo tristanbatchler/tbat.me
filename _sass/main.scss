@@ -75,10 +75,12 @@ body {
         background-color: black;
         margin: 10px;
         padding: 10px;
+        & > code {
+            display: block;
+        }
     }
 
     code {
-        display: block;
         font-size: larger;
         background-color: black;
         color: $lightgray;
