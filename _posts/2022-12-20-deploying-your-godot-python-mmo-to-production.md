@@ -4,7 +4,7 @@ description: Let's get our game out there!
 redditurl: 
 ---
 
-Welcome to the first ad-hoc lesson continuing on from the [core series Godot Python MMO series](/projects/godot-python-mmo-tutorial-series). In this lesson we'll be looking at how to secure and deploy our game to production so that anyone in the world can play it over the internet!
+Welcome to the first ad-hoc lesson continuing on from the [core Godot Python MMO series](/projects/godot-python-mmo-tutorial-series). In this lesson we'll be looking at how to secure and deploy our game to production so that anyone in the world can play it over the internet!
 
 ## Encryption at rest
 As you may have noticed, our game is currently storing all of its data in plain text. This is fine for development, but it's not a good idea to store passwords and other sensitive information in plain text in production. We can fix this by using a hashing algorithm to encrypt our passwords before we store them in the database. 
@@ -113,6 +113,12 @@ if __name__ == '__main__':
 ```
 
 Notice we are expecting the server key and certificate to be in a `certs/` folder in `server/` directory. These files are used to encrypt and decrypt our network traffic. When we deploy our server, we will need to generate these files properly, but for now we can just generate some self-signed certificates. Also note that the `server.key` file should be kept secret, as it is used to decrypt the traffic and should **only** be used by the server.
+
+Note that, in order to run our server with these new TLS settings, we need to install two new packages, so go ahead and install these now:
+```powershell
+pip install pyOpenSSL
+pip install service-identity
+```
 
 In order to continue testing our game locally, can generate some self-signed certificates using OpenSSL. If you don't have OpenSSL installed, you can download it [here](https://slproweb.com/products/Win32OpenSSL.html). Once you have it installed, open a terminal and navigate to the `certs/` folder. Then run the following commands:
 ```powershell
@@ -322,12 +328,14 @@ Next, let's install the Ubuntu package required to set up our virtual environmen
 sudo apt install python3-venv
 ```
 
-Now let's install the virtual environment and all the required packages:
+Now let's install the virtual environment and all the required packages (make sure to include `pyOpenSSL` and `service-identity` for the TLS stuff):
 ```bash
 python3 -m venv ./venv
 source ./venv/bin/activate
 pip install autobahn[twisted]
 pip install django
+pip install pyOpenSSL
+pip install service-identity
 python manage.py makemigrations
 python manage.py migrate
 ```
@@ -354,12 +362,6 @@ sudo cp /etc/letsencrypt/live/your-domain/privkey.pem ./server.key
 We need to change the permissions on these files so our server can use them:
 ```bash
 sudo chown $USER *
-```
-
-We need to install some more packages so we can use the certificates when running our server (ensure your virtual environment is still activated):
-```bash
-pip install pyOpenSSL
-pip install service-identity
 ```
 
 Now we can move back out into the `server/` folder and try running it!
@@ -421,8 +423,8 @@ if [ ! -d "$certs_dir" ]; then
 fi
 
 echo "$(date) Attempting to copy Let's Encrypt certificates to $certs_dir"
-cp /etc/letsencrypt/live/godmmo.tx2600.net/fullchain.pem "$certs_dir/server.crt"
-cp /etc/letsencrypt/live/godmmo.tx2600.net/privkey.pem "$certs_dir/server.key"
+cp /etc/letsencrypt/live/*/fullchain.pem "$certs_dir/server.crt"
+cp /etc/letsencrypt/live/*/privkey.pem "$certs_dir/server.key"
 echo "$(date) Done"
 
 echo "$(date) Attempting to change ownership of $certs_dir/server.crt and $certs_dir/server.key to $server_usr"
@@ -440,12 +442,18 @@ Now we need to make the script executable:
 sudo chmod +x /bin/copy-certs.sh
 ```
 
-Finally, run this code:
+Finally, move back out into your main project folder:
+```bash
+cd ..
+```
+If you run `pwd`, you should see something like `/home/ubuntu/repo-name`.
+
+Now run the following piece of code:
 ```bash
 echo "0 0 * * * /bin/copy-certs.sh $(pwd) $USER"
 ```
 
-It should look something like this (if not exactly like this)
+The output should look something like this (if not exactly like this)
 ```
 0 0 * * * /bin/copy-certs.sh /home/ubuntu/repo-name ubuntu
 ```
