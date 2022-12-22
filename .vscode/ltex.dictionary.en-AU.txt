@@ -33,3 +33,13 @@ Subtile
 bitmasks
 bitmask
 HeartBeast
+websockets
+nano
+pem
+FreeDNS
+T&Cs
+mydomain
+gatesweb
+ubuntu
+Certbot
+io

@@ -58,3 +58,13 @@
 {"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QClick the Animation Looping icon so we can see a good preview of our animation.\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_AU","sentence":"^\\QIn Godot, angles are measured in Radians by default, starting at \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q$ on the positive \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\pi\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q-\\pi$$.\\E$"}
 {"rule":"COMMA_COMPOUND_SENTENCE","sentence":"^\\QChange the region back to the first guy (this will help keep a future calculation simple), and let's also make a copy of our Sprite and AnimationPlayer nodes so we can use them elsewhere.\\E$"}
+{"rule":"PREPOSITION_VERB","sentence":"^\\QYou will then be taken to a Sign in page, but you can ignore this and click the Create a new AWS account button at the bottom instead.\\E$"}
+{"rule":"SIGN_UP_HYPHEN","sentence":"^\\QYou will then be taken to a Sign in page, but you can ignore this and click the Create a new AWS account button at the bottom instead.\\E$"}
+{"rule":"DASH_RULE","sentence":"^\\QI would recommend choosing the Personal - for your own projects option here, as this should give you the most free services.\\E$"}
+{"rule":"DASH_RULE","sentence":"^\\QJust choose the Basic support - Free option here and click the Complete sign up button at the bottom of the page.\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QNext, head on over to the EC2 (Electronic Cloud Compute) service by clicking the Services dropdown in the top left corner of the page and selecting EC2 under Compute from the list.\\E$"}
+{"rule":"RECOMMENDED_COMPOUNDS","sentence":"^\\QEnsure the User name is ubuntu and scroll down and click Connect.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QIf you are getting a specific error, try Googling it for clues and carefully read over this guide again.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QIf you are still stuck, feel free to join the Discord and ask for help!\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_AU","sentence":"^\\QI think the best way to do this is via itch.io.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QOnce your address is confirmed, go back to itch.io and click the dropdown list at the top-right and select Upload new project.\\E$"}

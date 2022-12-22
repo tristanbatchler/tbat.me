@@ -126,13 +126,13 @@ openssl genrsa -out server.key 2048 # Generate a private key
 openssl req -new -x509 -key server.key -out server.crt -days 3650 # Generate a self-signed certificate
 ```
 
-The second command will ask you to fill in some information about the certificate. You can leave all of the fields blank for now, except for the `Common Name` field, which you should set to `localhost`. This is just so that we can test our server locally without getting any certificate errors, but when we deploy our server we will need to do this step properly and use a real domain name.
+The second command will ask you to fill in some information about the certificate. You can leave all the fields blank for now, except for the `Common Name` field, which you should set to `localhost`. This is just so that we can test our server locally without getting any certificate errors, but when we deploy our server we will need to do this step properly and use a real domain name.
 
 Next, we need to update our client to use TLS. Open up `websockets_client.gd` and add the following line at the end of the `_ready` function:
 ```gdscript
 _client.verify_ssl = false
 ```
-This will ensure the client automatically trusts the certificate on the server, without needing to keep a copy for itself. This is probably not best-practice, but [I wasn't able to figure out how to get the client to trust only one expecting certificate, and still have the game work over a HTTPS-hosted HTML5 client](https://docs.godotengine.org/en/stable/classes/class_websocketclient.html#property-descriptions). In short, I don't see this being a huge deal as long as nobody tampers with your game files and replaces the server's hostname with theirs. If someone had access to do this in the first place, then they would surely be able to swap out a trusted certificate anyway.
+This will ensure the client automatically trusts the certificate on the server, without needing to keep a copy for itself. This is probably not best-practice, but [I wasn't able to figure out how to get the client to trust only one expecting certificate, and still have the game work over an HTTPS-hosted HTML5 client](https://docs.godotengine.org/en/stable/classes/class_websocketclient.html#property-descriptions). In short, I don't see this being a huge deal as long as nobody tampers with your game files and replaces the server's hostname with theirs. If someone had access to do this in the first place, then they would surely be able to swap out a trusted certificate anyway.
 
 Finally, we need to change the `connect_to_server` function to use secure websockets (`wss`):
 ```gdscript
@@ -194,7 +194,7 @@ I can only offer instructions for AWS, for otherwise I would have to write a gui
 For those following along with AWS, the first thing we need to do is create an account. You can do this by going to [https://aws.amazon.com/](https://aws.amazon.com/) and clicking the **Create an AWS Account** button. 
 ![Create an AWS Account](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/aws-signup.png)
 
-You will then taken to a **Sign in** page, but you can ignore this and click the **Create a new AWS account** button at the bottom instead.
+You will then be taken to a **Sign in** page, but you can ignore this and click the **Create a new AWS account** button at the bottom instead.
 ![Create a new AWS account](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/aws-signup-2.png)
 
 Here you will be asked a **Root user email address** and choose an **AWS account name**. You can enter whatever you want here, but I would recommend using your email address as the account name as this will make it easier to find your account later on. Then click the **Verify email address** button.
