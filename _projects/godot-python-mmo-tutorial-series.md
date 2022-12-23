@@ -23,6 +23,7 @@ Videos which follow these posts are also published on [YouTube](https://www.yout
 1. [Moving around!](/2022/11/22/godot-python-mmo-part-3.html)
 1. [Optimising for mobile / bug fixes](/2022/12/02/godot-python-mmo-part-4.html)
 1. [Avatar selection / adding graphics](/2022/12/10/godot-python-mmo-part-5.html)
+1. [Security and deployment](/2022/12/20/deploying-your-godot-python-mmo-to-production)
 
 ## Interactive demo
 <center>
