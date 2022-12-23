@@ -7,11 +7,11 @@ redditurl:
 Welcome to the first ad-hoc lesson continuing on from the [core Godot Python MMO series](/projects/godot-python-mmo-tutorial-series). In this lesson we'll be looking at how to secure and deploy our game to production so that anyone in the world can play it over the internet!
 
 ---
-[If you prefer, you can view this lesson on YouTube](https://youtu.be/A1UcgcQTPIk).
-<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/A1UcgcQTPIk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+[If you prefer, you can view this lesson on YouTube](https://youtu.be/GRdqOSsjWC4).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/GRdqOSsjWC4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---
 
-As always, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 5** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v1.0.zip). You can watch [the video for this lesson on YouTube](https://youtu.be/A1UcgcQTPIk) to see how to download this and set it all up.
+As always, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 5** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v1.0.zip). You can watch [the video for this lesson on YouTube](https://youtu.be/GRdqOSsjWC4) to see how to download this and set it all up.
 
 ## A sneak peek
 Here's an embed of our game fully published to [itch.io](https://mmotbat.itch.io/godot-python-mmo). You can play it directly in your browser here, from anywhere in the world! At the end of this lesson, you too will be able to publish your own game to itch.io, and share it with your friends and family!
