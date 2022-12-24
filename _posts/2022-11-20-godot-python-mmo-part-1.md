@@ -64,10 +64,8 @@ source ./venv/bin/activate
 If done properly, you will see your terminal has a green `(venv)` prompt. Now you are free to install all the dependencies with the following commands one at a time (if you are using a Unix-based OS, you may need to type `pip3` instead of `pip`):
 ```powershell
 pip install autobahn[twisted]
-pip install Django==2.1.*
+pip install Django
 ```
-
-Note we are using Django 2.1 specifically here, since it is the most compatible version for Linux servers.
 
 *Note if you are using Mac (or Linux with `zsh`), the first one probably won't work due to the square brackets. In that case, try escaping the square brackets like this*
 ```zsh
