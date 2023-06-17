@@ -8,7 +8,7 @@ Hello and welcome to my first entry in what will probably be a five-part blog an
 
 ---
 <div class="container">
-<iframe frameborder="0" src="https://tristanbatchler.github.io/" class="responsive-iframe"><a href="https://tristanbatchler.itch.io/godot-python-mmo-tech-demo">Play the Godot Python MMO!</a></iframe>
+<iframe frameborder="0" src="https://itch.io/embed-upload/7042440?color=333333" class="responsive-iframe"></iframe>
 </div>
 ---
 
