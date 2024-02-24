@@ -8,7 +8,6 @@ Welcome back to yet another lesson! In the [previous lesson](/2022/11/21/godot-p
 
 In this lesson, we will really kick it up a notch by attaching the notion of position and movement to our players, making this feel more like a game.
 
----
 [If you prefer, you can view this lesson on YouTube](https://youtu.be/qHRDs9Z2JqY).
 <center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/qHRDs9Z2JqY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---

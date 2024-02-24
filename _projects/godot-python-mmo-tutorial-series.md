@@ -25,13 +25,6 @@ Videos which follow these posts are also published on [YouTube](https://www.yout
 1. [Avatar selection / adding graphics](/2022/12/10/godot-python-mmo-part-5.html)
 1. [Security and deployment](/2022/12/20/deploying-your-godot-python-mmo-to-production)
 
-## Interactive demo
-<center>
-<div class="container">
-<iframe frameborder="0" src="https://itch.io/embed-upload/7042440?color=333333" class="responsive-iframe"></iframe>
-</div>
-</center>
-
 ## Official GitHub releases
 If you want to download the final, finished project (or the project as-is at the end of any lesson), you can download a [release from the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases). 
 
