@@ -4,17 +4,10 @@ description: How to begin creating an MMO with Godot and Python!
 redditurl: https://www.reddit.com/r/Python/comments/z551ru/making_an_mmo_with_python_and_godot_the_first/
 ---
 
-Hello and welcome to my first entry in what will probably be a five-part blog and accompanying video series on how to set up a fully functional game server using Python. With the help of Godot, clients will be able to connect from any device. To prove this to you, here is the fully working game embedded in my own website (connecting to an external server).
-
----
-<div class="container">
-<iframe frameborder="0" src="https://itch.io/embed-upload/7042440?color=333333" class="responsive-iframe"></iframe>
-</div>
----
+Hello and welcome to my first entry in what will probably be a five-part blog and accompanying video series on how to set up a fully functional game server using Python. With the help of Godot, clients will be able to connect from any device. 
 
 The first half of this post is focused purely on setting up the framework upon which the rest of our game features will be built. It assumes you are quite comfortable with Python and GDScript. Anyone less than comfortable is still encouraged to read up to and including the [tip for the lazy](#tip-for-the-lazy) section for instructions to get the bare minimum setup and skip to the less scary part. 
 
----
 [If you prefer, you can view this lesson on YouTube](https://youtu.be/0PEFkDAokRI). The YouTube video is a different experience, and does contain slightly more explanation for each line of code. **If you are not 100% comfortable with Python or Godot, the best way to follow this lesson is to watch the YouTube video, and use this blog as a reference.**
 <center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/0PEFkDAokRI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---

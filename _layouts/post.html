@@ -2,8 +2,9 @@
 layout: default
 ---
 
-<h1>{{ page.title }}</h1>
-<p>{{ page.date | date_to_string }}</p>
+<h1 class="sparkle-less">{{ page.title }}</h1>
+<hr class="post-hr">
+<p class="timestamp">{{ page.date | date_to_string }}</p>
 
 {{ content }}
 

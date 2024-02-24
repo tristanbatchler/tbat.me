@@ -207,6 +207,8 @@ $ python pi.py
 
 ![Hey, that's pretty good!](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/pretty-good.webp)
 
+<p class="sparkle"></p>
+
 We got $$\pi$$ to two correct decimal places, I'd say that's a success!
 
 Let's see if we get the same degree of accuracy if we used weight data instead of height. Let's replace `heights` with `weights` in our code and see what we get...

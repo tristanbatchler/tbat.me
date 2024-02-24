@@ -8,7 +8,6 @@ Welcome back to the tutorial series focused on making an MMO with Godot and Pyth
 
 In this lesson, we will focus on bringing a database into the mix, and demonstrate its usefulness by allowing someone to register an account, and log in to the chatroom. Other users will then know who they're talking to!
 
----
 [If you prefer, you can view this lesson on YouTube](https://youtu.be/-7f2VXA7CUM).
 <center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/-7f2VXA7CUM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---

@@ -8,7 +8,6 @@ Welcome to the final lesson in the core series of the Godot Python MMO! In the [
 
 In this lesson, we will be finishing things off by adding some much-needed graphics, and allowing players to express themselves by choosing their own avatars during registration!
 
----
 [If you prefer, you can view this lesson on YouTube](https://youtu.be/kfzb9tD3BKU).
 <center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/kfzb9tD3BKU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---

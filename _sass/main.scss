@@ -3,16 +3,18 @@
 @import "comments";
 
 body {
-    background: #000;
-    font-family: 'Merriweather', sans-serif;
+    background: linear-gradient(to bottom, $void, $void2);
+    background-attachment: fixed;
+    font-family: 'Montserrat', sans-serif;
     line-height: 1.5;
+    font-size: 1.1em;
 }
 
 #content {
     color: $foreground;
     background: $background;
 
-    max-width: 750px;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 30px;
@@ -21,18 +23,35 @@ body {
     border-radius: 20px;
     border-style: solid;
     border-width: 5px;
-    border-color: $darkgray;
+    border-color: $accent;
 
     position: relative;
+
+    p.timestamp {
+        font-size: smaller;
+        margin-top: -1.5rem;
+    }
     
     h1 {
-        color: $yellow;
+        color: $header;
 
         text-align: center;
     }
 
+    hr {
+        margin-bottom: 1.5rem;
+        height: 5px;
+        border: none;
+
+        background-image: -webkit-linear-gradient(left, $first, $third, $fourth, $fifth);
+        background-image: -moz-linear-gradient(left, $first, $third, $fourth, $fifth);
+        background-image: -ms-linear-gradient(left, $first, $third, $fourth, $fifth);
+        background-image: -o-linear-gradient(left, $first, $third, $fourth, $fifth);
+
+    }
+
     h2 {
-        color: $green;
+        color: $header;
     }
 
     img {
@@ -43,38 +62,43 @@ body {
             margin-left: auto;
             margin-right: auto;
             text-align: center;
+            font-size: smaller;
 
             max-width: 60%;
 
             transition:transform 0.25s ease;
         }
 
-        // Hover to enlarge images, except for the headshot
+        // Hover to enlarge images, except for images already larger than
         &:not(.headshot) {
             &:hover {
-                transform:scale(1.35);
-                box-shadow: 0 0 10px 5px black;
+                transform: scale(1.35);
+                box-shadow: 0 0 10px 5px $void;
+                transition-delay: 0.5s;
+                cursor: pointer;
             }
         }
     }
 
     a {
-        color: $magenta;
+        color: $link;
+        text-decoration: none;
     }
 
     blockquote {
         border-left-style: inset;
         padding-left: 10px;
-        color: $lightgray;
+        color: $accent;
     }
 
     li {
         padding-bottom: 0.5rem;
+        list-style: none;
     }
 
     pre {
         overflow-x: auto;
-        background-color: black;
+        background-color: $void;
         margin: 10px;
         padding: 10px;
         & > code {
@@ -87,13 +111,13 @@ body {
             right: 25px;
 
             padding: 5px;
-            background-color: $darkgray;
-            color: $lightgray;
+            background-color: $background;
+            color: $foreground;
             border: none;
             border-radius: 0 0 0 5px;
             cursor: pointer;
             &:active, &:focus, &:hover {
-                background-color: $magenta;
+                background-color: $accent;
                 opacity: 1;
             }
         }
@@ -106,11 +130,12 @@ body {
     }
 
     code {
-        font-size: larger;
-        background-color: black;
-        color: $lightgray;
+        background-color: $void;
+        color: $accent;
         border-radius: 0.2em;
         padding: 1px 3px 3px;
+        color: $foreground;
+        font-family: 'Inconsolata', monospace;
     }
 
 }
@@ -121,8 +146,12 @@ body {
     nav a {
         padding: 15px;
         &.current {
-            color: $green;
+            color: $header;
         }
+
+        font-size: larger;
+        text-decoration: none;
+
     }
 }
 
@@ -132,7 +161,7 @@ body {
     justify-content: center;
     div.social a {
         text-decoration: none;
-        color: $white;
+        color: $foreground;
         padding: 15px;
     }
     padding-top: 20px;
@@ -169,7 +198,7 @@ table {
 
     thead tr th {
         font-weight: bold;
-        color: $green;
+        color: $header;
         border-bottom: 1px solid;
     }
 
