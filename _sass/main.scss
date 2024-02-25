@@ -93,7 +93,11 @@ body {
 
     li {
         padding-bottom: 0.5rem;
-        list-style: none;
+
+        &.no-bullet {
+            list-style-type: none;
+            margin-left: -1.5rem;
+        }
     }
 
     pre {
