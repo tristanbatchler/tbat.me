@@ -131,6 +131,14 @@ body {
                 opacity: 1;
             }
         }
+
+        &:has(code.language-directory) {
+            margin-bottom: -10px;
+            border-bottom: 1px dashed $accent;
+        }
+
+
+
     }
 
     code {
@@ -141,7 +149,6 @@ body {
         color: $foreground;
         font-family: 'Inconsolata', monospace;
     }
-
 }
 
 #header {
