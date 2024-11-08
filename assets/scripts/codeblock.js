@@ -1,6 +1,17 @@
+// Add $ to bash code blocks
+$('div.language-bash code').each(function() {
+  let code = $(this).text();
+  if (code.endsWith('\n')) {
+    code = code.slice(0, -1);
+  }
+  const lines = code.split('\n');
+  const updatedLines = lines.map((line) => "$ " + line);
+  $(this).text(updatedLines.join('\n'));
+});
+
+
+// Add copy button to code blocks
 var codeBlocks = document.querySelectorAll('pre.highlight');
-
-
 codeBlocks.forEach(function (codeBlock) {
   var  Button = document.createElement('button');
    Button.className = 'copy-button';
@@ -14,6 +25,9 @@ codeBlocks.forEach(function (codeBlock) {
 
    Button.addEventListener('click', function () {
     var code = codeBlock.querySelector('code').innerText.trim();
+
+    code = code.replace(/\$/g, '');
+
     window.navigator.clipboard.writeText(code);
 
 
