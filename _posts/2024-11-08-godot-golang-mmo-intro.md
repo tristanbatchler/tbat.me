@@ -37,7 +37,7 @@ The series will be broken up into roughly three parts:
 2. **Implementing the game** will obviously be the bulk of the project, where we will implement the game logic and polishing the client. Here we will discuss techniques for handling game state which I believe is invaluable for any online multiplayer game.
 3. **Deploying to the cloud** lifts our project off our local machine and into the hands of players from across the world. We will discuss security, platforms, and other nuances to consider when publishing your game.
 
-Let's not waste any time and dive right in! See you in [the next post](/2024/11/08/godot-golang-mmo-part-1) where we will set up our project and get our server and client communicating with each other.
+Let's not waste any time and dive right in! See you in [the next post](/2024/11/09/godot-golang-mmo-part-1) where we will set up our project and get our server and client communicating with each other.
 
 ---
 

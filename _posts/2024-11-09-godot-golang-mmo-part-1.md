@@ -1,10 +1,10 @@
 ---
 title: Godot 4 Golang MMO Part 1
-description: How to begin creating an MMO with Godot 4 and Golang!
+description: How to setup everything you need to get started with a Godot 4 MMO using Golang as the backend.
 redditurl: 
 ---
 
-Ready to get started? In [the last post](/2024/11/08/godot-golang-mmo-intro), we had some explaining to do. In this post, we will install some tools we need to get started, setup our packet system, and create a simple packet to test it out. Let's get to it!
+Ready to get started? In [the last post](/2024/11/08/godot-golang-mmo-intro), we had some explaining to do. In this post, we will install some tools we need to get started, setup our packet system, and create an extremely simple means of communicating these packets between the server and the client.
 
 ## Installing essential tools
 
@@ -34,7 +34,7 @@ Since we are using Protocol Buffers to generate code for our packets, we need to
     * `/usr/local/bin` on Unix
 3. Add the `bin` folder to your system's `PATH` environment variable.
     * **On Windows**, you can press **Win + R**, type `SystemPropertiesAdvanced`, click **Environment Variables**, and under **User variables**, double click on `Path`, then click **New** and paste the path to the `bin` folder, which should look something like `C:\Users\<Name>\AppData\Local\protoc-<version>-win64\bin`. Press **OK** on all the windows you opened.
-    ![Windows PATH](/assets/css/images/posts/2024/11/08/windows-path.png)
+    ![Windows PATH](/assets/css/images/posts/2024/11/09/windows-path.png)
 
     * **On Unix**, you can add the following line to your `.bashrc` or `.zshrc` file:
     ```bash
@@ -185,6 +185,8 @@ You should see some new files appear in your `server` folder under `pkg/`:
 
 This is where our generated code will live. We don't even have to look at it, but feel free to take a peek if you're curious. The important thing is that we can now use it by importing the `packets` package. Let's try it out in our `main.go` file.
 
+## Making packets in Go
+
 In order to import our new package, we need to initialize a Go module inside our `server` folder. It's pretty common to name your module after your GitHub repository, but you can realistically name it whatever you want:
 ```bash
 cd server
@@ -323,14 +325,85 @@ func main() {
     proto.Unmarshal(data, packet)
     fmt.Println(packet)
 }
-
 ```
 
 ```
 sender_id:69  chat:{msg:"Hello, world!"}
 ```
 
-And that's it! We have successfully created a simple packet system using Protocol Buffers. In the next post, we will focus on getting our Godot client setup to use these packets and set up a channel of communication between the server and the client.
+## Setting up the Godot project
+
+I do suppose we'd better see how this all looks from the client perspective. Create a new Godot project in the same root folder as your server project. I will call mine simply `client`. Make sure to select the **Compatibility** renderer if you want to export to the web, but you can always change this later.
+![Godot new project](/assets/css/images/posts/2024/11/09/godot-new-project.png)
+
+First, let's install the Godobuf plugin.
+1. Download the [latest release](https://github.com/oniksan/godobuf/releases/latest). It should be called **Source code (zip)**
+2. Unzip the archive somewhere on your computer
+3. Copy the `addons` folder to your `client` project folder. Your project structure should look like this:
+    ```
+    /
+    ├───.vscode/
+    ├───client/
+    ├───addons/
+    │   └───protobuf/
+    ├───server/
+    └───shared/
+    ```
+4. Open your Godot project and enable the addon by going to **Project > Project Settings > Plugins** and enabling the **Protobuf** plugin.
+    ![Godot plugins](/assets/css/images/posts/2024/11/09/godot-plugins.png)
+
+You should see a new **Godobuf** tab appear in the bottom left panel, underneath the scene tree, adjacent to the **FileSystem** tab. This is where we can input our `.proto` file and generate our code.
+
+1. Click on the **Godot** tab
+2. Click on the **...** button under **Input protobuf file** and navigate up a level to your `shared/packets.proto` file. For some reason, it shows a warning that you will "overwrite" the file, but this is not the case. Just choose **OK**
+3. Click on the **...** button under **Output GDScript file**, enter simply `packets.gd` and click **OK**
+   ![Godobuf output](/assets/css/images/posts/2024/11/09/godobuf-output.png)
+4. Click on **Compile** and you should see a popup appear saying **Compile success done** if it worked correctly
+    ![Godobuf compile](/assets/css/images/posts/2024/11/09/godobuf-compile.png)
+
+Again, you can take a look at the generated code if you're curious. It should appear in the **FileSystem** tab now, under `res://packets.gd`.
+
+Regardless, let's see what it takes to create a packet in Godot.
+
+## Making packets in Godot
+
+Create a new node in your scene called **Main** and attach a new script, `main.gd` to it. Hit **Ctrl + S** to save your scene as `main.tscn` before editing the script:
+```directory
+/client/main.gd
+```
+```gdscript
+extends Node
+
+const packets := preload("res://packets.gd")
+
+func _ready() -> void:
+    var packet := packets.Packet.new()
+    packet.set_sender_id(69)
+    var chat_msg := packet.new_chat()
+    chat_msg.set_msg("Hello, world!")
+    print(chat_msg)
+```
+
+When you hit **F5** to run your project, you should get a popup asking you to select the main scene. Just choose **Select Current** and you should see the following output in the output console at the bottom of the editor window:
+```
+msg: "Hello, world!";
+```
+
+This is the same message we created in Go, but now we are doing it in Godot. We can even go through the same proof of concept by serializing and deserializing the packet. This time let's try just getting the field value from the chat message:
+```directory
+/client/main.gd
+```
+```gdscript
+var new_packet := packets.Packet.new()
+new_packet.from_bytes([8, 69, 18, 15, 10, 13, 72, 101, 108, 108, 111, 44, 32, 119, 111, 114, 108, 100, 33])
+print(new_packet.get_chat().get_msg())
+```
+
+```
+Hello, world!
+```
+
+Now that is certainly an interesting hello world program. Ok, so we can create packets in both Go and Godot, and have the means to convert them to/from bytes. So how do we send them to each other? That's what we will cover in [the next post](/2024/11/09/godot-golang-mmo-part-2), where we will setup a simple websocket server in Go and connect to it from Godot. Until then, happy coding!
 
 ---
 
