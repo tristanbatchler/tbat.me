@@ -436,7 +436,7 @@ We can now run the server by hitting **F5** in VS Code, or running `go run cmd/m
 2024/11/09 12:00:58 Awaiting client registrations
 ```
 
-This is a good place to stop for now. In the next post, we will set up the Godot client to connect to the server and send packets.
+This is a good place to stop for now. In [the next post](/2024/11/09/godot-golang-mmo-part-3), we will set up the Godot client to connect to the server and send packets.
 
 ---
 

@@ -103,11 +103,14 @@ Now, let's create our debug configuration and install the debugger.
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/server/cmd/main.go"
+            "program": "${workspaceFolder}/server/cmd/main.go",
+            "output": "${workspaceFolder}/server/cmd/debug_executable.exe"
         }
     ]
 }
 ```
+
+The `output` field is highly recommended if you are on Windows, as without specifying this, the debugger will create a uniquely named executable each time you run the program, resulting in the firewall asking you to allow it every time. This way, you can simply add `debug_executable.exe` to your firewall exceptions.
 
 Now you should be able to simply press **F5** to run your program, and look at the output in the **Debug console** tab at the bottom.
 
