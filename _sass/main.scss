@@ -64,7 +64,7 @@ body {
             text-align: center;
             font-size: smaller;
 
-            max-width: 60%;
+            max-width: 80%;
 
             transition:transform 0.25s ease;
         }
@@ -88,7 +88,7 @@ body {
     blockquote {
         border-left-style: inset;
         padding-left: 10px;
-        color: $accent;
+        color: darken($foreground, 10%);
     }
 
     li {
