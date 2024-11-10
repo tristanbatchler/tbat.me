@@ -59,14 +59,20 @@ body {
         
         &, & + em {
             display: block;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-            font-size: smaller;
+            &:not(.info) {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+                font-size: smaller;
 
-            max-width: 80%;
+                max-width: 80%;
 
-            transition:transform 0.25s ease;
+                transition:transform 0.25s ease;
+            }
+            &.info {
+                // Info quotes
+                height: 3em;
+            }
         }
 
         // Hover to enlarge images, except for images already larger than

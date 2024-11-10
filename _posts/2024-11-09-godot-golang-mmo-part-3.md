@@ -1,10 +1,10 @@
 ---
-title: Godot 4 Golang MMO Part 3
-description: How to make an online chatroom with Godot 4 and Go
+title: Creating a chatroom with Godot 4 for an MMO with Go
+description: Learn how to create a chatroom in Godot 4 for an MMO with Go using WebSockets and Protocol Buffers.
 redditurl: 
 ---
 
-We've been neglecting the client side until now... In [the last post](/2024/11/09/godot-golang-mmo-part-2), we built a websocket server in Go that is ready to start receiving our protocol buffer messages. In this post, we can finally start building the Godot and get a basic chatroom working.
+We've been neglecting the client side... until now. In [the last post](/2024/11/09/godot-golang-mmo-part-2), we focused on setting up the Go server with WebSockets and Protocol Buffers for message handling. Now it's time to shift gears and build the client side. In this tutorial, we will dive into Godot 4 to implement a basic chatroom where users can send and receive messages in real-time. We'll walk through setting up the client, connecting it to the server, and creating a functional log to display chat messages. By the end of this post, you'll have a working chat system ready for further expansion!
 
 ## The WebSocket client in Godot
 
@@ -87,7 +87,7 @@ func _process(_delta: float) -> void:
     poll()
 ```
 
-The purpose of this script is to simply wrap the built-in `WebSocketPeer` class, provide convenience methods for connecting, sending packets, and receiving packets. Then it is used as a means to emit signals everytime activity occurs on the socket, which any other script can listen to. Because it is so self-contained, and only should be used for networking, it is a good candidate for a [singleton/autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html). 
+The purpose of this script is to simply wrap the built-in `WebSocketPeer` class, provide convenience methods for connecting, sending packets, and receiving packets. Then it is used as a means to emit signals every time activity occurs on the socket, which any other script can listen to. Because it is so self-contained, and only should be used for networking, it is a good candidate for a [singleton/autoload](https://docs.godotengine.org/en/stable/tutorials/scripting/singletons_autoload.html). 
 1. Go to **Project > Project Settings > Globals**
 2. Select the **AutoLoad** tab
 3. Enter `res://websocket_client.gd` in the **Path** field
@@ -375,7 +375,7 @@ type Hub struct {
 }
 ```
 
-Also change the `NewHub` function to initialise the `Clients` field with a new `SharedCollection`:
+Also change the `NewHub` function to initialize the `Clients` field with a new `SharedCollection`:
 
 ```directory
 /server/internal/server/hub.go
@@ -494,7 +494,7 @@ The script is very simple, we are basically just adding helper functions to take
 Feel free to adjust the colors to your liking!
 
 ## Adding the log to the main scene
-Back to the main scene, we can now add a new Log node under the root node node. Simply right-click the root node and select **Add Child Node** and then **Log**. 
+Back to the main scene, we can now add a new Log node under the root node. Simply right-click the root node and select **Add Child Node** and then **Log**. 
 ![Godot Add Log Node](/assets/css/images/posts/2024/11/09/add_log_node.png)
 
 Using the anchor presets again, we can set the log to take up the bottom half of the screen by choosing **Bottom Wide** and then dragging the top of the log node to the middle of the screen. Don't worry if it's not perfect, this is just a prototype which will be replaced with a more sophisticated UI later on.
@@ -547,7 +547,7 @@ Believe it or not, we are actually very close to having a working chatroom. All 
 
 ### Server side logic
 
-The first thing to happen when a new client connects is that they should be sent their client ID. This will be the foundation for all future packet handling. Edit `websocketclient.go` and add two lines to the end of the `Initialize` method so it looks like this:
+The first thing to happen when a new client connects is that they should be sent their client ID. This will be the foundation for all future packet handling. Edit `websocketclient.go` and add two lines to the end of the `Initialize` method, so it looks like this:
 
 ```directory
 /server/internal/server/clients/websocketclient.go
@@ -561,7 +561,7 @@ func (c *WebSocketClient) Initialize(id uint64) {
 }
 ```
 
-We are using the helper function we wrote in part 1 to easily craft the Id message. This is defined in `/server/pkg/packets/util.go`.
+We are using the helper function we wrote in part 1 to easily craft the ID message. This is defined in `/server/pkg/packets/util.go`.
 
 Now, in the `ProcessMessage` method, we need to handle the chat message. Let's remove the echo functionality and add some logic to handle chat messages:
 
@@ -677,7 +677,7 @@ func _on_line_edit_text_entered(text: String) -> void:
     _line_edit.text = ""
 ```
 
-This method is very similar to the one we used to send the test message to the server, but we are now using the text entered by the user. We also clear the text in the `LineEdit` node after sending the message so the user can easily type a new message.
+This method is very similar to the one we used to send the test message to the server, but we are now using the text entered by the user. We also clear the text in the `LineEdit` node after sending the message, so the user can easily type a new message.
 
 Notice that we are not setting the `sender_id` on the packet here, and instead we are setting it as zero on `websocket_client.gd`. It is technically not necessary to set our own sender ID when sending a message, as the server will always know who the message is coming from. In fact, we did add some functionality on the server side to know that if the sender ID is zero, it should be replaced with the client ID of the client interfacer that passed the message to the server. We have done this simply out of convenience, as it means we don't have to pass the client ID to the client every time we want to send a message.
 
@@ -821,9 +821,10 @@ Now, if you restart the server and run the game, you should be able to type mess
 
 ## Conclusion
 
-We have come a long way in this post, and we now have a working chatroom! We have also fixed a major issue with our server, and created a custom data structure to handle client interfacer objects. We have also created a custom log scene in Godot, which will be a useful tool for debugging and logging in the future.
+We've made great progress in building a functional chatroom for our MMO. Not only have we set up a real-time messaging system between the client and server, but we have also fixed a major issue with our server, created a custom data structure to handle client interfacer objects, and made our own custom log in Godot, which will be a useful tool for debugging and logging in the future.
 
-In [the next post](/2024/11/10/godot-golang-mmo-part-4), we will work on improving the logic for handling messages on both the server and client side by implementing state machines. This will allow us to handle more complex game logic and set ourselves up for building a more sophisticated game world. Hope to see you there!
+
+In [the next post](/2024/11/10/godot-golang-mmo-part-4), enhance the message handling logic on both the server and client sides by implementing state machines. This will set the stage for more complex game mechanics and help us build a more immersive and scalable game world. Don’t miss it – see you there!
 
 ---
 

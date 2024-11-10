@@ -1,10 +1,10 @@
 ---
-title: Godot 4 Golang MMO Part 1
-description: How to setup everything you need to get started with a Godot 4 MMO using Golang as the backend.
+title: "Setting Up Your Godot 4 MMO Project with Golang"
+description: Learn the setup process for a Godot 4 MMO using a Golang backend, covering essential tools, packets, and basic server-client communication.
 redditurl: 
 ---
 
-Ready to get started? In [the last post](/2024/11/08/godot-golang-mmo-intro), we had some explaining to do. In this post, we will install some tools we need to get started, setup our packet system, and create an extremely simple means of communicating these packets between the server and the client.
+Ready to get started? In [the last post](/2024/11/08/godot-golang-mmo-intro), we discussed the motivations, technology choices, and an overview of the project. In this post, we will install some tools we need to get started, set up our packet system, and create an extremely simple means of communicating these packets between the server and the client.
 
 ## Installing essential tools
 
@@ -30,10 +30,10 @@ Since we are using Protocol Buffers to generate code for our packets, we need to
 
 1. Manually download from [the latest release](https://github.com/protocolbuffers/protobuf/releases/latest) the zip file corresponding to your operating system and computer architecture (`protoc-<version>-<os>-<arch>.zip`), or on Windows, it will be `protoc-<version>-win64.zip`.
 2. Unzip the archive your directory of your choice, but preferably one of the following standard locations:
-    * `C:\Users\<Name>\AppData\Local` on Windows
+    * `%LOCALAPPDATA%` on Windows
     * `/usr/local/bin` on Unix
 3. Add the `bin` folder to your system's `PATH` environment variable.
-    * **On Windows**, you can press **Win + R**, type `SystemPropertiesAdvanced`, click **Environment Variables**, and under **User variables**, double click on `Path`, then click **New** and paste the path to the `bin` folder, which should look something like `C:\Users\<Name>\AppData\Local\protoc-<version>-win64\bin`. Press **OK** on all the windows you opened.
+    * **On Windows**, you can press **Win + R**, type `SystemPropertiesAdvanced`, click **Environment Variables**, and under **User variables**, double-click on `Path`, then click **New** and paste the path to the `bin` folder, which should look something like `%LOCALAPPDATA%\protoc-<version>-win64\bin`. Press **OK** on all the windows you opened.
     ![Windows PATH](/assets/css/images/posts/2024/11/09/windows-path.png)
 
     * **On Unix**, you can add the following line to your `.bashrc` or `.zshrc` file:
@@ -99,7 +99,7 @@ Now, let's create our debug configuration and install the debugger.
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Package",
+            "name": "Run server",
             "type": "go",
             "request": "launch",
             "mode": "auto",
@@ -121,7 +121,7 @@ go get -u github.com/go-delve/delve/cmd/dlv
 
 ## Defining our packets
 
-The heart of our project will be how we decide to communicate between the server and the client. Over the wel, this might be done with JSON or XML, but we have the freedom to do whatever we want. We could even use a packed binary format for maximum efficiency, but to keep things semi-readable and reduce the chance of errors and writing the same code twice (once for the server and once for the client), we will use Protobuf.
+The heart of our project will be how we decide to communicate between the server and the client. Over the web, this might be done with JSON or XML, but we have the freedom to do whatever we want. We could even use a packed binary format for maximum efficiency, but to keep things semi-readable and reduce the chance of errors and writing the same code twice (once for the server and once for the client), we will use Protobuf.
 
 Create a new folder called `shared` in your project root, and inside it, create a new file called `packets.proto`. Your project structure should now look like this:
 ```
@@ -149,7 +149,6 @@ option go_package = "pkg/packets";
 
 // Define your messages
 message ChatMessage { string msg = 1; }
-message DenyMessage { string reason = 1; }
 message IdMessage { uint64 id = 1; }
 
 // Define the main Packet message
@@ -157,15 +156,16 @@ message Packet {
     uint64 sender_id = 1;
     oneof msg {
         ChatMessage chat = 2;
-        DenyMessage deny = 3;
-        IdMessage id = 4;
+        IdMessage id = 3;
     }
 }
 ```
 
 The way we are defining our packets is pretty useful. We have a wrapper called `Packet`, which encapsulates a *message* being anything we want to send, together with an ID to identify the sender. This way, we can easily add new messages, send/receive them, and know who they are from. Surprisingly, a **lot** can be done with just this basic structure.
 
-As for the messages we have defined to start with, we have a `ChatMessage` for sending chat messages, a `DenyMessage` for when the server denies a request, and an `IdMessage` for when the server sends a client its ID.
+The `oneof` keyword is a way to define a union of messages. This means that only one of the messages defined in the `oneof` block can be set at a time. We can easily grab the message type by checking which one is set.
+
+As for the messages we have defined to start with, we have a `ChatMessage` for sending chat messages, and an `IdMessage` for when the server sends a client its ID.
 
 Before we can use these messages, we need to compile them into Go code. Before we can do that, we need to install the Go protocol buffers plugin:
 ```bash
@@ -176,6 +176,7 @@ Now we're free to go ahead and compile our `.proto` file. Run the following comm
 ```bash
 protoc -I="shared" --go_out="server" "shared/packets.proto"
 ```
+This command tells the `protoc` compiler to look in the `shared` folder for the `.proto` file, and to output the generated Go code in the `server` folder. The first few lines of the `packets.proto` file itself tell the compiler which package to use for the generated code, so we don't need to specify it here.
 
 You should see some new files appear in your `server` folder under `pkg/`:
 ```
@@ -246,14 +247,6 @@ func NewChat(msg string) Msg {
     }
 }
 
-func NewDeny(reason string) Msg {
-    return &Packet_Deny{
-        Deny: &DenyMessage{
-            Reason: reason,
-        },
-    }
-}
-
 func NewId(id uint64) Msg {
     return &Packet_Id{
         Id: &IdMessage{
@@ -298,7 +291,12 @@ func main() {
         Msg:      packets.NewChat("Hello, world!"),
     }
 
-    data, _ := proto.Marshal(packet)
+    data, err := proto.Marshal(packet)
+    if err != nil {
+        fmt.Println("Error marshaling packet:", err)
+        return
+    }
+
     fmt.Println(data)
 }
 ```
@@ -352,7 +350,7 @@ First, let's install the Godobuf plugin.
     ├───server/
     └───shared/
     ```
-4. Open your Godot project and enable the addon by going to **Project > Project Settings > Plugins** and enabling the **Protobuf** plugin.
+4. Open your Godot project and enable the add-on by going to **Project > Project Settings > Plugins** and enabling the **Protobuf** plugin.
     ![Godot plugins](/assets/css/images/posts/2024/11/09/godot-plugins.png)
 
 You should see a new **Godobuf** tab appear in the bottom left panel, underneath the scene tree, adjacent to the **FileSystem** tab. This is where we can input our `.proto` file and generate our code.
@@ -387,6 +385,8 @@ func _ready() -> void:
     print(chat_msg)
 ```
 
+Here we are importing our generated code, which we will be able to access by typing `packets.` and seeing the available attributes by pressing **Ctrl + Space** in the editor. This code is reminiscent of the Go code we wrote earlier, but with a few differences. We can't directly set the message field of the `Packet` object, but instead have to create a new message object and set its fields. This is because the `Packet` object is a container for the message, and the message itself is a separate object.
+
 When you hit **F5** to run your project, you should get a popup asking you to select the main scene. Just choose **Select Current** and you should see the following output in the output console at the bottom of the editor window:
 ```
 msg: "Hello, world!";
@@ -406,7 +406,9 @@ print(new_packet.get_chat().get_msg())
 Hello, world!
 ```
 
-Now that is certainly an interesting hello world program. Ok, so we can create packets in both Go and Godot, and have the means to convert them to/from bytes. So how do we send them to each other? That's what we will cover in [the next post](/2024/11/09/godot-golang-mmo-part-2), where we will setup a simple websocket server in Go and connect to it from Godot. Until then, happy coding!
+Now that is certainly an interesting hello world program! It is important to note the `proto.Unmarshal` function in Go is equivalent to the `from_bytes` function in Godot. Using the same byte array used in Go allows us to confirm that data is consistent across both platforms, validating our protocol implementation.
+
+Ok, so we can create packets in both Go and Godot, and have the means to convert them to/from bytes. So how do we send them to each other? Head on over to [the next post](/2024/11/09/godot-golang-mmo-part-2)! We'll set up a websocket server in Go, establish client connections, and exchange these packets in real-time.
 
 ---
 
