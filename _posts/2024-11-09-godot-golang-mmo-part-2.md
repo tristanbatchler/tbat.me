@@ -145,10 +145,10 @@ cd server # If you're not already in the server directory
 go get github.com/gorilla/websocket
 ```
 
-In case we ever want to create more implementations, we will create a `clients` folder inside our `internal/server` folder, and create a new file called `websocketclient.go` inside there. I am going to show a skeleton of this new file, and then run by the implementation of each function from the `ClientInterfacer` interface in the next steps.
+In case we ever want to create more implementations, we will create a `clients` folder inside our `internal/server` folder, and create a new file called `websocket.go` inside there. I am going to show a skeleton of this new file, and then run by the implementation of each function from the `ClientInterfacer` interface in the next steps.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 package clients
@@ -180,7 +180,7 @@ To be clear, your server structure should look like this now:
 │       │   hub.go
 │       │
 │       └───clients
-│               websocketclient.go
+│               websocket.go
 │
 └───pkg
     └───packets
@@ -191,7 +191,7 @@ To be clear, your server structure should look like this now:
 Ok, first let's look at the type definition itself for the `WebSocketClient` type. This will be a struct that contains the necessary fields for the websocket connection to keep its state. The implementation will depend on these fields.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 type WebSocketClient struct {
@@ -206,7 +206,7 @@ type WebSocketClient struct {
 A lot of this is self-explanatory, especially if you compare with the diagram at the beginning of this post. The `hub` field is a reference to the hub which created this client. The `sendChan` is a channel that holds packets to be sent to the client. We are also using the built-in `log` package to log messages to the console, since it can get tricky to keep track of what's happening in the server without it.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func NewWebSocketClient(hub *server.Hub, writer http.ResponseWriter, request *http.Request) (server.ClientInterfacer, error) {
@@ -236,7 +236,7 @@ func NewWebSocketClient(hub *server.Hub, writer http.ResponseWriter, request *ht
 This is a static function, not required by the interface, but makes it easy to create a new websocket client from an HTTP connection (which is what the main server will receive from each new Godot connection). We use the `upgrader` to upgrade the HTTP connection to a websocket connection. We then create a new `WebSocketClient` struct and return it. Note we are using a **buffered channel** for the `sendChan`. This means that the channel can hold up to 256 packets before it blocks. This is a good way to prevent the server from blocking if the client is slow to read packets.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) Id() uint64 {
@@ -255,7 +255,7 @@ func (c *WebSocketClient) ProcessMessage(senderId uint64, message packets.Msg) {
 These are all pretty straightforward, and I think the code speaks for itself. I will point out that our logger is now prefixed with the client's ID, so we can easily see which client is doing what (invaluable when we have multiple clients connected). We don't know what we want to do with incoming messages yet, so we leave `ProcessMessage` empty for now to satisfy the interface.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) SocketSend(message packets.Msg) {
@@ -276,7 +276,7 @@ These functions are used to queue messages up to be sent to the client. We use a
 The difference between `SocketSend` and `SocketSendAs` is that `SocketSendAs` allows us to specify a sender ID. This is useful when we want to forward a message we received from another client, and the Godot client can know who it came from easily.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) PassToPeer(message packets.Msg, peerId uint64) {
@@ -293,7 +293,7 @@ func (c *WebSocketClient) Broadcast(message packets.Msg) {
 These functions are used to forward messages to other clients. `PassToPeer` forwards a message to a specific client, while `Broadcast` is just a convenience function to queue a message up to be passed to every client except the sender by the hub.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) ReadPump() {
@@ -330,7 +330,7 @@ func (c *WebSocketClient) ReadPump() {
 Here is one of two functions that directly interfaces with the websocket connection from the Godot client. It is responsible for reading messages from the websocket and processing them. We use the `proto` package to convert the raw bytes into a `Packet` struct (we saw this in the last post). We then call `ProcessMessage` with the sender ID and the message. Notice how we defer a closure of the client (we will see the code for this soon) so that we can clean up the connection if an error occurs or the loop breaks.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) WritePump() {
@@ -372,7 +372,7 @@ func (c *WebSocketClient) WritePump() {
 Here's the other function that talks directly to Godot. It reads off packets we've queued in the send channel, converts them to bytes, and sends them down the wire. It is important to note that we are creating a **binary** message writer, since protobuf messages are binary. We also append a newline character to the end of every message to help prevent messages from "sticking" together.
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) Close(reason string) {

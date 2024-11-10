@@ -119,7 +119,7 @@ As a quick reference, this is what your server folder structure should look like
 │       │   hub.go
 │       │   
 │       ├───clients
-│       │       websocketclient.go
+│       │       websocket.go
 │       │       
 │       ├───objects
 │       │       sharedCollection.go
@@ -139,7 +139,7 @@ As a quick reference, this is what your server folder structure should look like
 You should see errors complaining that our `WebSocketClient` type doesn't implement `ClientInterfacer` because it doesn't have a `SetState` method. Let's fix that by adding a `state` field to our `WebSocketClient` struct:
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 type WebSocketClient struct {
@@ -152,7 +152,7 @@ type WebSocketClient struct {
 Then we can implement the `SetState` method:
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) SetState(state server.ClientStateHandler) {
@@ -183,7 +183,7 @@ This method is pretty straightforward. We are checking if the client is already 
 That should appease the compiler, but we still have some work to do. Now that we have a means to set the client's state, and we have a state that sends the client its ID, we can completely remove the ID-sending logic from the `Initialize` method, and replace it with a call to `SetState`:
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) Initialize(id uint64) {
@@ -220,7 +220,7 @@ func (c *Connected) HandleMessage(senderId uint64, message packets.Msg) {
 Now, where the `ProcessMessage` method was, we can call the `HandleMessage` method of the current state:
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) ProcessMessage(senderId uint64, message packets.Msg) {
@@ -231,7 +231,7 @@ func (c *WebSocketClient) ProcessMessage(senderId uint64, message packets.Msg) {
 The last thing we should do is ensure we set the client's state to `nil` when the client connection is closed. This is important because we don't want to keep a reference to the client's state after the client has disconnected. We can do this by adding a call to `SetState(nil)` in the `Close` method of the `WebSocketClient`:
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) Close(reason string) {

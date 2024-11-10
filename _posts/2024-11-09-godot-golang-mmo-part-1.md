@@ -104,7 +104,7 @@ Now, let's create our debug configuration and install the debugger.
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/server/cmd/main.go",
-            "output": "${workspaceFolder}/server/cmd/debug_executable.exe"
+            "output": "${workspaceFolder}/server/cmd/debug_executable.exe",
         }
     ]
 }

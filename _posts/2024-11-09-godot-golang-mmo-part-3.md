@@ -148,10 +148,10 @@ And on the server side, you should see something like this:
 2024/11/09 16:42:24 New client connected from [::1]:53684
 ```
 
-Congratulations! You have successfully connected to the server and sent a message. We can edit the server to handle this message and send something back to prove the communication can work both ways. To do this, simply add some code to our up-until-now empty `ProcessMessage` function in `websocketclient.go`:
+Congratulations! You have successfully connected to the server and sent a message. We can edit the server to handle this message and send something back to prove the communication can work both ways. To do this, simply add some code to our up-until-now empty `ProcessMessage` function in `websocket.go`:
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) ProcessMessage(senderId uint64, message packets.Msg) {
@@ -416,9 +416,9 @@ func (h *Hub) Run() {
 
 You can see we are taking advantage of the fact that the `Add` method returns the ID of the object added, so we can pass this directly to the `Initialize` method of the client. You can also see how the `ForEach` method works here, notice the syntax is not so different from a regular for loop.
 
-We just have one more simple change to make in `websocketclient.go`, and that is to change the way we are obtaining the client interfacer from the hub in the `PassToPeer` method:
+We just have one more simple change to make in `websocket.go`, and that is to change the way we are obtaining the client interfacer from the hub in the `PassToPeer` method:
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) PassToPeer(message packets.Msg, peerId uint64) {
@@ -547,10 +547,10 @@ Believe it or not, we are actually very close to having a working chatroom. All 
 
 ### Server side logic
 
-The first thing to happen when a new client connects is that they should be sent their client ID. This will be the foundation for all future packet handling. Edit `websocketclient.go` and add two lines to the end of the `Initialize` method, so it looks like this:
+The first thing to happen when a new client connects is that they should be sent their client ID. This will be the foundation for all future packet handling. Edit `websocket.go` and add two lines to the end of the `Initialize` method, so it looks like this:
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) Initialize(id uint64) {
@@ -566,7 +566,7 @@ We are using the helper function we wrote in part 1 to easily craft the ID messa
 Now, in the `ProcessMessage` method, we need to handle the chat message. Let's remove the echo functionality and add some logic to handle chat messages:
 
 ```directory
-/server/internal/server/clients/websocketclient.go
+/server/internal/server/clients/websocket.go
 ```
 ```go
 func (c *WebSocketClient) ProcessMessage(senderId uint64, message packets.Msg) {
@@ -801,7 +801,7 @@ And just in case you need it, this is what the entire project structure should l
 │   │       │   hub.go
 │   │       │
 │   │       ├───clients/
-│   │       │       websocketclient.go
+│   │       │       websocket.go
 │   │       │
 │   │       └───objects/
 │   │               sharedCollection.go
