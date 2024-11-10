@@ -299,16 +299,16 @@ func (c *Connected) OnEnter() {
     // ...
 
     // Create a new user in the database
-    user, err := c.client.DbTx().Queries.CreateUser(c.client.DbTx().Ctx, db.CreateUserParams{
-		Username:     "username",
-		PasswordHash: "password hash",
-	})
+    user, err := c.queries.CreateUser(c.dbCtx, db.CreateUserParams{
+        Username:     "username",
+        PasswordHash: "password hash",
+    })
 
-	if err != nil {
-		c.logger.Printf("Failed to create user: %v", err)
-	} else {
-		c.logger.Printf("Created user: %v", user)
-	}
+    if err != nil {
+        c.logger.Printf("Failed to create user: %v", err)
+    } else {
+        c.logger.Printf("Created user: %v", user)
+    }
 }
 ```
 
@@ -330,3 +330,394 @@ Client 1 [Connected]: 2024/11/10 18:10:12 Created user: {1 username password has
 ```
 
 This means that the user was successfully created in the database! There is a great VS Code extension called simply [SQLite](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite) that you can use to view the contents of the database, if you are curious.
+
+Let's remove what we have just added to the `OnEnter` method, as it was just a test. Let's instead start working on the authentication system.
+
+## Creating authentication packets
+
+Now, to re-visit the packet definitions for the first time since the first post in this series! We will need to create four new packets to help communicate authentication-related information between the client and server:
+- `LoginRequestPacket`: Sent from the client to signal that the user wants to log in
+- `RegisterRequestPacket`: Sent from the client to signal that the user wants to register
+- `OkResponsePacket`: Sent from the server to signal that the operation was successful
+- `DenyResponsePacket`: Sent from the server to signal that the operation was unsuccessful
+
+Open up our `packets.proto` file in the `/shared/` directory, and add the following definitions:
+
+```directory
+/shared/packets.proto
+```
+```protobuf
+// ...
+message LoginRequestMessage { string username = 1; string password = 2; }
+message RegisterRequestMessage { string username = 1; string password = 2; }
+message OkResponseMessage { }
+message DenyResponseMessage { string reason = 2; }
+
+// ...
+
+message Packet {
+    // ...
+    oneof msg {
+        // ...
+        LoginRequestMessage login_request = 4;
+        RegisterRequestMessage register_request = 5;
+        OkResponseMessage ok_response = 6;
+        DenyResponseMessage deny_response = 7;
+    }
+}
+```
+
+Now compile the protobuf file either by saving the file if you set up the VS Code extension, or by running the following command in project root (`/`):
+
+```bash
+protoc -I="shared" --go_out="server" "shared/packets.proto"
+```
+
+Now let's go ahead and create some helper functions to create these packets. We only need to worry about packets the server will be sending, so we don't need to create a helper function for the `LoginRequestPacket` and `RegisterRequestPacket`.
+
+```directory
+/server/pkg/packets/util.go
+```
+```go
+func NewDenyResponse(reason string) Msg {
+    return &Packet_DenyResponse{
+        DenyResponse: &DenyResponseMessage{
+            Reason: reason,
+        },
+    }
+}
+
+func NewOkResponse() Msg {
+    return &Packet_OkResponse{
+        OkResponse: &OkResponseMessage{},
+    }
+}
+```
+
+In case you forget, you might want to go ahead and run the Godobuf plug-in for Godot now too. Refer back to [the first post](/2024/11/09/godot-golang-mmo-intro#setting-up-the-godot-project) if you need a refresher.
+
+## Handling authentication packets on the server
+
+Now that we have the packets defined, we can start handling them on the server. We will do all that in our `Connected` state, and upon successful login or registration, we can transfer them to an `InGame` state, which we will create in the next post.
+
+First, we are going to need the `bcrypt` package to hash the passwords. Run the following command in your terminal to install the package:
+
+```bash
+cd server # If you are not already in the server directory
+go get golang.org/x/crypto/bcrypt
+```
+
+
+Next, let's ensure we have the necessary imports to the `connected.go` file:
+
+```directory
+/server/internal/server/states/connected.go
+```
+```go
+import (
+    // ...
+    "context"
+    "errors"
+    "strings"
+    // ...
+    "server/internal/server/db"
+    // ...
+    "golang.org/x/crypto/bcrypt"
+)
+```
+
+Now, let's just get rid of the chat handling logic we set up in the `HandleMessage` method, we can always rewrite it whenever we set up the in-game state. Instead, we are only interested in handling the login and register requests. Add the following code to the `HandleMessage` method:
+
+```directory
+/server/internal/server/states/connected.go
+```
+```go
+func (c *Connected) HandleMessage(senderId uint64, message packets.Msg) {
+    switch message := message.(type) {
+    case *packets.Packet_LoginRequest:
+        c.handleLogin(senderId, message)
+    case *packets.Packet_RegisterRequest:
+        c.handleRegister(senderId, message)
+    }
+}
+```
+
+It's going to get a bit cumbersome to always have to write `c.queries` and `c.dbCtx` every time we want to run a query, so let's quickly shorten their names by adding the following fields to the `Connected` struct:
+
+```directory
+/server/internal/server/states/connected.go
+```
+```go
+type Connected struct {
+    // ...
+    queries *db.Queries
+    dbCtx   context.Context
+    // ...
+}
+```
+
+Then, in the `SetClient` method, we can set these fields:
+
+```directory
+/server/internal/server/states/connected.go
+```
+```go
+func (c *Connected) SetClient(client server.ClientInterfacer) {
+    // ...
+    c.queries = client.DbTx().Queries
+    c.dbCtx = client.DbTx().Ctx
+}
+```
+
+Now it will be a bit easier to implement the `handleLogin` and `handleRegister` methods. Let's start with the `handleLogin` method:
+
+```directory
+/server/internal/server/states/connected.go
+```
+```go
+func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
+    if senderId != c.client.Id() {
+        c.logger.Printf("Received login message from another client (Id %d)\n", senderId)
+        return
+    }
+
+    username := message.LoginRequest.Username
+
+    genericFailMessage := packets.NewDenyResponse("Incorrect username or password")
+
+    user, err := c.queries.GetUserByUsername(c.dbCtx, strings.ToLower(username))
+    if err != nil {
+        c.logger.Printf("Error getting user %s: %v\n", username, err)
+        c.client.SocketSend(genericFailMessage)
+        return
+    }
+
+    err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(message.LoginRequest.Password))
+    if err != nil {
+        c.logger.Printf("User entered wrong password: %s\n", username)
+        c.client.SocketSend(genericFailMessage)
+        return
+    }
+
+    c.logger.Printf("User %s logged in successfully\n", username)
+    c.client.SocketSend(packets.NewOkResponse())
+}
+```
+
+We are first doing a bit of a sanity check to ensure that the message indeed originated from our client. I like to sprinkle these checks throughout the code just in case they pick up on anything, plus I think they do a good job communicating the intent of the code.
+
+Next, we are using our `GetUserByUsername` query we wrote and compiled earlier to see if the user exists in the database. If the query fails, we send a generic failure message back to the client. 
+If the user does exist, we use the `bcrypt` package to compare the password the user entered with the hashed password in the database. We send the same generic failure message if the password is incorrect, and a success message if the password is correct.
+
+The reason we are using a generic failure message is to prevent attackers from knowing if the username or password was incorrect. This is a common security practice to prevent attackers from brute-forcing usernames and passwords.
+
+Finally, notice we are using `strings.ToLower` when querying the database. This is because we will be storing the usernames in lowercase in the database, to avoid case-sensitivity issues. 
+
+Now, let's implement the `handleRegister` method:
+
+```directory
+/server/internal/server/states/connected.go
+```
+```go
+func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_RegisterRequest) {
+    if senderId != c.client.Id() {
+        c.logger.Printf("Received register message from another client (Id %d)\n", senderId)
+        return
+    }
+
+    username := strings.ToLower(message.RegisterRequest.Username)
+    err := validateUsername(message.RegisterRequest.Username)
+    if err != nil {
+        reason := fmt.Sprintf("Invalid username: %v", err)
+        c.logger.Println(reason)
+        c.client.SocketSend(packets.NewDenyResponse(reason))
+        return
+    }
+
+    _, err = c.queries.GetUserByUsername(c.dbCtx, username)
+    if err == nil {
+        c.logger.Printf("User already exists: %s\n", username)
+        c.client.SocketSend(packets.NewDenyResponse("User already exists"))
+        return
+    }
+
+    genericFailMessage := packets.NewDenyResponse("Error registering user (internal server error) - please try again later")
+
+    // Add new user
+    passwordHash, err := bcrypt.GenerateFromPassword([]byte(message.RegisterRequest.Password), bcrypt.DefaultCost)
+    if err != nil {
+        c.logger.Printf("Failed to hash password: %s\n", username)
+        c.client.SocketSend(genericFailMessage)
+        return
+    }
+
+    _, err = c.queries.CreateUser(c.dbCtx, db.CreateUserParams{
+        Username:     username,
+        PasswordHash: string(passwordHash),
+    })
+
+    if err != nil {
+        c.logger.Printf("Failed to create user %s: %v\n", username, err)
+        c.client.SocketSend(genericFailMessage)
+        return
+    }
+
+    c.client.SocketSend(packets.NewOkResponse())
+
+    c.logger.Printf("User %s registered successfully\n", username)
+}
+```
+
+This one's a little longer, but no more complicated than the `handleLogin` method. We are first doing the same sanity check to ensure the message originated from our client, and then we are validating the username with a helper function we will define in a moment. If the username is invalid, we send a failure message back to the client.
+
+Next, we are checking if the user already exists in the database. If they do, we send a failure message back to the client.
+
+Finally, we hash the password using `bcrypt` and insert the new user into the database using the `CreateUser` query we wrote earlier.
+
+The only piece missing is the `validateUsername` function. Add the following code to the `connected.go` file:
+
+```directory
+/server/internal/server/states/connected.go
+```
+```go
+func validateUsername(username string) error {
+    if len(username) <= 0 {
+        return errors.New("empty")
+    }
+    if len(username) > 20 {
+        return errors.New("too long")
+    }
+    if username != strings.TrimSpace(username) {
+        return errors.New("leading or trailing whitespace")
+    }
+    return nil
+}
+```
+
+Feel free to impose more restrictions on the username if you like, but this is a good start. We are done with the server-side code for now, so let's move on to the client-side code and start sending these new packets!
+
+## Building a login and register screen in Godot
+
+In our Godot project, we can build a login and register form in a new scene we will create called `Connected`. This scene will be switched to from the `Entered` scene after a connection is established.
+
+Let's create a new folder at `res://states/connected` and add a new scene called `connected.tscn` with a **Node**-type root node called `Connected`.
+![Connected scene](/assets/images/godot-golang-mmo-part-5/connected-scene.png)
+
+Add the following nodes underneath the root `Connected` node:
+- **CanvasLayer** - called `UI`
+    - **VBoxContainer**
+    - **LineEdit** - called `Username`
+    - **LineEdit** - called `Password`
+    - **HBoxContainer**
+        - **Button** - called `LoginButton` with the text "Login"
+        - **Button** - called `RegisterButton` with the text "Register"
+    - **Log (log.gd)**
+  
+Position the **VBoxContainer** by using the **VCenter Wide** anchor preset, and set the **Custom Minimum Size**'s **x** value to 300 or so. This will center the form in the middle of the screen and give it a bit of width.
+
+Set the minimum height of the **Log** node to 200, too.
+
+![Connected scene](/assets/images/godot-golang-mmo-part-5/connected-scene-nodes.png)
+![alt text](image.png)
+
+It's not the prettiest form, but it will do for now. We can always come back and make it look better later.
+
+Now, let's add some logic to the `connected.gd` script to handle the login and register buttons. Add the following code to the script:
+
+```directory
+/client/states/connected/connected.gd
+```
+```go
+extends Node
+
+const packets := preload("res://packets.gd")
+
+var _action_on_ok_received: Callable
+
+@onready var _username_field := $UI/VBoxContainer/Username as LineEdit
+@onready var _password_field := $UI/VBoxContainer/Password as LineEdit
+@onready var _login_button := $UI/VBoxContainer/HBoxContainer/LoginButton as Button
+@onready var _register_button := $UI/VBoxContainer/HBoxContainer/RegisterButton as Button
+@onready var _log := $UI/VBoxContainer/Log as Log
+
+func _ready() -> void:
+    WS.packet_received.connect(_on_ws_packet_received)
+    WS.connection_closed.connect(_on_ws_connection_closed)
+    _login_button.pressed.connect(_on_login_button_pressed)
+    _register_button.pressed.connect(_on_register_button_pressed)
+
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    var sender_id := packet.get_sender_id()
+    if packet.has_deny_response():
+        var deny_response_message := packet.get_deny_response()
+        _log.error(deny_response_message.get_reason())
+    elif packet.has_ok_response():
+        _action_on_ok_received.call()
+    
+func _on_ws_connection_closed() -> void:
+    pass
+    
+func _on_login_button_pressed() -> void:
+    var packet := packets.Packet.new()
+    var login_request_message := packet.new_login_request()
+    login_request_message.set_username(_username_field.text)
+    login_request_message.set_password(_password_field.text)
+    WS.send(packet)
+    _action_on_ok_received = func(): GameManager.set_state(GameManager.State.INGAME)
+    
+func _on_register_button_pressed() -> void:
+    var packet := packets.Packet.new()
+    var register_request_message := packet.new_register_request()
+    register_request_message.set_username(_username_field.text)
+    register_request_message.set_password(_password_field.text)
+    WS.send(packet)
+    _action_on_ok_received = func(): _log.success("Registration successful")
+```
+
+None of this should be new to you if you've been following along with the series. We are just sending our new packets whenever the respective buttons are pressed. We are using the autoloaded `websocket_client.gd` script which we have named `WS` in the project settings.
+
+The `_action_on_ok_received` variable is a callback function for when the server sends an `OkResponsePacket`. We are using this to switch to the `InGame` state when the user logs in successfully, and to log a success message when the user registers successfully.
+
+Now, all that's left is to register our new state with the `GameManager`, and change to our new `Connected` state when the client is connected. 
+
+Open `game_manager.gd` and add the following code:
+
+```directory
+/client/game_manager.gd
+```
+```gdscript
+enum State {
+    # ...
+    CONNECTED,
+    # ...
+}
+
+var _states_scenes: Dictionary[State, String] = {
+    # ...
+    State.CONNECTED: "res://states/connected/connected.tscn",
+    # ...
+}
+```
+
+Open the `entered.gd` script and change the line that switches to the `InGame` state to instead switch to the `Connected` state:
+
+```directory
+/client/states/entered/entered.gd
+```
+```gdscript
+func _handle_id_msg(sender_id: int, id_msg: packets.IdMessage) -> void:
+    # ...
+    GameManager.set_state(GameManager.State.CONNECTED)
+```
+
+Now, when you run the server and client, you should be able to log in and register users! Try getting the password wrong, or registering a user that already exists, and see what happens. You should see the appropriate messages in the log.
+
+If you've made it this far, congratulations! This is pretty much all the groundwork laid for the rest of the project to be smooth sailing.
+
+You should be proud of yourself for getting this far. We have covered a lot of ground so far in the series, from setting up the project, to working with protocol buffers, to creating state machines, database connections, and authentication systems. It is a lot of work, but we are doing great!
+
+We will be transitioning into the real gameplay logic in the [next post](/2024/11/10/godot-golang-mmo-part-6), where we will be creating the `InGame` state and handling player movement and chat. So don't go anywhere!
+
+--- 
+
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.

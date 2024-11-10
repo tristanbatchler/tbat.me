@@ -187,7 +187,26 @@ You should see some new files appear in your `server` folder under `pkg/`:
             packets.pb.go
 ```
 
-This is where our generated code will live. We don't even have to look at it, but feel free to take a peek if you're curious. The important thing is that we can now use it by importing the `packets` package. Let's try it out in our `main.go` file.
+> If you feel like it, you can install the [vscode-proto3](https://marketplace.visualstudio.com/items?itemName=zxh404.vscode-proto3) extension for Visual Studio Code. It will give you syntax highlighting and some other useful features for `.proto` files. One such feature is the ability to save the file and have it automatically compile the generated code. For that to work, you can add a `settings.json` file to your `.vscode` folder with the following content:
+> <details markdown="1">
+> <summary>Click to expand</summary>
+> ```directory
+> /.vscode/settings.json
+> ```
+> ```json
+> {
+>     "protoc": {
+>         "path": "protoc",
+>         "compile_on_save": true,
+>         "options": [
+>             "-I=c:\\Users\\<your name>\\Desktop\\code\\RadiusRumble\\shared",
+>             "--go_out=server",
+>         ]
+>     }
+> }
+> ```
+> </details>
+> Unfortunately, it looks like you do need to specify the absolute path to the `.proto` file, at least on Windows, **with a lowercase drive letter**. This is a bit of a pain, but it's better than nothing.
 
 ## Making packets in Go
 
@@ -361,6 +380,7 @@ You should see a new **Godobuf** tab appear in the bottom left panel, underneath
    ![Godobuf output](/assets/css/images/posts/2024/11/09/godobuf-output.png)
 4. Click on **Compile** and you should see a popup appear saying **Compile success done** if it worked correctly
     ![Godobuf compile](/assets/css/images/posts/2024/11/09/godobuf-compile.png)
+    If you see an error, one thing I found is for some reason, it doesn't like it if you name a field `message`, which is why I changed it to `msg` in the `.proto` file. Check to see if you have done the same
 
 Again, you can take a look at the generated code if you're curious. It should appear in the **FileSystem** tab now, under `res://packets.gd`.
 

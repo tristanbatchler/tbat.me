@@ -337,7 +337,9 @@ func _handle_id_msg(sender_id: int, id_msg: packets.IdMessage) -> void:
 
 You can see this is essentially the same as `main.gd`, so we don't need to go over it again. The only difference is that we are setting the client ID in the `GameManager` singleton when we receive it, and then transitioning to the **InGame** state.
 
-Now, we can finish gutting the `main.gd` script and transfer its chatroom logic to a new `ingame.gd` script. First, let's add a **LineEdit** node to the `ingame.tscn` scene's **UI** node so that it matches what we had in `main.gd`. Remember to set the anchors the same way, to your liking. Then, attach a new script to the `ingame.tscn` scene's root node at `res://states/ingame/ingame.gd` with the following code:
+Now, we can finish gutting the `main.gd` script and transfer its chatroom logic to a new `ingame.gd` script. Also make sure to remove all the child nodes from the root node of the `main.tscn` scene, as we won't be needing them anymore.
+
+First, let's add a **LineEdit** node to the `ingame.tscn` scene's **UI** node so that it matches what we had in `main.gd`. Remember to set the anchors the same way, to your liking. Then, attach a new script to the `ingame.tscn` scene's root node at `res://states/ingame/ingame.gd` with the following code:
 ```directory
 /client/states/ingame/ingame.gd
 ```
