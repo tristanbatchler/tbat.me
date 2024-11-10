@@ -227,7 +227,7 @@ table {
 }
 
 // Fix for whack looking syntax highlighting in `@onready var...` GDScript
-.language-gd {
+.language-gd, .language-gdscript {
     span.err {
         color: #f92672;
         background-color: $void;
