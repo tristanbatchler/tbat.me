@@ -685,7 +685,7 @@ For reference, here is the full `main.gd` script in its entirety:
 
 <details markdown="1">
 
-<summary>main.gd</summary>
+<summary>Click to expand</summary>
 
 ```directory
 /client/main.gd
