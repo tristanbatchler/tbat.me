@@ -241,4 +241,156 @@ func (c *WebSocketClient) Close(reason string) {
 }
 ```
 
-Yet again, we've made a lot of changes, so it's a good idea to restart the server and make sure everything is still working as expected. If it is, congratulations! You've successfully implemented a basic state machine system for the server side of our MMO project. 
+Yet again, we've made a lot of changes, so it's a good idea to restart the server and make sure everything is still working as expected. If it is, congratulations! You've successfully implemented a basic state machine system for the server side of our MMO project. Let's go ahead and do the same for the client side.
+
+## Creating a state manager in Godot
+
+In Godot, it will be useful to break our different areas of logic into separate scenes and scripts. Obviously, we will need a way to transition between these scenes, so we would benefit from an autoload/singleton script that can do all that for us, and we can simply call methods on it to change the game's state from anywhere in the game. If we're going to create a singleton for managing the game's state, we might as well let it hold some other things we might need, like the client's ID too.
+
+Create a new script called `game_manager.gd` with the following code:
+
+```directory
+/client/game_managewr.gd
+```
+```gd
+extends Node
+
+enum State {
+    ENTERED,
+    INGAME,
+}
+
+var _states_scenes: Dictionary[State, String] = {
+    State.ENTERED: "res://states/entered/entered.tscn",
+    State.INGAME: "res://states/ingame/ingame.tscn",
+}
+
+var client_id: int
+var _current_scene_root: Node
+
+func set_state(state: State) -> void:
+    if _current_scene_root != null:
+        _current_scene_root.queue_free()
+
+    var scene: PackedScene = load(_states_scenes[state])
+    _current_scene_root = scene.instantiate()
+
+    add_child(_current_scene_root)
+```
+
+This script serves to expose three things globally:
+1. The client's ID
+2. An enum of the game's states
+3. A method to change the game's state
+
+The first two are pretty self-explanatory. The third has the effect that, when called from another scene, it will instantiate whatever scene is associated with the state passed to it, and add it as a child of the autoload/singleton node which is automatically placed in the root of the scene tree.
+
+The way we've set up this script this means is if we register it as a global autoload called `GameManager` and create some scenes for the different states of the game, we can simply call `GameManager.set_state(GameManager.State.ENTERED)` from `main.gd`, for instance, to instance our `entered.tscn` scene and add it to the scene tree. It would end up looking like this in the remote scene tree:
+![Godot scene tree](/assets/css/images/posts/2024/11/10/godot_scene_tree.png)
+
+This is a very powerful pattern, and it will allow us to keep our game's logic organized and maintainable.
+
+By the way, the **Entered** state will be the initial state of the game, and will be responsible for connecting to the server and listening for a client ID and transitioning to the **InGame** state when it receives the ID. The **InGame** state will be responsible for running the chatroom logic, for now, but will be expanded upon later, alongside new states for things like browsing menus, creating characters, etc.
+
+So let's go ahead and register our new script as an autoload. We've done this before with the `websocket_client.gd` script, but as a reminder, you can do this by going to **Project > Project Settings > Gloabls**, ensuring you are on the **Autoload** tab, and entering `res://game_manager.gd` into the **Path** field, and **GameManager** into the **Node Name** field. Then click **Add** and **Close**.
+
+Now let's actually create the scenes for the different states of the game. Create a new folder called `states` in the root of the project, and inside that folder create two new folders called `entered` and `ingame`. Inside each of these folders, create a new scene called `entered.tscn` and `ingame.tscn`, respectively, both of which should have a root type of **Node**:
+![Godot scene tree](/assets/css/images/posts/2024/11/10/godot_states.png)
+
+For now, let's just add a **CanvasLayer** node to each scene called **UI**, and our custom **Log** node as a child of each canvas layer, making sure to let it take up the full size of the screen with the **Full Rect** anchor preset.
+
+We can now attach a script to the `entered.tscn` scene's root node that will connect to the server and listen for the client ID. Create a new script at `res://states/entered/entered.gd` with the following code which is basically just copy-and-pasted from `main.gd`:
+
+```directory
+/client/states/entered/entered.gd
+```
+```gd
+extends Node
+
+const packets := preload("res://packets.gd")
+
+@onready var _log := $UI/Log as Log
+
+func _ready() -> void:
+    WS.connected_to_server.connect(_on_ws_connected_to_server)
+    WS.connection_closed.connect(_on_ws_connection_closed)
+    WS.packet_received.connect(_on_ws_packet_received)
+
+    _log.info("Connecting to server...")
+    WS.connect_to_url("ws://localhost:8080/ws")
+
+func _on_ws_connected_to_server() -> void:
+    _log.info("Connected to server")
+
+func _on_ws_connection_closed() -> void:
+    _log.info("Connection closed")
+
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    var sender_id := packet.get_sender_id()
+    if packet.has_id():
+        _handle_id_msg(sender_id, packet.get_id())
+
+func _handle_id_msg(sender_id: int, id_msg: packets.IdMessage) -> void:
+    GameManager.client_id = id_msg.get_id()
+    GameManager.set_state(GameManager.State.INGAME)
+```
+
+You can see this is essentially the same as `main.gd`, so we don't need to go over it again. The only difference is that we are setting the client ID in the `GameManager` singleton when we receive it, and then transitioning to the **InGame** state.
+
+Now, we can finish gutting the `main.gd` script and transfer its chatroom logic to a new `ingame.gd` script. First, let's add a **LineEdit** node to the `ingame.tscn` scene's **UI** node so that it matches what we had in `main.gd`. Remember to set the anchors the same way, to your liking. Then, attach a new script to the `ingame.tscn` scene's root node at `res://states/ingame/ingame.gd` with the following code:
+```directory
+/client/states/ingame/ingame.gd
+```
+```gd
+extends Node
+
+const packets := preload("res://packets.gd")
+
+@onready var _line_edit := $UI/LineEdit as LineEdit
+@onready var _log := $UI/Log as Log
+
+func _ready() -> void:
+    WS.connection_closed.connect(_on_ws_connection_closed)
+    WS.packet_received.connect(_on_ws_packet_received)
+
+    _line_edit.text_submitted.connect(_on_line_edit_text_entered)
+
+func _on_ws_connection_closed() -> void:
+    _log.error("Connection closed")
+
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    var sender_id := packet.get_sender_id()
+    if packet.has_chat():
+        _handle_chat_msg(sender_id, packet.get_chat())
+
+func _handle_chat_msg(sender_id: int, chat_msg: packets.ChatMessage) -> void:
+    _log.chat("Client %d" % sender_id, chat_msg.get_msg())
+
+func _on_line_edit_text_entered(text: String) -> void:
+    var packet := packets.Packet.new()
+    var chat_msg := packet.new_chat()
+    chat_msg.set_msg(text)
+    
+    var err = WS.send(packet)
+    if err:
+        _log.error("Error sending chat message")
+    else:
+        _log.chat("You", text)
+    _line_edit.text = ""
+```
+
+Again, this is just a migration of the chatroom logic from `main.gd`, so we don't need to go over it again. This lets us completely get rid of everything in `main.gd` because now its only job is to set the game's state to **Entered** when the game starts.
+
+```directory
+/client/main.gd
+```
+```gd
+extends Node
+
+func _ready() -> void:
+    GameManager.set_state(GameManager.State.ENTERED)
+```
+
+Now, if you run the game, you should see the chatroom working as expected, but now with the game's logic broken up into separate scenes and scripts. Congratulations! You have implemented a state machine on both the client and server sides of our MMO project. This is some much-needed organization that will pave the way to more complex features in the future.
+
+Stay tuned for the [next part](/2024/11/10/godot-golang-mmo-part-5), where we will set up a database and implement user registration and login functionality. Until then, happy coding!
