@@ -136,7 +136,7 @@ As a quick reference, this is what your server folder structure should look like
 
 ## Refactoring the websocket client interfacer
 
-You should see errors comaplining that our `WebSocketClient` type doesn't implement `ClientInterfacer` because it doesn't have a `SetState` method. Let's fix that by adding a `state` field to our `WebSocketClient` struct:
+You should see errors complaining that our `WebSocketClient` type doesn't implement `ClientInterfacer` because it doesn't have a `SetState` method. Let's fix that by adding a `state` field to our `WebSocketClient` struct:
 
 ```directory
 /server/internal/server/clients/websocketclient.go
