@@ -393,4 +393,8 @@ func _ready() -> void:
 
 Now, if you run the game, you should see the chatroom working as expected, but now with the game's logic broken up into separate scenes and scripts. Congratulations! You have implemented a state machine on both the client and server sides of our MMO project. This is some much-needed organization that will pave the way to more complex features in the future.
 
-Stay tuned for the [next part](/2024/11/10/godot-golang-mmo-part-5), where we will set up a database and implement user registration and login functionality. Until then, happy coding!
+Stay tuned for the [next part](/2024/11/10/godot-golang-mmo-part-5), where we will set up a database and implement user registration and login functionality. I hope to see you there!
+
+---
+
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
