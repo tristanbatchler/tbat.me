@@ -26,3 +26,8 @@ RichTextLabel
 Rect
 BBCode
 LineEdit
+enum
+InGame
+Gloabls
+GameManager
+CanvasLayer
