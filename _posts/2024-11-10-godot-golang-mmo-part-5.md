@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS users (
 ```
 
 This piece of SQL code will create a table in our database called `users`, which will have this structure:
+
 | Column Name | Data Type | Description |
 | --- | --- | --- |
 | id | int | A unique identifier for the user |
