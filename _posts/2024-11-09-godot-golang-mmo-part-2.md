@@ -1,16 +1,25 @@
 ---
-title: Godot 4 Golang MMO Part 2
-description: How to set up a websocket game server in Go
+title: Building a WebSocket game server in Go for a Godot 4 MMO
+description: Learn how to set up a WebSocket server in Go to power multiplayer functionality in your Godot 4 MMO.
 redditurl: 
 ---
 
-Let's send some packets! In [the last post](/2024/11/09/godot-golang-mmo-part-1), we set up our project, installed dependencies, and created our first packets. Now we will set up a simple server in Go that can await connections and process them in a websockets hub.
+Let's send some packets! In [the last post](/2024/11/09/godot-golang-mmo-part-1), we laid the foundation for our Godot 4 MMO project: we set up our project, installed dependencies, and created our first packets. Now we will set up a simple WebSocket server in Go that can await connections and process them in a websockets hub.
 
 ## Introducing the server architecture
 
-The server will deal with two types: those implementing the `ClientInterfacer` (in our case, we will create a `WebSocketClient` type), and `Hub`. The server passes incoming connections to the hub, which in turn creates a new client interfacer. This is on a per-connection basis. A client interfacer acts as an intermediary between the Godot websocket connection and the hub. The hub maintains a set of registered clients and broadcasts messages to them.
+### WebSockets
+For our goal of creating a cross-platform MMO, it is important to consider the technologies and architecture we will use. WebSockets are a great choice for us, as they are simple to use and well-supported across all platforms, including the web. The only downside is that they are not well-suited for very fast-pasted games, because the protocol relies on a TCP connection and will ensure that packets are delivered in order. Contrast this with UDP, which is used in most fast-paced games, and will drop packets if they are not delivered in time. However, you will find that even for a mildly fast-paced game like what we are building, and what most online RPG games are like, WebSockets are more than adequate. The only other viable choice for us would be WebRTC, but it is so complex that this series would be pretty much inaccessible to most people.
 
-The application runs one goroutine for the hub and two goroutines for each client interfacer. A **goroutine** is basically a function that can effortlessly run in a lightweight thread, allowing your main code to flow uninterrupted. The goroutines can safely communicate with each other using **channels**, a fundamental concept in Go. The hub has channels for registering and unregistering client interfacers, and broadcasting messages. A client interfacer has a channel of outbound messages, as well as two goroutines: one that reads messages from this channel and writes the messages to the websocket, and another that reads messages from the websocket and processes them.
+### Hub and spoke architecture
+The server will deal with two types: those implementing the `ClientInterfacer` (in our case, we will create a `WebSocketClient` type), and `Hub`. The client interfacer is a flexible type that standardizes how each client connects and communicates with the hub, enabling us to implement other client types in the future if needed. The server passes incoming connections to the hub, which in turn creates a new client interfacer. This is on a per-connection basis. A client interfacer acts as an intermediary between the Godot websocket connection and the hub. The hub maintains a set of registered clients and broadcasts messages to them.
+
+The application runs one goroutine for the hub and two goroutines for each client interfacer. 
+> <img class="info" src="/assets/images/info.png" /> A **goroutine** is basically a function that can effortlessly run in a lightweight thread, allowing your main code to flow uninterrupted. The goroutines can safely communicate with each other using **channels**: a way to synchronize data between goroutines without the need for locks or mutexes.
+
+The hub has channels for registering and unregistering client interfacers, and broadcasting messages. A client interfacer has a channel of outbound messages, as well as two goroutines:
+1. one for waiting and reading messages from the outbound messages channel and writing them to the websocket, and
+2. another for waiting and reading messages from the websocket and processing them accordingly.
 
 Here is a diagram showing two Godot clients connected to the server.
 ![Server architecture](/assets/css/images/posts/2024/11/09/architecture.svg)
@@ -129,7 +138,7 @@ The hub's `Run` function is the main loop of the hub, where it listens for messa
 
 ## Creating the WebSocketClient
 
-Before we can create our websockets implementation of the client interfacer, we need to install a package to help us work with websockets. We will be using the [Gorilla Websocket](https://github.com/gorilla/websocket) package, which is a popular package for working with websockets in Go. To install it, run the following command in your terminal:
+Before we can create our websockets implementation of the client interfacer, we need to install a package to help us work with websockets. We will be using the [Gorilla WebSocket](https://github.com/gorilla/websocket) package, which is a popular package for working with websockets in Go. To install it, run the following command in your terminal:
 
 ```bash
 cd server # If you're not already in the server directory
@@ -360,7 +369,7 @@ func (c *WebSocketClient) WritePump() {
 }
 ```
 
-Here's the other function that talks directly to Godot. It reads off packets we've queued in the send channel, converts them to bytes, and sends them down the wire.
+Here's the other function that talks directly to Godot. It reads off packets we've queued in the send channel, converts them to bytes, and sends them down the wire. It is important to note that we are creating a **binary** message writer, since protobuf messages are binary. We also append a newline character to the end of every message to help prevent messages from "sticking" together.
 
 ```directory
 /server/internal/server/clients/websocketclient.go
@@ -430,13 +439,13 @@ func main() {
 
 This is all pretty in-line with the diagram we saw at the beginning of this post. The only thing to note is that this is a generic TCP server, but the handler we have defined for the `/ws` route will upgrade the connection to a websocket connection. This is where we will be sending our Godot clients.
 
-We can now run the server by hitting **F5** in VS Code, or running `go run cmd/main.go` in the terminal. If you see the the following output in the debug console, then you're good to go:
+We can now run the server by hitting **F5** in VS Code, or running `go run cmd/main.go` in the terminal. If you see the following output in the debug console, then you're good to go:
 ```
 2024/11/09 12:00:58 Starting server on :8080
 2024/11/09 12:00:58 Awaiting client registrations
 ```
 
-This is a good place to stop for now. In [the next post](/2024/11/09/godot-golang-mmo-part-3), we will set up the Godot client to connect to the server and send packets.
+This is a good place to stop for now. In [the next post](/2024/11/09/godot-golang-mmo-part-3), we'll integrate the Godot client with our server, allowing it to establish connections and send packets, bringing us one step closer to a functional multiplayer game. Stay tuned!
 
 ---
 

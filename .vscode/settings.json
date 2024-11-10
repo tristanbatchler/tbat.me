@@ -2,12 +2,20 @@
     "cSpell.words": [
         "chatrooms",
         "devs",
+        "gdscript",
+        "Godobuf",
         "Godotbuf",
         "libprotoc",
+        "LOCALAPPDATA",
+        "oneof",
         "Println",
+        "proto",
+        "Protobuf",
         "protoc",
         "Pythonic",
         "redditurl",
-        "sqlc"
+        "sqlc",
+        "tscn",
+        "Unmarshal"
     ]
 }
