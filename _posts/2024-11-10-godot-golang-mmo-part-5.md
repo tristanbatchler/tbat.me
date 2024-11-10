@@ -30,7 +30,7 @@ cd server # If you are not already in the server directory
 go get modernc.org/sqlite
 ```
 
-Note that this package is a pure-Go implementation of the SQLite3 database engine, which was originally written in C. This means we don't need to have a C compiler installed, or run `cgo` to compile the package. On the other hand though, the C version is faster, so when deploying to production, you may want to consider swapping this one out for `github.com/mattn/go-sqlite3`. The only reason we are using `modernc.org/sqlite` is because it is easier to install and use, and is more than enough for our needs.
+Note that this package is a pure-Go implementation of the SQLite3 database engine, which was originally written in C. This means we don't need to have a C compiler installed, or run `cgo` to compile the package. On the other hand though, the C version is faster, so when deploying to production, you may want to consider swapping this one out for `github.com/mattn/go-sqlite3`. The only reason we are using `modernc.org/sqlite` is that it is easier to install and use, and is more than enough for our needs.
 
 Now, we need to create some config files for `sqlc` to use when generating our Go code. 
 1. Create a new directory in the `/server/internal/server/` directory called `db/`
@@ -273,7 +273,7 @@ func (h *Hub) Run() {
 }
 ```
 
-Now, when you run the server, the database should be created and you will find it at `/server/cmd/db.sqlite`. If you see this file, and the output of the server does not contain any errors, you have successfully created the database and generated the schema!
+Now, when you run the server, the database should be created, and you will find it at `/server/cmd/db.sqlite`. If you see this file, and the output of the server does not contain any errors, you have successfully created the database and generated the schema!
 
 This is great and all, but how are we supposed to actually interact with the database? 
 
