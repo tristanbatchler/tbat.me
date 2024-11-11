@@ -4,7 +4,15 @@ description: Time to add a new state to our game server and handle player creati
 redditurl: 
 ---
 
-Welcome back to the Godot 4 + Golang MMO series. In [the last post](/posts/2024/11/10/godot-golang-mmo-pasrt-5), we finally finished laying down the groundwork with the database connections. Now it's time to add some much-needed gameplay to our MMO. We'll start by adding a new state to our server called `InGame`, make some new packets, and start processing them.
+Welcome back to the Godot 4 + Golang MMO series. In [the last post](/posts/2024/11/10/godot-golang-mmo-pasrt-5), we finally finished laying down the groundwork with the database connections. Now it's time to add some much-needed gameplay to our MMO. 
+
+Here is a preview of what we will be adding in this post:
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/11/output.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+We'll start by adding a new state to our server called `InGame`, make some new packets, and start processing them.
 
 ## Players
 
@@ -336,11 +344,11 @@ There is quite a lot happening here, so let's break it down:
 - The `_draw` function is called just once, after `_ready`, and this is where we can draw the player's hitbox. Whenever we update the player's radius, we will need to remember to call `queue_redraw()` to force the `_draw` function to be called again.
 
 Now that we have a way to add a new player to the game, let's go ahead and get the `InGame` state to listen for a new player message from the server and do just that. But first, where will we add the player to, exactly? We need to create a new **Node2D** to the **InGame** scene called **World**. The `res://states/ingame/ingame.tscn` scene should look like this:
-* **InGame** (Node)
-  * **World** (Node2D)
-  * **UI** (CanvasLayer)
+* **Node** - called `InGame`
+  * **Node2D** - called `World`
+  * **CanvasLayer** - called `UI`
     * **LineEdit**
-    * **Log** (log.tscn)
+    * **Log (log.gd)**
 
 Now we can go ahead and modify the `ingame.gd` script to add new players to the world.
 
@@ -382,3 +390,19 @@ func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> vo
 This is fairly straightforward now that we have a feel for how listen for incoming packets, get their contents. We are using the static `instantiate` function of the `Actor` script to create a new instance of the `Actor` scene, and then adding it as a child of the `World` node. 
 
 Now, when you run the server and connect to it, you should see a new player appear in the game world. It's hard to tell if the player is moving though, since the background is just a gray screen. Let's add a background to the game world.
+
+## Adding a background
+
+Create a new folder at `res://resources/` and import the following image into the folder as `floor.svg` (or you can make your own):
+![floor.svg](/assets/css/images/posts/2024/11/11/floor.svg)
+> You can download the image by right-clicking on it and selecting **Save image as** and save it to `/client/resources`.
+
+Now, in the **InGame** scene, under the **World** Node2D, add a new **Sprite** node called `Floor`. Now make the following edits to the `Floor` sprite:
+1. Set the **Texture** property to `resources/floor.svg` (use the **Quick Load...** option in the drop-down)
+2. Tick the **Enabled** checkbox under **Region**
+3. Set the **Rect**'s **w** and **h** to `10000` each, under **Region**
+4. Choose **Enabled** for the **Repeat** property under **Texture**
+
+![Floor Sprite](/assets/css/images/posts/2024/11/11/floor_sprite.png)
+
+Now, when you run the game, you should see a tiled floor in the background. You should also see the player moving around the screen.
