@@ -54,7 +54,7 @@ body {
         color: $header;
     }
 
-    img {
+    img, video {
         height: auto;
         
         &, & + em {
