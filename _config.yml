@@ -31,9 +31,13 @@ defaults:
 plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-minifier
 
 highlighter: rouge
 
+
+jekyll-minifier:
+  compress_javascript: false # doesn't work, I am doing it manually
 
 title: "Tristan Batchler's home page"
 tagline: "A site for Tristan Batchler's details, and various computer science and maths blogs and articles"
