@@ -160,7 +160,7 @@ function draw() {
 3. Can you generalise this idea further by including a seconds hand?
 4. In your favourite programming language, write a program that takes the number of seconds since January 1st, 1970 (Unix time) and draws an accurate, realtime, clock.
 
-<script src="https://cdn.jsdelivr.net/npm/p5/lib/p5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
 <script>
 var width;
 var height;
