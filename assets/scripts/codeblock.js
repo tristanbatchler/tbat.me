@@ -26,7 +26,10 @@ codeBlocks.forEach(function (codeBlock) {
    Button.addEventListener('click', function () {
     var code = codeBlock.querySelector('code').innerText.trim();
 
-    code = code.replace(/\$/g, '');
+    // Strip leading $ from .language-bash blocks
+    if (codeBlock.classList.contains('language-bash')) {
+      code = code.replace(/^\$ /gm, '');
+    }
 
     window.navigator.clipboard.writeText(code);
 
