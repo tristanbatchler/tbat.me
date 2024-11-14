@@ -225,3 +225,13 @@ table {
         }
     }
 }
+
+mark {
+    background-color: $background;
+    color: $foreground;
+
+    &.highlight {
+        background-color: $accent;
+        color: $foreground;
+    }
+}

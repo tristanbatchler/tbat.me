@@ -20,7 +20,7 @@ Test your installation by running `go version` in your terminal. You should see 
 
 [The Godot website](https://godotengine.org) should detect your OS and provide you with the latest download link. One thing I love about Godot is that it doesn't require an installation, you can simply unzip the download wherever you like and run the executable!
 
-At the time of writing, Godot 4.4 is almost out. It has a feature I am excited to use, so I will be using the experimental release. You should use the latest stable release if you are reading this in the future.
+> At the time of writing, Godot 4.4 is almost out. It has a feature I am excited to use, so I will be using experimental release **[4.4-dev4](https://godotengine.org/download/archive/4.4-dev4)**. If you are reading this before 4.4 is release, you will have the smoothest experience following along with the experimental release as well. If you are reading this after 4.4 has been release, then please use the latest stable version.
 
 One thing to ensure is that you get the **Standard** version of Godot, not the .NET version. This allows us to code in GDScript in the built-in editor, which is what we will be doing for this project.
 
