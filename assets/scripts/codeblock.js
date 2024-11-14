@@ -9,34 +9,33 @@ $('div.language-bash code').each(function() {
   $(this).text(updatedLines.join('\n'));
 });
 
-
-// Add copy button to code blocks
+// Add copy button to all code blocks
 var codeBlocks = document.querySelectorAll('pre.highlight');
 codeBlocks.forEach(function (codeBlock) {
-  var  Button = document.createElement('button');
-   Button.className = 'copy-button';
-   Button.type = 'button';
-   Button.ariaLabel = 'Copy code to clipboard';
-   Button.innerText = 'Copy'
+  var button = document.createElement('button');
+  button.className = 'copy-button';
+  button.type = 'button';
+  button.ariaLabel = 'Copy code to clipboard';
+  button.innerText = 'Copy';
 
+  codeBlock.prepend(button);
 
-  codeBlock.prepend( Button);
-
-
-   Button.addEventListener('click', function () {
+  button.addEventListener('click', function () {
     var code = codeBlock.querySelector('code').innerText.trim();
 
-    code = code.replace(/\$/g, '');
+    // Check if the ancestor has the .language-bash class
+    if (codeBlock.parentElement && codeBlock.parentElement.parentElement &&
+        codeBlock.parentElement.parentElement.classList.contains('language-bash')) {
+      code = code.replace(/^\$ /gm, '');
+    }
 
     window.navigator.clipboard.writeText(code);
 
-
-     Button.innerText = 'Copied';
+    button.innerText = 'Copied';
     var fourSeconds = 4000;
 
-
     setTimeout(function () {
-       Button.innerText = 'Copy'
+      button.innerText = 'Copy';
     }, fourSeconds);
   });
 });

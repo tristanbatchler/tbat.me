@@ -250,7 +250,7 @@ In Godot, it will be useful to break our different areas of logic into separate 
 Create a new script called `game_manager.gd` with the following code:
 
 ```directory
-/client/game_managewr.gd
+/client/game_manager.gd
 ```
 ```gd
 extends Node
@@ -294,7 +294,7 @@ By the way, the **Entered** state will be the initial state of the game, and wil
 
 So let's go ahead and register our new script as an autoload. We've done this before with the `websocket_client.gd` script, but as a reminder, you can do this by going to **Project > Project Settings > Gloabls**, ensuring you are on the **Autoload** tab, and entering `res://game_manager.gd` into the **Path** field, and **GameManager** into the **Node Name** field. Then click **Add** and **Close**.
 
-Now let's actually create the scenes for the different states of the game. Create a new folder called `states` in the root of the project, and inside that folder create two new folders called `entered` and `ingame`. Inside each of these folders, create a new scene called `entered.tscn` and `ingame.tscn`, respectively, both of which should have a root type of **Node**:
+Now let's actually create the scenes for the different states of the game. Create a new folder called `states` in the root of the project, and inside that folder create two new folders called `entered` and `ingame`. Inside each of these folders, create a new scene called `entered.tscn` and `ingame.tscn`, respectively, both of which should have a root type of **Node** called **Entered** and **InGame** respectively.
 ![Godot scene tree](/assets/css/images/posts/2024/11/10/godot_states.png)
 
 For now, let's just add a **CanvasLayer** node to each scene called **UI**, and our custom **Log** node as a child of each canvas layer, making sure to let it take up the full size of the screen with the **Full Rect** anchor preset.
