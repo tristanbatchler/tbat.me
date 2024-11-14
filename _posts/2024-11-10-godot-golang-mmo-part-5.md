@@ -607,12 +607,12 @@ Let's create a new folder at `res://states/connected` and add a new scene called
 Add the following nodes underneath the root `Connected` node:
 - **CanvasLayer** - called `UI`
     - **VBoxContainer**
-    - **LineEdit** - called `Username`
-    - **LineEdit** - called `Password`
-    - **HBoxContainer**
-        - **Button** - called `LoginButton` with the text "Login"
-        - **Button** - called `RegisterButton` with the text "Register"
-    - **Log (log.gd)**
+      - **LineEdit** - called `Username`
+      - **LineEdit** - called `Password`
+      - **HBoxContainer**
+          - **Button** - called `LoginButton` with the text "Login"
+          - **Button** - called `RegisterButton` with the text "Register"
+      - **Log (log.gd)**
   
 Position the **VBoxContainer** by using the **VCenter Wide** anchor preset, and set the **Custom Minimum Size**'s **x** value to 300 or so. This will center the form in the middle of the screen and give it a bit of width.
 
@@ -622,7 +622,7 @@ Set the minimum height of the **Log** node to 200, too.
 
 It's not the prettiest form, but it will do for now. We can always come back and make it look better later.
 
-Now, let's add some logic to the `connected.gd` script to handle the login and register buttons. Add the following code to the script:
+Now, let's add some logic by attaching a `connected.gd` script to our **Connected** root node, which will handle the login and register buttons. Add the following code to the new script:
 
 ```directory
 /client/states/connected/connected.gd
