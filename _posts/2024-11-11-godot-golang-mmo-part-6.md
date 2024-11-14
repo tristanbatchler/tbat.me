@@ -4,7 +4,7 @@ description: Time to add a new state to our game server and handle player creati
 redditurl: 
 ---
 
-Welcome back to the Godot 4 + Golang MMO series. In [the last post](/posts/2024/11/10/godot-golang-mmo-pasrt-5), we finally finished laying down the groundwork with the database connections. Now it's time to add some much-needed gameplay to our MMO. 
+Welcome back to the Godot 4 + Golang MMO series. In [the last post](/posts/2024/11/10/godot-golang-mmo-part-5), we finally finished laying down the groundwork with the database connections. Now it's time to add some much-needed gameplay to our MMO. 
 
 Here is a preview of what we will be adding in this post:
 <video controls>
