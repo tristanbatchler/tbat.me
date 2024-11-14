@@ -24,11 +24,11 @@ func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
 }
 
 func (g *InGame) handleChat(senderId uint64, message *packets.Packet_Chat) {
-	if senderId == g.client.Id() {
-		g.client.Broadcast(message)
-	} else {
-		g.client.SocketSendAs(message, senderId)
-	}
+    if senderId == g.client.Id() {
+        g.client.Broadcast(message)
+    } else {
+        g.client.SocketSendAs(message, senderId)
+    }
 }
 ```
 
@@ -47,9 +47,9 @@ While we're talking about chat, we have the ability to access the player's name 
 
 ```gdscript
 func _handle_chat_msg(sender_id: int, chat_msg: packets.ChatMessage) -> void:
-	if sender_id in _players:
-		var actor := _players[sender_id]
-		_log.chat(actor.actor_name, chat_msg.get_msg())
+    if sender_id in _players:
+        var actor := _players[sender_id]
+        _log.chat(actor.actor_name, chat_msg.get_msg())
 ```
 
 ![I owe Adam Sandler $20 please send help](/assets/css/images/posts/2024/11/14/chatting-names.png)
@@ -68,14 +68,14 @@ Luckily, this isn't difficult because we already have `direction` and `speed` fi
 
 ```gdscript
 func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> void:
-	# ...
-	if actor_id not in _players:
-		# ...
-	else:
-		# ...
+    # ...
+    if actor_id not in _players:
+        # ...
+    else:
+        # ...
 
-		var msg_direction := player_msg.get_direction()
-		actor.velocity = msg_speed * Vector2.from_angle(msg_direction)
+        var msg_direction := player_msg.get_direction()
+        actor.velocity = msg_speed * Vector2.from_angle(msg_direction)
 ```
 
 And that's it! Now, the movement of other players should look much smoother.
@@ -100,8 +100,8 @@ First, let's add a new message type to our protocol buffers:
 message SporeMessage { uint64 id = 1; double x = 2; double y = 3; double radius = 4; }
 
 message Packet {
-	// ...
-	SporeMessage spore = 10;
+    // ...
+    SporeMessage spore = 10;
 }
 ```
 
@@ -113,14 +113,14 @@ Now, add a helper function to easily make a new `SporeMessage`:
 
 ```go
 func NewSpore(id uint64, spore *objects.Spore) Msg {
-	return &Packet_Spore{
-		Spore: &SporeMessage{
-			Id:     id,
-			X:      spore.X,
-			Y:      spore.Y,
-			Radius: spore.Radius,
-		},
-	}
+    return &Packet_Spore{
+        Spore: &SporeMessage{
+            Id:     id,
+            X:      spore.X,
+            Y:      spore.Y,
+            Radius: spore.Radius,
+        },
+    }
 }
 ```
 
@@ -132,9 +132,9 @@ This will give an error because we haven't defined the `objects.Spore` struct ye
 
 ```go
 type Spore struct {
-	X      float64
-	Y      float64
-	Radius float64
+    X      float64
+    Y      float64
+    Radius float64
 }
 ```
 
@@ -148,8 +148,8 @@ All of this is pretty standard stuff, so let's make sure we recompile our proto 
 
 ```go
 type SharedGameObjects struct {
-	// ...
-	Spores *objects.SharedCollection[*objects.Spore]
+    // ...
+    Spores *objects.SharedCollection[*objects.Spore]
 }
 ```
 
@@ -161,15 +161,15 @@ We'll need to modify the `NewHub` function to initialize the spores collection:
 
 ```go
 func NewHub() *Hub {
-	// ...
-	hub := &Hub{
-		// ...
-		SharedGameObjects: &SharedGameObjects{
-			// ...
-			Spores:  objects.NewSharedCollection[*objects.Spore](),
-		},
-	}
-	// ...
+    // ...
+    hub := &Hub{
+        // ...
+        SharedGameObjects: &SharedGameObjects{
+            // ...
+            Spores:  objects.NewSharedCollection[*objects.Spore](),
+        },
+    }
+    // ...
 }
 ```
 
@@ -185,11 +185,11 @@ Now, to the interesting stuff: let's add a new file to our `objects` package to 
 package objects
 
 import (
-	"math/rand/v2"
+    "math/rand/v2"
 )
 
 func SpawnCoords() (float64, float64) {
-	return rand.Float64() * 1000, rand.Float64() * 1000
+    return rand.Float64() * 1000, rand.Float64() * 1000
 }
 ```
 
@@ -203,15 +203,15 @@ Now, let's add a method to the `Hub` to spawn a spore:
 
 ```go
 import (
-	// ...
-	"math/rand/v2"
-	// ...
+    // ...
+    "math/rand/v2"
+    // ...
 )
 
 func (h *Hub) newSpore() *objects.Spore {
-	sporeRadius := max(rand.NormFloat64()*3+10, 5)
-	x, y := objects.SpawnCoords()
-	return &objects.Spore{X: x, Y: y, Radius: sporeRadius}
+    sporeRadius := max(rand.NormFloat64()*3+10, 5)
+    x, y := objects.SpawnCoords()
+    return &objects.Spore{X: x, Y: y, Radius: sporeRadius}
 }
 ```
 
@@ -227,12 +227,12 @@ const MaxSpores int = 1000
 // ...
 
 func (h *Hub) Run() {
-	// ...
-	log.Println("Placing spores...")
-	for i := 0; i < MaxSpores; i++ {
-		h.SharedGameObjects.Spores.Add(h.newSpore())
-	}
-	// ...
+    // ...
+    log.Println("Placing spores...")
+    for i := 0; i < MaxSpores; i++ {
+        h.SharedGameObjects.Spores.Add(h.newSpore())
+    }
+    // ...
 }
 ```
 
@@ -248,14 +248,14 @@ A good place to send the spores to the client would be the `OnEnter` method of t
 
 ```go
 func (g *InGame) OnEnter() {
-	// ...
-	// Send the spores to the client in the background
-	go func() {
-		g.client.SharedGameObjects().Spores.ForEach(func(sporeId uint64, spore *objects.Spore) {
-			time.Sleep(5 * time.Millisecond)
-			g.client.SocketSend(packets.NewSpore(sporeId, spore))
-		})
-	}()
+    // ...
+    // Send the spores to the client in the background
+    go func() {
+        g.client.SharedGameObjects().Spores.ForEach(func(sporeId uint64, spore *objects.Spore) {
+            time.Sleep(5 * time.Millisecond)
+            g.client.SocketSend(packets.NewSpore(sporeId, spore))
+        })
+    }()
 }
 ```
 
