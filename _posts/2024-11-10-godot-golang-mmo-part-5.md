@@ -427,7 +427,7 @@ import (
 )
 ```
 
-Now, let's just get rid of the chat handling logic we set up in the `HandleMessage` method, we can always rewrite it whenever we set up the in-game state. Instead, we are only interested in handling the login and register requests. Add the following code to the `HandleMessage` method:
+{% include highlight.html anchor="get-rid-of-chat-handling" text="Now, let's just get rid of the chat handling logic we set up in the <code>HandleMessage</code> method. We can always rewrite it whenever we set up the in-game state." %} Instead, we are only interested in handling the login and register requests. Add the following code to the `HandleMessage` method:
 
 ```directory
 /server/internal/server/states/connected.go
