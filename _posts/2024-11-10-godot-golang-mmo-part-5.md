@@ -234,7 +234,7 @@ type WebSocketClient struct {
     // ...
 }
 
-func NewWebSocketClient(conn *websocket.Conn, hub *server.Hub) *WebSocketClient {
+func NewWebSocketClient(hub *server.Hub, writer http.ResponseWriter, request *http.Request) (server.ClientInterfacer, error) {
     // ...
 
     c := &WebSocketClient{
@@ -716,7 +716,7 @@ If you've made it this far, congratulations! This is pretty much all the groundw
 
 You should be proud of yourself for getting this far. We have covered a lot of ground so far in the series, from setting up the project, to working with protocol buffers, to creating state machines, database connections, and authentication systems. It is a lot of work, but we are doing great!
 
-We will be transitioning into the real gameplay logic in the [next post](/2024/11/10/godot-golang-mmo-part-6), where we will be creating the `InGame` state and handling player movement and chat. So don't go anywhere!
+We will be transitioning into the real gameplay logic in the [next post](/2024/11/11/godot-golang-mmo-part-6), where we will be creating the `InGame` state and handling player movement and chat. So don't go anywhere!
 
 --- 
 
