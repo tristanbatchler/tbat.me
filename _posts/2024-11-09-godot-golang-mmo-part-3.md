@@ -563,7 +563,7 @@ func (c *WebSocketClient) Initialize(id uint64) {
 
 We are using the helper function we wrote in part 1 to easily craft the ID message. This is defined in `/server/pkg/packets/util.go`.
 
-Now, in the `ProcessMessage` method, we need to handle the chat message. Let's remove the echo functionality and add some logic to handle chat messages:
+Now, in the `ProcessMessage` method, we need to handle the chat message. Let's remove the echo functionality and {% include highlight.html anchor="add-chat-logic" text="add some logic to handle chat messages:" %}
 
 ```directory
 /server/internal/server/clients/websocket.go

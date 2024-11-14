@@ -186,7 +186,7 @@ We will need to add some new packets to send player information to the client, a
 /server/pkg/packets/packets.proto
 ```
 ```proto
-message PlayerMessage { uint64 id = 1; string name = 2; double x = 3; double y = 4; double radius = 5; double speed = 6; }
+message PlayerMessage { uint64 id = 1; string name = 2; double x = 3; double y = 4; double radius = 5; double direction = 6; double speed = 7; }
 message PlayerDirectionMessage { double direction = 1; }
 
 // ... 
@@ -212,16 +212,17 @@ We will also add a new helper function to your `utils.go` file:
 import "server/internal/server/objects"
 
 func NewPlayer(id uint64, player *objects.Player) Msg {
-    return &Packet_Player{
-        Player: &PlayerMessage{
-            Id:     id,
-            Name:   player.Name,
-            X:      player.X,
-            Y:      player.Y,
-            Radius: player.Radius,
-            Speed:  player.Speed,
-        },
-    }
+	return &Packet_Player{
+		Player: &PlayerMessage{
+			Id:        id,
+			Name:      player.Name,
+			X:         player.X,
+			Y:         player.Y,
+			Radius:    player.Radius,
+			Direction: player.Direction,
+			Speed:     player.Speed,
+		},
+	}
 }
 ```
 
