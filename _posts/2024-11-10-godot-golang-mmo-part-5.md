@@ -395,7 +395,7 @@ func NewOkResponse() Msg {
 }
 ```
 
-In case you forget, you might want to go ahead and run the Godobuf plug-in for Godot now too. Refer back to [the first post](/2024/11/09/godot-golang-mmo-intro#setting-up-the-godot-project) if you need a refresher.
+In case you forget, you might want to go ahead and run the Godobuf plug-in for Godot now too. Refer back to [the first post](/2024/11/09/godot-golang-mmo-part-1#setting-up-the-godot-project) if you need a refresher.
 
 ## Handling authentication packets on the server
 

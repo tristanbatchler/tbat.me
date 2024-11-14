@@ -374,7 +374,7 @@ First, let's install the Godobuf plugin.
 
 You should see a new **Godobuf** tab appear in the bottom left panel, underneath the scene tree, adjacent to the **FileSystem** tab. This is where we can input our `.proto` file and generate our code.
 
-1. Click on the **Godot** tab
+1. Click on the **Godobuf** tab
 2. Click on the **...** button under **Input protobuf file** and navigate up a level to your `shared/packets.proto` file. For some reason, it shows a warning that you will "overwrite" the file, but this is not the case. Just choose **OK**
 3. Click on the **...** button under **Output GDScript file**, enter simply `packets.gd` and click **OK**
    ![Godobuf output](/assets/css/images/posts/2024/11/09/godobuf-output.png)
