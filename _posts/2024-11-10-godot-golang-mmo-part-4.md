@@ -1,10 +1,10 @@
 ---
-title: Supercharging our Godot 4 Golang MMO with state machines
+title: §4 Supercharging our Godot 4 Golang MMO with state machines
 description: Harness the power of state machines to create a more robust and maintainable codebase for our scalable MMO project.
 redditurl: 
 ---
 
-So far we've been building our Godot 4 Golang MMO project with a focus on scalability and maintainability. Before implementing more complex features, now is a good time to add some more structure to our codebase. In this part, we'll implement a basic, yet powerful state machine system on both the client and server sides. This will allow us to manage the game's logic in a more organized and maintainable way. Without further ado, let's jump right in!
+[So far](/2024/11/09/godot-golang-mmo-part-3) we've been building our Godot 4 Golang MMO project with a focus on scalability and maintainability. Before implementing more complex features, now is a good time to add some more structure to our codebase. In this part, we'll implement a basic, yet powerful state machine system on both the client and server sides. This will allow us to manage the game's logic in a more organized and maintainable way. Without further ado, let's jump right in!
 
 ## Building on the client interfacer
 So far we've built a pretty good idea of what a client interfacer should look like, but there are definitely some features missing. One of these features is the ability to manage the client's state. But what **is** the client's state? In the context of our MMO, that could be things like "*is the client current in the game?*", "*is the client currently in a menu?*", "*is the client currently disconnected and trying to reconnect?*", and so on. 
@@ -395,7 +395,7 @@ func _ready() -> void:
 
 Now, if you run the game, you should see the chatroom working as expected, but now with the game's logic broken up into separate scenes and scripts. Congratulations! You have implemented a state machine on both the client and server sides of our MMO project. This is some much-needed organization that will pave the way to more complex features in the future.
 
-Stay tuned for the [next part](/2024/11/10/godot-golang-mmo-part-5), where we will set up a database and implement user registration and login functionality. I hope to see you there!
+Stay tuned for the <strong><a href="/2024/11/10/godot-golang-mmo-part-5" class="sparkle-less">the next post</a></strong>, where we will set up a database and implement user registration and login functionality. I hope to see you there!
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Creating a chatroom with Godot 4 for an MMO with Go
+title: §3 Creating a chatroom with Godot 4 for an MMO with Go
 description: Learn how to create a chatroom in Godot 4 for an MMO with Go using WebSockets and Protocol Buffers.
 redditurl: 
 ---
@@ -824,7 +824,7 @@ Now, if you restart the server and run the game, you should be able to type mess
 We've made great progress in building a functional chatroom for our MMO. Not only have we set up a real-time messaging system between the client and server, but we have also fixed a major issue with our server, created a custom data structure to handle client interfacer objects, and made our own custom log in Godot, which will be a useful tool for debugging and logging in the future.
 
 
-In [the next post](/2024/11/10/godot-golang-mmo-part-4), enhance the message handling logic on both the server and client sides by implementing state machines. This will set the stage for more complex game mechanics and help us build a more immersive and scalable game world. Don’t miss it – see you there!
+In <strong><a href="/2024/11/10/godot-golang-mmo-part-4" class="sparkle-less">the next post</a></strong>, enhance the message handling logic on both the server and client sides by implementing state machines. This will set the stage for more complex game mechanics and help us build a more immersive and scalable game world. Don’t miss it – see you there!
 
 ---
 

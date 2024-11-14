@@ -1,5 +1,5 @@
 ---
-title: "Setting Up Your Godot 4 MMO Project with Golang"
+title: "§1 Setting Up Your Godot 4 MMO Project with Golang"
 description: Learn the setup process for a Godot 4 MMO using a Golang backend, covering essential tools, packets, and basic server-client communication.
 redditurl: 
 ---
@@ -428,7 +428,7 @@ Hello, world!
 
 Now that is certainly an interesting hello world program! It is important to note the `proto.Unmarshal` function in Go is equivalent to the `from_bytes` function in Godot. Using the same byte array used in Go allows us to confirm that data is consistent across both platforms, validating our protocol implementation.
 
-Ok, so we can create packets in both Go and Godot, and have the means to convert them to/from bytes. So how do we send them to each other? Head on over to [the next post](/2024/11/09/godot-golang-mmo-part-2)! We'll set up a websocket server in Go, establish client connections, and exchange these packets in real-time.
+Ok, so we can create packets in both Go and Godot, and have the means to convert them to/from bytes. So how do we send them to each other? Head on over to <strong><a href="/2024/11/09/godot-golang-mmo-part-2" class="sparkle-less">the next post</a></strong>! We'll set up a websocket server in Go, establish client connections, and exchange these packets in real-time.
 
 ---
 

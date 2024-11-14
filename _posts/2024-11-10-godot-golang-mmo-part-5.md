@@ -1,5 +1,5 @@
 ---
-title: Adding a database to your Godot 4 + Golang MMO to store user accounts
+title: §5 Adding a database to your Godot 4 + Golang MMO to store user accounts
 description: How to setup an authentication system for user accounts in a MMO game using a SQLite database, with Golang and Godot 4.
 redditurl: 
 ---
@@ -716,7 +716,7 @@ If you've made it this far, congratulations! This is pretty much all the groundw
 
 You should be proud of yourself for getting this far. We have covered a lot of ground so far in the series, from setting up the project, to working with protocol buffers, to creating state machines, database connections, and authentication systems. It is a lot of work, but we are doing great!
 
-We will be transitioning into the real gameplay logic in the [next post](/2024/11/10/godot-golang-mmo-part-6), where we will be creating the `InGame` state and handling player movement and chat. So don't go anywhere!
+We will be transitioning into the real gameplay logic in the <strong><a href="/2024/11/11/godot-golang-mmo-part-6" class="sparkle-less">the next post</a></strong>, where we will be creating the `InGame` state and handling player movement and chat. So don't go anywhere!
 
 --- 
 

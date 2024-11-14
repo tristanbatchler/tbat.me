@@ -1,5 +1,5 @@
 ---
-title: "Building a Godot 4 MMO with Golang: A Fresh Start"
+title: "§0 Building a Godot 4 MMO with Golang: A Fresh Start"
 description: Embark on a new journey to create a high-performance MMO using Godot 4 and Golang!
 redditurl: 
 ---
@@ -37,7 +37,7 @@ The series will be broken up into roughly three parts:
 2. **Implement game logic:** The next few parts will bring our MMO to life with real-time game state management techniques and opportunities to really polish the look and feel.
 3. **Deploy to the cloud:** lifts our project off our local machine and into the hands of players from across the world. We will discuss security, platforms, and other nuances to consider when publishing your game.
 
-Let's dive into this journey together! Head to [the next post](/2024/11/09/godot-golang-mmo-part-1) to get started building your server and client.
+Let's dive into this journey together! Head to <strong><a href="/2024/11/09/godot-golang-mmo-part-1" class="sparkle-less">the next post</a></strong> to get started building your server and client.
 
 ---
 
