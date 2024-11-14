@@ -212,17 +212,17 @@ We will also add a new helper function to your `utils.go` file:
 import "server/internal/server/objects"
 
 func NewPlayer(id uint64, player *objects.Player) Msg {
-	return &Packet_Player{
-		Player: &PlayerMessage{
-			Id:        id,
-			Name:      player.Name,
-			X:         player.X,
-			Y:         player.Y,
-			Radius:    player.Radius,
-			Direction: player.Direction,
-			Speed:     player.Speed,
-		},
-	}
+    return &Packet_Player{
+        Player: &PlayerMessage{
+            Id:        id,
+            Name:      player.Name,
+            X:         player.X,
+            Y:         player.Y,
+            Radius:    player.Radius,
+            Direction: player.Direction,
+            Speed:     player.Speed,
+        },
+    }
 }
 ```
 
