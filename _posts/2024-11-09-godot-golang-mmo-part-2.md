@@ -1,5 +1,5 @@
 ---
-title: Building a WebSocket game server in Go for a Godot 4 MMO
+title: §2 Building a WebSocket game server in Go for a Godot 4 MMO
 description: Learn how to set up a WebSocket server in Go to power multiplayer functionality in your Godot 4 MMO.
 redditurl: 
 ---
@@ -445,7 +445,7 @@ We can now run the server by hitting **F5** in VS Code, or running `go run cmd/m
 2024/11/09 12:00:58 Awaiting client registrations
 ```
 
-This is a good place to stop for now. In [the next post](/2024/11/09/godot-golang-mmo-part-3), we'll integrate the Godot client with our server, allowing it to establish connections and send packets, bringing us one step closer to a functional multiplayer game. Stay tuned!
+This is a good place to stop for now. In <strong><a href="/2024/11/09/godot-golang-mmo-part-3" class="sparkle-less">the next post</a></strong>, we'll integrate the Godot client with our server, allowing it to establish connections and send packets, bringing us one step closer to a functional multiplayer game. Stay tuned!
 
 ---
 

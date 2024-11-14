@@ -9,7 +9,7 @@ description: A list of all the posts on my website. I usually will post interest
     <li class="no-bullet">
       <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
       <p class="timestamp">{{ post.date | date: "%d %b %y" }}</p>
-      {{ post.excerpt }}
+      {{ post.description }}
     </li>
   {% endfor %}
 </ul>

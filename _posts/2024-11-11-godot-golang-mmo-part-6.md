@@ -1,10 +1,10 @@
 ---
-title: Adding Gameplay to the MMO with Godot 4 and Golang
+title: §6 Adding Gameplay to the MMO with Godot 4 and Golang
 description: Time to add a new state to our game server and handle player creation, movement, disconnection, and game loop.
 redditurl: 
 ---
 
-Welcome back to the Godot 4 + Golang MMO series. In [the last post](/posts/2024/11/10/godot-golang-mmo-pasrt-5), we finally finished laying down the groundwork with the database connections. Now it's time to add some much-needed gameplay to our MMO. 
+Welcome back to the Godot 4 + Golang MMO series. In [the last post](/2024/11/10/godot-golang-mmo-part-5), we finally finished laying down the groundwork with the database connections. Now it's time to add some much-needed gameplay to our MMO. 
 
 Here is a preview of what we will be adding in this post:
 <video controls>
@@ -617,7 +617,7 @@ func _input(event):
 
 Now you should be able to zoom in and out using the scroll wheel. You can also see the other player moving around the screen. The movement is going to be very janky, since we are not interpolating the player's position between updates. This is something we can look at in the next post.
 
-So it's far from perfect, but we have made good progress in this post. We have added gameplay to our MMO, and we can see other players moving around the screen. In the next post, we will look at smoothing out the player's movement, and adding some more gameplay elements to the game. Stay tuned!
+So it's far from perfect, but we have made good progress in this post. We have added gameplay to our MMO, and we can see other players moving around the screen. In <strong><a href="/2024/11/14/godot-golang-mmo-part-7" class="sparkle-less">the next post</a></strong>, we will look at smoothing out the player's movement, and adding some more gameplay elements to the game. Stay tuned!
 
 ---
 
