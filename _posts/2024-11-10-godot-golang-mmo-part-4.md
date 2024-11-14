@@ -250,7 +250,7 @@ In Godot, it will be useful to break our different areas of logic into separate 
 Create a new script called `game_manager.gd` with the following code:
 
 ```directory
-/client/game_managewr.gd
+/client/game_manager.gd
 ```
 ```gd
 extends Node
