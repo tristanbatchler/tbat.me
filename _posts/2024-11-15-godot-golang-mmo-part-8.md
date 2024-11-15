@@ -109,7 +109,7 @@ R_1 &= \sqrt{\frac{M_0 + m}{\pi}}
 $$
 </div>
 
-So, we'll need a method to calculate $M_0$ and $m$, let's call that `radToMass`, and another method to calculate $R_1$, call it `massToRad`.
+So, we'll need a method to calculate $$M_0$$ and $$m$$, let's call that `radToMass`, and another method to calculate $$R_1$$, call it `massToRad`.
 
 ```directory
 /server/internal/server/states/ingame.go
