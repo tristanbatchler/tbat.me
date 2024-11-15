@@ -595,7 +595,7 @@ We will be following this workflow for most of the features we add to the game f
 ```
 </details>
 
-For anyone who wants to keep going, I've added a section below on how to send spores in batches, which will help reduce the time it takes for the client to receive all the spores. But if you're happy with the progress we've made so far, I'll see you in <strong><a href="/2024/11/16/godot-golang-mmo-part-8" class="sparkle-less">the next post</a></strong> where we will be adding the logic to grow the player when they consume a spore, or another player!
+For anyone who wants to keep going, I've added a section below on how to send spores in batches, which will help reduce the time it takes for the client to receive all the spores. But if you're happy with the progress we've made so far, I'll see you in <strong><a href="/2024/11/15/godot-golang-mmo-part-8" class="sparkle-less">the next post</a></strong> where we will be adding the logic to grow the player when they consume a spore, or another player!
 
 ---
 
@@ -739,6 +739,6 @@ Simple as that! Now the client will be able to receive spores in batches, and yo
   Your browser does not support the video tag.
 </video>
 
-If you're happy with the progress we've made so far, I'll see you in <strong><a href="/2024/11/16/godot-golang-mmo-part-8" class="sparkle-less">the next post</a></strong> where we will be adding the logic to grow the player when they consume a spore, or another player!
+If you're happy with the progress we've made so far, I'll see you in <strong><a href="/2024/11/15/godot-golang-mmo-part-8" class="sparkle-less">the next post</a></strong> where we will be adding the logic to grow the player when they consume a spore, or another player!
 
 </details>
