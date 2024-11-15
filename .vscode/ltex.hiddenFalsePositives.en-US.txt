@@ -13,3 +13,4 @@
 {"rule":"EN_A_VS_AN","sentence":"^\\QThe \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q variable is a callback function for when the server sends an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
 {"rule":"LOT_OF","sentence":"^\\QThere is quite a lot happening here, so let's break it down:\\E$"}
 {"rule":"A_INFINITIVE","sentence":"^\\QWe also added a small delay between each spore to avoid flooding the send channel and causing packets to be dropped.\\E$"}
+{"rule":"THE_NN_AND_THE_NN","sentence":"^\\QNow we don't want to be too strict about this, because the synchronization between the server and the client isn't ever going to be perfect, and we don't want to punish the player for that.\\E$"}
