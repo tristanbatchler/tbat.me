@@ -389,15 +389,15 @@ func _on_ws_packet_received(packet: packets.Packet) -> void:
 
 func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> void:
     var actor_id := player_msg.get_id()
-    var msg_name := player_msg.get_name()
-    var msg_x := player_msg.get_x()
-    var msg_y := player_msg.get_y()
-    var msg_rad := player_msg.get_radius()
-    var msg_speed := player_msg.get_speed()
+    var actor_name := player_msg.get_name()
+    var x := player_msg.get_x()
+    var y := player_msg.get_y()
+    var radius := player_msg.get_radius()
+    var speed := player_msg.get_speed()
 
     var is_player := actor_id == GameManager.client_id
     
-    var actor := Actor.instantiate(actor_id, msg_name, msg_x, msg_y, msg_rad, msg_speed, is_player)
+    var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
     _world.add_child(actor)
 ```
 
@@ -589,14 +589,14 @@ Now, where we are already handling the `PlayerMessage` packet, we need to surrou
 # ...
 if actor_id not in _players:
     # This is a new player, so we need to create a new actor
-    var actor := Actor.instantiate(actor_id, msg_name, msg_x, msg_y, msg_rad, msg_speed, is_player)
+    var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
     _world.add_child(actor)
     _players[actor_id] = actor
 else:
     # This is an existing player, so we need to update their position
     var actor := _players[actor_id]
-    actor.position.x = msg_x
-    actor.position.y = msg_y
+    actor.position.x = x
+    actor.position.y = y
 ```
 
 If you run the game now with two clients connected, it should be possible to find the other player and see them moving around the screen. If you are having difficulty finding the other, you can change the camera's zoom level to zoom out and see the entire game world. Just add something like the following to the `_input` function of `res://objects/actor/actor.gd`. It will allow you to zoom in and out using the scroll wheel:
