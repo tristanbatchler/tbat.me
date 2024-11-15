@@ -390,25 +390,25 @@ But that section of the code is getting a bit long, so let's move it to its own 
 func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> void:
     # ...
     if actor_id not in _players:
-		_add_actor(actor_id, actor_name, x, y, radius, speed, is_player)
-	else:
-		var direction := player_msg.get_direction()
-		_update_actor(actor_id, x, y, direction, speed, radius)
+        _add_actor(actor_id, actor_name, x, y, radius, speed, is_player)
+    else:
+        var direction := player_msg.get_direction()
+        _update_actor(actor_id, x, y, direction, speed, radius)
 
 func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> void:
-	var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
-	_world.add_child(actor)
-	_players[actor_id] = actor
-	
-	if is_player:
-		actor.area_entered.connect(_on_player_area_entered)
+    var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
+    _world.add_child(actor)
+    _players[actor_id] = actor
+    
+    if is_player:
+        actor.area_entered.connect(_on_player_area_entered)
 
 func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: float, radius: float) -> void:
-	var actor := _players[actor_id]
-	actor.position.x = x
-	actor.position.y = y
-	actor.velocity = Vector2.from_angle(direction) * speed
-	actor.radius = radius
+    var actor := _players[actor_id]
+    actor.position.x = x
+    actor.position.y = y
+    actor.velocity = Vector2.from_angle(direction) * speed
+    actor.radius = radius
 ```
 
 Now, of course we need to add the `_on_player_area_entered` method to handle the collision:
@@ -419,8 +419,8 @@ Now, of course we need to add the `_on_player_area_entered` method to handle the
 
 ```gdscript
 func _on_player_area_entered(area: Area2D) -> void:
-	if area is Spore:
-		_consume_spore(area as Spore)
+    if area is Spore:
+        _consume_spore(area as Spore)
 ```
 
 We are splitting this off into another method called `_consume_spore`, because we will need to also handle the case where the player collides with another actor (but we won't be doing that in this post). To keep things clean, let's move on to implementing the `_consume_spore` method:
@@ -431,11 +431,11 @@ We are splitting this off into another method called `_consume_spore`, because w
 
 ```gdscript
 func _consume_spore(spore: Spore) -> void:
-	var packet := packets.Packet.new()
-	var spore_consumed_msg := packet.new_spore_consumed()
-	spore_consumed_msg.set_spore_id(spore.spore_id)
-	WS.send(packet)
-	_remove_spore(spore)
+    var packet := packets.Packet.new()
+    var spore_consumed_msg := packet.new_spore_consumed()
+    spore_consumed_msg.set_spore_id(spore.spore_id)
+    WS.send(packet)
+    _remove_spore(spore)
 ```
 
 Here we are sending the new message type we just created to the server, and then removing the spore from the game. Let's add the `_remove_spore` method now, as it needs to do a bit of cleanup, and we will be re-using it later when we receive a message from the server to remove a spore:
@@ -446,8 +446,8 @@ Here we are sending the new message type we just created to the server, and then
 
 ```gdscript
 func _remove_spore(spore: Spore) -> void:
-	_spores.erase(spore.spore_id)
-	spore.queue_free()
+    _spores.erase(spore.spore_id)
+    spore.queue_free()
 ```
 
 Well, that should be it! Now, when a player collides with a spore, the spore will be removed from the game and the server will be notified. The player's size will not increase yet, but we will be adding that in the next post.
@@ -489,7 +489,7 @@ Client 1 [InGame]: 2024/11/15 18:04:39 Spore 429 consumed by client 1
 Client 1 [InGame]: 2024/11/15 18:04:40 Spore 536 consumed by client 1
 ```
 
-If you see the debug messages in the server's console, then you know it's working! We will be handling these messages in the next post, where we will perform some server-side validation checks and update the player's size when they consume a spore. But for now, let's wrap up this post.
+If you see the debug messages in the server's console, then you know it's working! We will be handling these messages next time, where we will perform some server-side validation checks and update the player's size when they consume a spore. But for now, let's wrap up this post.
 
 ## Conclusion
 
@@ -502,7 +502,7 @@ I hope you are seeing the workflow of this project by now. Whenever we want to a
 
 We will be following this workflow for most of the features we add to the game from here on, so there's still plenty of time to get used to it. For now though, I figured it's been a while since we've checked our project structure, so I'll give you a quick rundown of what we have so far:
 
-<details>
+<details markdown="1">
 <summary>Click to expand</summary>
 
 ```plaintext
@@ -595,4 +595,150 @@ We will be following this workflow for most of the features we add to the game f
 ```
 </details>
 
+For anyone who wants to keep going, I've added a section below on how to send spores in batches, which will help reduce the time it takes for the client to receive all the spores. But if you're happy with the progress we've made so far, I'll see you in <strong><a href="/2024/11/16/godot-golang-mmo-part-8" class="sparkle-less">the next post</a></strong> where we will be adding the logic to grow the player when they consume a spore, or another player!
+
+---
+
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+
+---
+
 ## Optional: Sending spores in batches
+
+<small>*Psst! I heard you want spores to come in shipments, not one-by-one. I got you covered.*</small>
+
+<details markdown="1">
+<summary>Click to expand</summary>
+
+For those of you still around, let's put in a little extra effort to get the initial spores sent to the client in a much more efficient way. This will require a new type of protobuf message we've never seen before: a repeated field. This is a way to send a list of messages in a single packet, which is perfect for sending spores in batches. Let's start by adding a new message type to our protocol buffers:
+
+```directory
+/shared/packets.proto
+```
+
+```proto
+message SporesBatchMessage { repeated SporeMessage spores = 1; }
+
+message Packet {
+    // ...
+    oneof msg { 
+        // ...
+        SporesBatchMessage spores_batch = 12;
+    }
+}
+```
+
+Let's now add a helper function to easily make a new `SporesBatchMessage`. Since we're going to be creating more `SporeMessage`s to fill the batch, we might as well add a helper function to create these `SporeMessage`s as well, since it can also be used in the `NewSpore` function:
+
+```directory
+/server/pkg/packets/util.go
+```
+
+```go
+func newSporeMessage(spore_id uint64, spore *objects.Spore) *SporeMessage {
+    return &SporeMessage{
+        Id:     spore_id,
+        X:      spore.X,
+        Y:      spore.Y,
+        Radius: spore.Radius,
+    }
+}
+
+func NewSpore(id uint64, spore *objects.Spore) Msg {
+    return &Packet_Spore{
+        Spore: newSporeMessage(id, spore),
+    }
+}
+
+func NewSporesBatch(spores map[uint64]*objects.Spore) Msg {
+    sporesMessages := make([]*SporeMessage, len(spores))
+    for id, spore := range spores {
+        sporesMessages = append(sporesMessages, newSporeMessage(id, spore))
+    }
+    return &Packet_SporesBatch{
+        SporesBatch: &SporesBatchMessage{
+            Spores: sporesMessages,
+        },
+    }
+}
+```
+
+The `NewSporesBatch` function takes simply a map of our `Spore` objects, creates a batch of `SporeMessage`s from them, and packages them all up in our new `SporesBatchMessage`. Now, let's modify the `OnEnter` method in the `InGame` state script to send the spores in batches:
+
+```directory
+/server/internal/server/states/ingame.go
+```
+
+```go
+func (g *InGame) OnEnter() {
+    // ...
+    // Send the spores to the client in the background
+    go func() {
+        const batchSize = 20
+        sporesBatch := make(map[uint64]*objects.Spore, batchSize)
+
+        g.client.SharedGameObjects().Spores.ForEach(func(sporeId uint64, spore *objects.Spore) {
+            sporesBatch[sporeId] = spore
+
+            if len(sporesBatch) >= batchSize {
+                g.client.SocketSend(packets.NewSporesBatch(sporesBatch))
+                sporesBatch = make(map[uint64]*objects.Spore, batchSize)
+                time.Sleep(50 * time.Millisecond)
+            }
+        })
+
+        // Send any remaining spores
+        if len(sporesBatch) > 0 {
+            g.client.SocketSend(packets.NewSporesBatch(sporesBatch))
+        }
+    }()
+}
+```
+
+Now we are converting the shared spores collection into a series of batches, each containing 20 spores. We package them all up, send them off, then wait a bit before sending the next batch. This is just to ensure we don't flood the client with too many large packets at once. Even though we are still sleeping, we are able to send 20 spores per 50 milliseconds this way (400 spores per second), which is a twice as fast as sending them one-by-one and sleeping for 5 milliseconds between each one. In reality, it is going to be much faster than twice as fast, because we don't need the overhead of sending a TCP packet for each spore, and we don't need to worry about filling up the send buffer either.
+
+You are encouraged to play around with the batch size and sleep time to see what works best for you. You might even find you can improve the performance even more this way!
+
+I'm not really loving how long the anonymous goroutine got, nor how many magic numbers we accumulated. I'd suggest just extracting the logic into a new method called `sendInitialSpores` (we can even turn the magic numbers into arguments) and simplify the `OnEnter` method to just call this new method in the background:
+
+```directory
+/server/internal/server/states/ingame.go
+```
+
+```go
+func (g *InGame) OnEnter() {
+    // ...
+    go g.sendInitialSpores(20, 50 * time.Millisecond)
+}
+
+func (g *InGame) sendInitialSpores(batchSize int, delayBetweenBatches time.Duration) {
+    // Basically the same code as before, but with the magic numbers replaced with arguments
+}
+```
+
+Now we still need to update the client to handle the new `SporesBatchMessage` type. This is just a matter of adding a new case to the `HandleMessage` method in the `InGame` state script (we can remove the old `Spore` case since we won't be using it for now, keep the `_handle_spore_msg` method though!):
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    # ...
+    elif packet.has_spores_batch():
+        _handle_spores_batch_msg(sender_id, packet.get_spores_batch())
+
+func _handle_spores_batch_msg(sender_id: int, spores_batch_msg: packets.SporesBatchMessage) -> void:
+    for spore_msg in spores_batch_msg.get_spores():
+        _handle_spore_msg(sender_id, spore_msg)
+```
+
+Simple as that! Now the client will be able to receive spores in batches, and you should see them pop in much faster than before. Here is a comparison of the two methods side-by-side (old method on the left, new method on the right):
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/14/comparison.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+If you're happy with the progress we've made so far, I'll see you in <strong><a href="/2024/11/16/godot-golang-mmo-part-8" class="sparkle-less">the next post</a></strong> where we will be adding the logic to grow the player when they consume a spore, or another player!
+
+</details>
