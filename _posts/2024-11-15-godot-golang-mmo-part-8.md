@@ -87,7 +87,7 @@ In the diagram, it is clear that the distance between the two circles is $$\text
 
 I've been looking forward to this part for a while, because I can finally put my degree in math to good use. Well, not really, it's more like high school level math, but hey, it's fun nonetheless. We need to be able to calculate the player's new radius based on the size of what they just ate. 
 
-When the player consumes something, they absorb its mass. For the same of this game, let's assume the mass of players and spores is proportional to their area. This means that
+When the player consumes something, they absorb its mass. For the sake of this game, let's assume the mass of players and spores is proportional to their area. This means that
 * if the player's original radius is $$R_0$$, their original is $$M_0 = \pi R_0^2$$
 * if the spore's radius is $$r$$, their mass is $$m = \pi r^2$$
 
