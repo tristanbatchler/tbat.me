@@ -74,8 +74,8 @@ func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> vo
     else:
         # ...
 
-        var msg_direction := player_msg.get_direction()
-        actor.velocity = msg_speed * Vector2.from_angle(msg_direction)
+        var direction := player_msg.get_direction()
+        actor.velocity = speed * Vector2.from_angle(direction)
 ```
 
 And that's it! Now, the movement of other players should look much smoother.
@@ -264,4 +264,16 @@ This section of code simply *starts* sending spores to the client in the backgro
 This basically just allows the client to get into the game without needing to wait for all the spores to be sent, which is a better user experience, with the minor drawback that the player might see the spores pop in one by one. This should take less than a few seconds though, so it's not a big deal. Another approach would be to send all the spores in batches, or at once, but that would require a bit more work, so we could come back to that later if we find it necessary.
 
 ### Rendering the spores
-Coming soon...
+Now that we're sending the spores to the client, we are all good to go ahead and start processing them in Godot. Let's add a handler for the `SporeMessage` in the `InGame` state script:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    # ...
+    elif packet.has_spore():
+		_handle_spore_msg()
+
+func 
