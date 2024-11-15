@@ -172,7 +172,7 @@ Before we can use these messages, we need to compile them into Go code. Before w
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 ```
 
-Now we're free to go ahead and compile our `.proto` file. Run the following command in your terminal:
+{% include highlight.html anchor="protoc-usage" text="Now we're free to go ahead and compile our <code>.proto</code> file. Run the following command in your terminal:" %}
 ```bash
 protoc -I="shared" --go_out="server" "shared/packets.proto"
 ```
@@ -372,8 +372,7 @@ First, let's install the Godobuf plugin.
 4. Open your Godot project and enable the add-on by going to **Project > Project Settings > Plugins** and enabling the **Protobuf** plugin.
     ![Godot plugins](/assets/css/images/posts/2024/11/09/godot-plugins.png)
 
-You should see a new **Godobuf** tab appear in the bottom left panel, underneath the scene tree, adjacent to the **FileSystem** tab. This is where we can input our `.proto` file and generate our code.
-
+{% include highlight.html anchor="godobuf-usage" text="You should see a new <strong>Godobuf</strong> tab appear in the bottom left panel, underneath the scene tree, adjacent to the <strong>FileSystem</strong> tab. This is where we can input our <code>.proto</code> file and generate our code." %}
 1. Click on the **Godobuf** tab
 2. Click on the **...** button under **Input protobuf file** and navigate up a level to your `shared/packets.proto` file. For some reason, it shows a warning that you will "overwrite" the file, but this is not the case. Just choose **OK**
 3. Click on the **...** button under **Output GDScript file**, enter simply `packets.gd` and click **OK**

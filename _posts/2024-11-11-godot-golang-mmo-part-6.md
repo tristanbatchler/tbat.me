@@ -289,7 +289,6 @@ const packets = preload("res://packets.gd")
 
 const Scene := preload("res://objects/actor/actor.tscn")
 const Actor := preload("res://objects/actor/actor.gd")
-const Self := Actor
 
 var actor_id: int
 var actor_name: String
@@ -306,7 +305,7 @@ var radius: float
 @onready var _camera := $Camera2D as Camera2D
 @onready var _collision_shape := $CollisionShape2D.shape as CircleShape2D
 
-static func instantiate(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> Self:
+static func instantiate(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> Actor:
     var actor := Scene.instantiate()
     actor.actor_id = actor_id
     actor.actor_name = actor_name
