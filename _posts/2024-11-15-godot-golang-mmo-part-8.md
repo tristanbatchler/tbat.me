@@ -45,11 +45,11 @@ So it's clear we're going to need some new methods to help us with this. Let's s
 
 ```go
 func (g *InGame) getSpore(sporeId uint64) (*objects.Spore, error) {
-	spore, exists := g.client.SharedGameObjects().Spores.Get(sporeId)
-	if !exists {
-		return nil, fmt.Errorf("spore with ID %d does not exist", sporeId)
-	}
-	return spore, nil
+    spore, exists := g.client.SharedGameObjects().Spores.Get(sporeId)
+    if !exists {
+        return nil, fmt.Errorf("spore with ID %d does not exist", sporeId)
+    }
+    return spore, nil
 }
 ```
 
@@ -64,17 +64,17 @@ Next up, we need to check if the player was near the spore they said they ate. N
 
 ```go
 func (g *InGame) validatePlayerCloseToObject(objX, objY, objRadius, buffer float64) error {
-	realDX := g.player.X - objX
-	realDY := g.player.Y - objY
-	realDistSq := realDX*realDX + realDY*realDY
+    realDX := g.player.X - objX
+    realDY := g.player.Y - objY
+    realDistSq := realDX*realDX + realDY*realDY
 
-	thresholdDist := g.player.Radius + buffer + objRadius
-	thresholdDistSq := thresholdDist * thresholdDist
+    thresholdDist := g.player.Radius + buffer + objRadius
+    thresholdDistSq := thresholdDist * thresholdDist
 
-	if realDistSq > thresholdDistSq {
-		return fmt.Errorf("player is too far from the object (distSq: %f, thresholdSq: %f)", realDistSq, thresholdDistSq)
-	}
-	return nil
+    if realDistSq > thresholdDistSq {
+        return fmt.Errorf("player is too far from the object (distSq: %f, thresholdSq: %f)", realDistSq, thresholdDistSq)
+    }
+    return nil
 }
 ```
 
@@ -117,7 +117,7 @@ So, we'll need a method to calculate $M_0$ and $m$, let's call that `radToMass`,
 
 ```go
 func radToMass(radius float64) float64 {
-	return math.Pi * radius * radius
+    return math.Pi * radius * radius
 }
 
 func massToRad(mass float64) float64 {
@@ -148,37 +148,37 @@ Finally, we can implement the `handleSporeConsumed` method.
 
 ```go
 func (g *InGame) handleSporeConsumed(senderId uint64, message *packets.Packet_SporeConsumed) {
-	if senderId != g.client.Id() {
-		g.logger.Println("Received spore consumption message from another player, ignoring")
-		return
-	}
+    if senderId != g.client.Id() {
+        g.logger.Println("Received spore consumption message from another player, ignoring")
+        return
+    }
 
-	// If the spore was supposedly consumed by our own player, we need to verify the plausibility of the event
-	errMsg := "Could not verify spore consumption: "
+    // If the spore was supposedly consumed by our own player, we need to verify the plausibility of the event
+    errMsg := "Could not verify spore consumption: "
 
-	// First check if the spore exists
-	sporeId := message.SporeConsumed.SporeId
-	spore, err := g.getSpore(sporeId)
-	if err != nil {
-		g.logger.Println(errMsg + err.Error())
-		return
-	}
+    // First check if the spore exists
+    sporeId := message.SporeConsumed.SporeId
+    spore, err := g.getSpore(sporeId)
+    if err != nil {
+        g.logger.Println(errMsg + err.Error())
+        return
+    }
 
-	// Next, check if the spore is close enough to the player to be consumed
-	err = g.validatePlayerCloseToObject(spore.X, spore.Y, spore.Radius, 10)
-	if err != nil {
-		g.logger.Println(errMsg + err.Error())
-		return
-	}
+    // Next, check if the spore is close enough to the player to be consumed
+    err = g.validatePlayerCloseToObject(spore.X, spore.Y, spore.Radius, 10)
+    if err != nil {
+        g.logger.Println(errMsg + err.Error())
+        return
+    }
 
-	// If we made it this far, the spore consumption is valid, so grow the player, remove the spore, and broadcast the event
-	sporeMass := radToMass(spore.Radius)
-	g.player.Radius = g.nextRadius(sporeMass)
+    // If we made it this far, the spore consumption is valid, so grow the player, remove the spore, and broadcast the event
+    sporeMass := radToMass(spore.Radius)
+    g.player.Radius = g.nextRadius(sporeMass)
 
     go g.client.SharedGameObjects().Spores.Remove(sporeId)
     
     updatePacket := packets.NewPlayer(g.client.Id(), g.player)
-	g.client.Broadcast(updatePacket)
+    g.client.Broadcast(updatePacket)
     go g.client.SocketSend(updatePacket)
 }
 ```
