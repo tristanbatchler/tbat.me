@@ -271,7 +271,7 @@ Add another child node to the **Actor** node so that it is a sibling of the **Co
 
 ![Actor Scene](/assets/css/images/posts/2024/11/11/actor_scene_2.png)
 
-> ⚠️ **Note**: it is very important to set the **Local to Scene** property of the **CollisionShape2D**'s **Shape** property to `true`. This will allow the hitbox's radius to change on a per-instance basis. If you don't do this, changing one player's radius will change **all** player's radii, making for a very frustrating debugging experience <small>*don't ask me how I know*</small>.
+> ⚠️ **Note**: it is very important to set the **Local to Scene** property of the **CollisionShape2D**'s **Shape** property to `true`. You can click on the CircleShape2D in the inspector to open its properties, and you'll find the option under **Resources**. This will allow the hitbox's radius to change on a per-instance basis. {% include highlight.html anchor="local-to-scene-note" text="If you don't do this, changing one player's radius will change <strong>all</strong> player's radii, making for a very frustrating debugging experience <small><em>don't ask me how I know</em></small>." %}
 
 ![Local to Scene](/assets/css/images/posts/2024/11/11/local_to_scene.png)
 

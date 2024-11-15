@@ -264,16 +264,10 @@ This section of code simply *starts* sending spores to the client in the backgro
 This basically just allows the client to get into the game without needing to wait for all the spores to be sent, which is a better user experience, with the minor drawback that the player might see the spores pop in one by one. This should take less than a few seconds though, so it's not a big deal. Another approach would be to send all the spores in batches, or at once, but that would require a bit more work, so we could come back to that later if we find it necessary.
 
 ### Rendering the spores
-Now that we're sending the spores to the client, we are all good to go ahead and start processing them in Godot. Let's add a handler for the `SporeMessage` in the `InGame` state script:
+Now that we're sending the spores to the client, we are all good to go ahead and start processing them in Godot. But first, we'll need to add a new object to our game to represent these spores.
 
-```directory
-/client/states/ingame/ingame.gd
-```
+Create a new folder at `res://objects/spore/` and add a new scene called `spore.tscn` with an **Area2D** root node called `Spore`.
+![Spore scene](/assets/css/images/posts/2024/11/14/spore-scene.png)
 
-```gdscript
-func _on_ws_packet_received(packet: packets.Packet) -> void:
-    # ...
-    elif packet.has_spore():
-		_handle_spore_msg()
+Now, add a **CollisionShape2D** child node to the `Spore` node and set its shape to a **CircleShape2D**. Similarly to the actor, we'll want to ensure the **Local to Scene** property is checked in the **CircleShape2D**. The rationale for this has been covered in [the last post](/2024/11/11/godot-golang-mmo-part-6#local-to-scene-note).
 
-func 
