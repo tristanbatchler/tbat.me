@@ -101,7 +101,10 @@ message SporeMessage { uint64 id = 1; double x = 2; double y = 3; double radius 
 
 message Packet {
     // ...
-    SporeMessage spore = 10;
+    oneof msg { 
+        // ...
+        SporeMessage spore = 10;
+    }
 }
 ```
 
@@ -189,7 +192,8 @@ import (
 )
 
 func SpawnCoords() (float64, float64) {
-    return rand.Float64() * 1000, rand.Float64() * 1000
+    var bound float64 = 3000
+    return rand.Float64() * bound, rand.Float64() * bound
 }
 ```
 
@@ -259,9 +263,9 @@ func (g *InGame) OnEnter() {
 }
 ```
 
-This section of code simply *starts* sending spores to the client in the background, so the client can start rendering them as soon as possible. We also added a small delay between each spore to avoid flooding the client with messages, which could cause the client to lag. The client interfacer won't block on this goroutine, so it can continue to process other messages while the spores are being sent.
+This section of code simply *starts* sending spores to the client in the background, so the client can start rendering them as soon as possible. We also added a small delay between each spore to avoid flooding the send channel and causing packets to be dropped. The client interfacer won't block on this goroutine, so it can continue to process other messages while the spores are being sent.
 
-This basically just allows the client to get into the game without needing to wait for all the spores to be sent, which is a better user experience, with the minor drawback that the player might see the spores pop in one by one. This should take less than a few seconds though, so it's not a big deal. Another approach would be to send all the spores in batches, or at once, but that would require a bit more work, so we could come back to that later if we find it necessary.
+This basically just allows the client to get into the game without needing to wait for all the spores to be sent, but there is a drawback that the player will see the spores pop in one by one. This should take less than a few seconds though, so may not be a dealbreaker. Another approach would be to send all the spores in batches, but that would require a bit more work. I will leave a section at the end of this post with instructions on how to do that if you're interested, but for now, let's move on.
 
 ### Rendering the spores
 Now that we're sending the spores to the client, we are all good to go ahead and start processing them in Godot. But first, we'll need to add a new object to our game to represent these spores.
@@ -269,5 +273,326 @@ Now that we're sending the spores to the client, we are all good to go ahead and
 Create a new folder at `res://objects/spore/` and add a new scene called `spore.tscn` with an **Area2D** root node called `Spore`.
 ![Spore scene](/assets/css/images/posts/2024/11/14/spore-scene.png)
 
-Now, add a **CollisionShape2D** child node to the `Spore` node and set its shape to a **CircleShape2D**. Similarly to the actor, we'll want to ensure the **Local to Scene** property is checked in the **CircleShape2D**. The rationale for this has been covered in [the last post](/2024/11/11/godot-golang-mmo-part-6#local-to-scene-note).
+Now, add a **CollisionShape2D** child node to the `Spore` node and set its shape to a **CircleShape2D**. Similarly to the actor, we'll want to ensure the **Local to Scene** property is checked in the **CircleShape2D**. The rationale for this has been covered in <a href="/2024/11/11/godot-golang-mmo-part-6#local-to-scene-note" target="_blank">the last post</a>.
 
+Now, let's add a new script to the `Spore` node called `spore.gd`:
+
+```directory
+/client/objects/spore/spore.gd
+```
+
+```gdscript
+extends Area2D
+
+const Scene := preload("res://objects/spore/spore.tscn")
+const Spore := preload("res://objects/spore/spore.gd")
+
+var spore_id: int
+var x: float
+var y: float
+var radius: float
+var color: Color
+
+@onready var _collision_shape := $CollisionShape2D.shape as CircleShape2D
+
+static func instantiate(spore_id: int, x: float, y: float, radius: float) -> Spore:
+    var spore := Scene.instantiate() as Spore
+    spore.spore_id = spore_id
+    spore.x = x
+    spore.y = y
+    spore.radius = radius
+    
+    return spore
+
+func _ready() -> void:
+    position.x = x
+    position.y = y
+    _collision_shape.radius = radius
+
+    color = Color.from_hsv(randf(), 1, 1, 1)
+
+func _draw() -> void:
+    draw_circle(Vector2.ZERO, radius, color)
+```
+
+This script is pretty similar to the `Actor` script, but we have a few differences. We have a `color` variable that we set to a random color when the spore is created, and we draw the spore as a circle with that color. We also have a `spore_id` variable that we set when we instantiate the spore, which we will use to identify the spore when we need to update it.
+
+Speaking of which, let's keep a map of spores in the `InGame` state script so we can hold onto them and update them when we receive new information about them:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+const Spore := preload("res://objects/spore/spore.gd")
+
+# ...
+
+var _spores: Dictionary[int, Spore]
+
+# ...
+
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    # ...
+    elif packet.has_spore():
+        _handle_spore_msg(sender_id, packet.get_spore())
+
+# ...
+
+func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
+    var spore_id := spore_msg.get_id()
+    var x := spore_msg.get_x()
+    var y := spore_msg.get_y()
+    var radius := spore_msg.get_radius()
+
+    if spore_id not in _spores:
+        var spore := Spore.instantiate(spore_id, x, y, radius)
+        _world.add_child(spore)
+        _spores[spore_id] = spore
+```
+
+All of this should be pretty straight forward now that we've seen pretty much the same thing for actors. In this case, we don't need to worry about updating the spores since they are static objects, but we will need be able to remove them later on when the server tells us to, which is why we're keeping a reference to them in the `_spores` dictionary. Aside from that, everything should be self-explanatory, so I won't go into more detail.
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/14/spores.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+### Eating the spores
+So we have spores in the game, but they don't do anything yet. Let's make it so that when a player collides with a spore, the spore is removed from the game and the player's size increases. We'll start by adding a new message type to our protocol buffers:
+
+```directory
+/shared/packets.proto
+```
+
+```proto
+message SporeConsumedMessage { uint64 spore_id = 1; }
+
+message Packet {
+    // ...
+    oneof msg { 
+        // ...
+        SporeConsumedMessage spore_consumed = 11;
+    }
+}
+```
+
+<small>*You should be used to recompiling the proto file by now, so this might be the last time I mention it: don't forget to compile your Golang and GDScript code using `protoc` or Godobuf! Instructions for the Golang code compilation can be found in <a href="/2024/11/09/godot-golang-mmo-part-1#protoc-usage" target="_blank">§1</a>, and the Godobuf instructions are in <a href="/2024/11/09/godot-golang-mmo-part-1#godobuf-usage" target="_blank">the same post, a bit further down</a>.*</small>
+
+Now, since both the actor and spore are **Area2D** nodes, we can use the `body_entered` signal to detect when they collide. It will be much more efficient to listen to the player actor's signal, rather than to every spore in the game, so let's connect this signal up to a handler in the `InGame` state script, just after we instantiate the player. 
+
+But that section of the code is getting a bit long, so let's move it to its own method called `_add_actor`. The update logic can also be extracted into its own method called `_update_actor`, so let's do that as well:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> void:
+    # ...
+    if actor_id not in _players:
+		_add_actor(actor_id, actor_name, x, y, radius, speed, is_player)
+	else:
+		var direction := player_msg.get_direction()
+		_update_actor(actor_id, x, y, direction, speed, radius)
+
+func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> void:
+	var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
+	_world.add_child(actor)
+	_players[actor_id] = actor
+	
+	if is_player:
+		actor.area_entered.connect(_on_player_area_entered)
+
+func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: float, radius: float) -> void:
+	var actor := _players[actor_id]
+	actor.position.x = x
+	actor.position.y = y
+	actor.velocity = Vector2.from_angle(direction) * speed
+	actor.radius = radius
+```
+
+Now, of course we need to add the `_on_player_area_entered` method to handle the collision:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _on_player_area_entered(area: Area2D) -> void:
+	if area is Spore:
+		_consume_spore(area as Spore)
+```
+
+We are splitting this off into another method called `_consume_spore`, because we will need to also handle the case where the player collides with another actor (but we won't be doing that in this post). To keep things clean, let's move on to implementing the `_consume_spore` method:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _consume_spore(spore: Spore) -> void:
+	var packet := packets.Packet.new()
+	var spore_consumed_msg := packet.new_spore_consumed()
+	spore_consumed_msg.set_spore_id(spore.spore_id)
+	WS.send(packet)
+	_remove_spore(spore)
+```
+
+Here we are sending the new message type we just created to the server, and then removing the spore from the game. Let's add the `_remove_spore` method now, as it needs to do a bit of cleanup, and we will be re-using it later when we receive a message from the server to remove a spore:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _remove_spore(spore: Spore) -> void:
+	_spores.erase(spore.spore_id)
+	spore.queue_free()
+```
+
+Well, that should be it! Now, when a player collides with a spore, the spore will be removed from the game and the server will be notified. The player's size will not increase yet, but we will be adding that in the next post.
+
+Let's see if it works by adding a quick debug message to the server's `InGame` state handler `HandleMessage` method:
+
+```directory
+/server/internal/server/states/ingame.go
+```
+
+```go
+func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
+    switch message := message.(type) {
+    // ...
+    case *packets.Packet_SporeConsumed:
+        g.logger.Printf("Spore %d consumed by client %d", message.SporeConsumed.SporeId, senderId)
+    }
+}
+```
+
+Now restart the server and client and you should see something like this:
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/14/consume-spore.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+```plaintext
+2024/11/15 18:04:00 Starting server on :8080
+2024/11/15 18:04:00 Placing spores...
+2024/11/15 18:04:00 Awaiting client registrations
+2024/11/15 18:04:06 New client connected from [::1]:64729
+Client 1: 2024/11/15 18:04:06 Switching from state None to Connected
+Client 1 [Connected]: 2024/11/15 18:04:15 User saltytaro logged in successfully
+Client 1: 2024/11/15 18:04:15 Switching from state Connected to InGame
+Client 1 [InGame]: 2024/11/15 18:04:15 Adding player saltytaro to the shared collection
+Client 1 [InGame]: 2024/11/15 18:04:28 Spore 329 consumed by client 1
+Client 1 [InGame]: 2024/11/15 18:04:38 Spore 576 consumed by client 1
+Client 1 [InGame]: 2024/11/15 18:04:39 Spore 429 consumed by client 1
+Client 1 [InGame]: 2024/11/15 18:04:40 Spore 536 consumed by client 1
+```
+
+If you see the debug messages in the server's console, then you know it's working! We will be handling these messages in the next post, where we will perform some server-side validation checks and update the player's size when they consume a spore. But for now, let's wrap up this post.
+
+## Conclusion
+
+I hope you are seeing the workflow of this project by now. Whenever we want to add a new feature to the game, we need to consider:
+* Do we need a new message type in our protocol buffers? If so, add it to the `packets.proto` file and recompile into source code.
+* Do we need the server to send this message to the client? If so, create a helper function in the `util.go` file to make it easier to create the message.
+* Do we need to store this information on the server? If so, add a new struct to the `objects` package and a new collection to the `SharedGameObjects` struct in the `hub.go` file.
+* Do we need to render this information on the client? If so, create a new scene and script for the object in the `objects` folder, and add a new method to the `InGame` state script to handle the message and instantiate the object.
+* etc.
+
+We will be following this workflow for most of the features we add to the game from here on, so there's still plenty of time to get used to it. For now though, I figured it's been a while since we've checked our project structure, so I'll give you a quick rundown of what we have so far:
+
+<details>
+<summary>Click to expand</summary>
+
+```plaintext
+/
+├───.vscode/
+│       launch.json
+│       
+├───client/
+│   │   game_manager.gd
+│   │   main.gd
+│   │   main.tscn
+│   │   packets.gd
+│   │   project.godot
+│   │   websocket_client.gd
+│   │
+│   ├───addons/
+│   │       protobuf/
+│   │
+│   ├───classes/
+│   │       log.gd
+│   │       log.tscn
+│   │
+│   ├───objects/
+│   │   ├───actor/
+│   │   │       actor.gd
+│   │   │       actor.tscn
+│   │   │
+│   │   └───spore/
+│   │           spore.gd
+│   │           spore.tscn
+│   │
+│   ├───resources/
+│   │       floor.svg
+│   │
+│   └───states/
+│       ├───connected/
+│       │       connected.gd
+│       │       connected.tscn
+│       │
+│       ├───entered/
+│       │       entered.gd
+│       │       entered.tscn
+│       │
+│       └───ingame/
+│               ingame.gd
+│               ingame.tscn
+│
+├───server/
+│   │   go.mod
+│   │   go.sum
+│   │
+│   ├───cmd/
+│   │       db.sqlite
+│   │       debug_executable.exe
+│   │       main.go
+│   │
+│   ├───internal/
+│   │   └───server/
+│   │       │   hub.go
+│   │       │
+│   │       ├───clients/
+│   │       │       websocket.go
+│   │       │
+│   │       ├───db/
+│   │       │   │   db.go
+│   │       │   │   models.go
+│   │       │   │   queries.sql.go
+│   │       │   │
+│   │       │   └───config/
+│   │       │           queries.sql
+│   │       │           schema.sql
+│   │       │           sqlc.yml
+│   │       │
+│   │       ├───objects/
+│   │       │       gameObjects.go
+│   │       │       sharedCollection.go
+│   │       │       spawn.go
+│   │       │
+│   │       └───states/
+│   │               connected.go
+│   │               ingame.go
+│   │
+│   └───pkg/
+│       └───packets/
+│               packets.pb.go
+│               util.go
+│
+└───shared/
+        packets.proto
+```
+</details>
+
+## Optional: Sending spores in batches
