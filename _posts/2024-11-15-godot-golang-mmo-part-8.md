@@ -226,13 +226,24 @@ This is pretty much a direct translation of the Go code we wrote for the server,
 ```gd
 func update_mass(new_mass: float) -> void:
     radius = sqrt(new_mass / PI)
-    _collision_shape.set_radius(radius)
-    queue_redraw()
 ```
 
-Now it might be clearer to see why we made a new method for this in the actor script. We also need to update the hitbox and tell the game to redraw the actor, so we can see the change in size. There will be more things later on, like zooming out the camera and resizing the player's name, but for now, this is enough.
+So now, if you run the game, you might be surprised to see that nobody is growing! There is one key detail we missed: `_draw` is only called once when an actor is created, so we don't see anyone's size change when we update `radius`. Even if we did, it would be meaningless because we also forgot to update the collision shape's radius along with the visual radius. Let's make sure it's impossible to forget this by adding a setter for the radius that updates the collision shape and redraws the actor.
 
-So now, if you run the game, you should see other players growing in size when they eat, but you won't see yourself grow yet! This is because we aren't sending the spore consumption event to ourselves (no need since we already know we ate the spore). We simply need to use our new `update_mass` method in the `_consume_spore` method we wrote in <a href="/2024/11/14/godot-golang-mmo-part-7#consuming-spores" target="_blank">the last part</a>.
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gd
+var radius: float:
+	set(new_radius):
+		_collision_shape.set_radius(radius)
+		queue_redraw()
+```
+
+This is a cool feature of Godot that means the `radius` property will automatically update the collision shape and redraw the actor whenever it appears on the left-hand-side of an `=` sign. This effectively makes it so that we can't forget to update the collision shape and redraw the actor when we change the radius.
+
+**Now** if we run the game, we will see other players growing in size when they eat, but you won't see yourself grow yet! What gives? This is because we aren't sending the spore consumption event to ourselves (no need since we already know we ate the spore). We simply need to use our new `update_mass` method in the `_consume_spore` method we wrote in <a href="/2024/11/14/godot-golang-mmo-part-7#consuming-spores" target="_blank">the last part</a>.
 
 ```directory
 /client/objects/actor/actor.gd
@@ -394,4 +405,16 @@ func (g *InGame) getOtherPlayer(otherId uint64) (*objects.Player, error) {
 }
 ```
 
-So the player consumption logic is pretty much the same as that for the spores, except we have a check to see if the player being eaten is own own player. If that's the case, we simply restart the state, which will respawn the player at a random location with a smaller mass. We don't need to remove the player from the shared collection, because that will be done by the client whose player ate us, plus we will be added back with the same ID when we respawn anyway.
+So the player consumption logic is pretty much the same as that for the spores, except we have a check to see if the player being eaten is our own player. If that's the case, we simply restart the state, which will respawn the player at a random location with a smaller mass. We don't need to remove the player from the shared collection, because that will be done by the client whose player ate us, plus we will be added back with the same ID when we respawn anyway.
+
+If we run the game now, everything should be working as expected. You can eat spores to grow, and eat other players to grow even more. If you are eaten, you will respawn at a random location with the original starting mass. The game is starting to look like a competitive MMO!
+
+If you play this game long enough, you will start noticing a couple issues:
+1. It is possible for players to respawn into other players, causing them to be eaten immediately, which isn't very fun.
+2. The spores don't respawn, so eventually, the server will run out of spores for players to eat.
+
+Let's address these issues before we wrap up for today.
+
+## Respawn logic
+
+So far, we've been able to get away with spawning stuff at purely random coordinates, but now that we have the concept of eating other players, we need to be a bit more thoughtful. We need to make sure that players don't spawn inside each other, and it would be nice if the spores could avoid spawning inside players as well when we get to that.
