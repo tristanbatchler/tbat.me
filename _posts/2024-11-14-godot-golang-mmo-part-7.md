@@ -528,8 +528,9 @@ We will be following this workflow for most of the features we add to the game f
 │   │       protobuf/
 │   │
 │   ├───classes/
-│   │       log.gd
-│   │       log.tscn
+│   │   └───log/
+│   │           log.gd
+│   │           log.tscn
 │   │
 │   ├───objects/
 │   │   ├───actor/

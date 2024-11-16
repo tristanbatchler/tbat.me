@@ -40,3 +40,5 @@ hitbox
 hiscore
 proto
 janky
+Hiscore
+hiscores
