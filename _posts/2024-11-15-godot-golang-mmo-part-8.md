@@ -236,9 +236,10 @@ So now, if you run the game, you might be surprised to see that nobody is growin
 
 ```gd
 var radius: float:
-	set(new_radius):
-		_collision_shape.set_radius(radius)
-		queue_redraw()
+    set(new_radius):
+        radius = new_radius
+        _collision_shape.set_radius(radius)
+        queue_redraw()
 ```
 
 This is a cool feature of Godot that means the `radius` property will automatically update the collision shape and redraw the actor whenever it appears on the left-hand-side of an `=` sign. This effectively makes it so that we can't forget to update the collision shape and redraw the actor when we change the radius.
@@ -418,3 +419,121 @@ Let's address these issues before we wrap up for today.
 ## Respawn logic
 
 So far, we've been able to get away with spawning stuff at purely random coordinates, but now that we have the concept of eating other players, we need to be a bit more thoughtful. We need to make sure that players don't spawn inside each other, and it would be nice if the spores could avoid spawning inside players as well when we get to that.
+
+Let's start by revisiting the `spawn.go` file we created in <a href="/2024/11/13/godot-golang-mmo-part-6#spawning-stuff" target="_blank">the last part</a> and adding some new features to the `SpawnCoords` function.
+
+```directory
+/server/internal/server/objects/spawn.go
+```
+
+```go
+func SpawnCoords(radius float64, playersToAvoid *SharedCollection[*Player], sporesToAvoid *SharedCollection[*Spore]) (float64, float64) {
+    var bound float64 = 3000
+    const maxTries int = 25
+
+    tries := 0
+    for {
+        x := bound * (2*rand.Float64() - 1)
+        y := bound * (2*rand.Float64() - 1)
+
+        if !isTooClose(x, y, radius, playersToAvoid, getPlayerPosition, getPlayerRadius) &&
+            !isTooClose(x, y, radius, sporesToAvoid, getSporePosition, getSporeRadius) {
+            return x, y
+        }
+
+        tries++
+        if tries > maxTries {
+            bound *= 2
+            tries = 0
+        }
+    }
+}
+```
+
+This function will keep trying to find a random coordinate until it finds one that is not too close to any of the collections passed in. If it fails to find a coordinate after a certain number of tries, it will double the search area and try again. This way, we can be sure that we will eventually find a suitable coordinate, even if it takes a while.
+
+But you might rightly be wondering what `isTooClose`, `getPlayerPosition`, `getPlayerRadius`, `getSporePosition`, and `getSporeRadius` are. These are helper functions that let us check if a coordinate is too close to any of the objects in the collections passed in. Let's define these functions now.
+
+```directory
+/server/internal/server/objects/spawn.go
+```
+
+```go
+func isTooClose[T any](x float64, y float64, radius float64, objects *SharedCollection[T], getPosition func(T) (float64, float64), getRadius func(T) float64) bool {
+    // Not too close if there are no objects
+    if objects == nil {
+        return false
+    }
+
+    // Check if any object is too close
+    tooClose := false
+    objects.ForEach(func(_ uint64, object T) {
+        if tooClose {
+            return
+        }
+
+        objX, objY := getPosition(object)
+        objRad := getRadius(object)
+        xDst := objX - x
+        yDst := objY - y
+        dstSq := xDst*xDst + yDst*yDst
+
+        if dstSq <= (radius+objRad)*(radius+objRad) {
+            tooClose = true
+            return
+        }
+    })
+
+    return tooClose
+}
+```
+
+The `isTooClose` function simply tells us whether a circle with the given position and radius would overlap with any of the objects in the provided collection. The `getPosition` and `getRadius` functions are passed in as arguments so that we can use this function with any type of object that has a position and radius. An alternative strategy would be to use interfaces, but it can quickly become cumbersome to work with, so while this approach isn't great, it's going to have to do for now.
+
+```directory
+/server/internal/server/objects/spawn.go
+```
+
+```go
+var getPlayerPosition = func(p *Player) (float64, float64) { return p.X, p.Y }
+var getPlayerRadius = func(p *Player) float64 { return p.Radius }
+var getSporePosition = func(s *Spore) (float64, float64) { return s.X, s.Y }
+var getSporeRadius = func(s *Spore) float64 { return s.Radius }
+```
+
+And that's it! Remember the whole point of this exercise is to make sure that players and spores don't spawn inside each other, so we'd better go and use our new `SpawnCoords` function in the `InGame` state's `OnEnter` method.
+
+```directory
+/server/internal/server/states/ingame.go
+```
+
+```go
+func (g *InGame) OnEnter() {
+    // ...
+    // Set the initial properties of the player
+    g.player.X, g.player.Y = objects.SpawnCoords(g.player.Radius, g.client.SharedGameObjects().Players, nil)
+    // ...
+}
+```
+
+We now need to fix up the spore spawning logic, which was already using the old version of `SpawnCoords`. Let's update that now.
+
+```directory
+/server/internal/server/hub.go
+```
+
+```go
+func (h *Hub) newSpore() *objects.Spore {
+    // ...
+    x, y := objects.SpawnCoords(sporeRadius, h.SharedGameObjects.Players, h.SharedGameObjects.Spores)
+    // ...
+}
+```
+
+This will ensure that spores don't spawn inside players or other spores, which should give us a much nicer distribution of spores around the map and stop from larger players becoming even larger when we add spore replenishment logic next.
+
+And there we have it! When we run the game now, players should no longer spawn inside each other, and we should notice the pattern of spores around the map looks much less clumpy. We are now ready to implement spore respawning.
+
+## Replenishing spores
+
+The last thing we need to do today is to make sure that the number of spores on the map stays more-or-less constant.
