@@ -317,7 +317,7 @@ func _draw() -> void:
 
 This script is pretty similar to the `Actor` script, but we have a few differences. We have a `color` variable that we set to a random color when the spore is created, and we draw the spore as a circle with that color. We also have a `spore_id` variable that we set when we instantiate the spore, which we will use to identify the spore when we need to update it.
 
-Speaking of which, let's keep a map of spores in the `InGame` state script so we can hold onto them and update them when we receive new information about them:
+{% include highlight.html anchor="handle-spores" text="Speaking of which, let's keep a map of spores in the <code>InGame</code> state script, so we can hold onto them and update them when we receive new information about them:" %}
 
 ```directory
 /client/states/ingame/ingame.gd
@@ -722,7 +722,7 @@ func (g *InGame) sendInitialSpores(batchSize int, delayBetweenBatches time.Durat
 }
 ```
 
-Now we still need to update the client to handle the new `SporesBatchMessage` type. This is just a matter of adding a new case to the `HandleMessage` method in the `InGame` state script (we can remove the old `Spore` case since we won't be using it for now, keep the `_handle_spore_msg` method though!):
+Now we still need to update the client to handle the new `SporesBatchMessage` type. This is just a matter of adding a new case to the `HandleMessage` method in the `InGame` state script:
 
 ```directory
 /client/states/ingame/ingame.gd
