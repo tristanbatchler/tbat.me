@@ -536,4 +536,97 @@ And there we have it! When we run the game now, players should no longer spawn i
 
 ## Replenishing spores
 
-The last thing we need to do today is to make sure that the number of spores on the map stays more-or-less constant.
+The last thing we need to do today is to make sure that the number of spores on the map stays more-or-less constant. We can achieve that by running a loop on the hub that checks the rough number of spores in the shared collection every few seconds, and adds back any that are missing. Let's start by adding a new method to the `Hub` struct that will do this.
+
+```directory
+/server/internal/server/hub.go
+```
+
+```go
+import (
+    // ...
+    "time"
+    // ...
+)
+
+func (h *Hub) replenishSporesLoop(rate time.Duration) {
+    ticker := time.NewTicker(rate)
+    defer ticker.Stop()
+
+    for range ticker.C {
+        sporesRemaining := h.SharedGameObjects.Spores.Len()
+        diff := MaxSpores - sporesRemaining
+
+        if diff <= 0 {
+            continue
+        }
+
+        log.Printf("%d spores remain - going to replenish %d spores\n", sporesRemaining, diff)
+
+        // Don't really want to spawn too many at a time, otherwise it can cause a lag spike
+        for i := 0; i < min(diff, 10); i++ {
+            spore := h.newSpore()
+            sporeId := h.SharedGameObjects.Spores.Add(spore)
+
+            h.BroadcastChan <- &packets.Packet{
+                SenderId: 0,
+                Msg:      packets.NewSpore(sporeId, spore),
+            }
+
+            // Sleep a bit to avoid lag spikes
+            time.Sleep(50 * time.Millisecond)
+        }
+    }
+}
+
+```
+
+If we call this method in the background, it will go ahead and replenish spores at a supplied rate if there are fewer than the maximum number of spores on the map. We are also adding a small sleep between each spore spawn to avoid lag spikes, which can happen if we spawn too many spores at once. For every new spore we spawn, we are also broadcasting the event to all clients, so they can add the spore to their local collections. The special `SenderId` of 0 indicates that the event is coming from the server.
+
+Let's call this method in the `Hub`'s `Run` method to make the loop run every 2 seconds (feel free to adjust this rate to your liking).
+
+```directory
+/server/internal/server/hub.go
+```
+
+```go
+func (h *Hub) Run() {
+    // ...
+    go h.replenishSporesLoop(2 * time.Second)
+    // ...
+}
+```
+
+Now we just need to make sure we handle the spore messages in the `InGame` state's `HandleMessage` method.
+
+```directory
+/server/internal/server/states/ingame.go
+```
+
+```go
+func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
+    switch message := message.(type) {
+    // ...
+    case *packets.Packet_Spore:
+        g.handleSpore(senderId, message)
+    }
+}
+
+func (g *InGame) handleSpore(senderId uint64, message *packets.Packet_Spore) {
+    if senderId != 0 {
+        g.logger.Println("Received spore message from someone other than the server, ignoring")
+    }
+
+    g.client.SocketSendAs(message, senderId)
+}
+```
+
+This is a very simple handler that just forwards the spore message to the client. We don't need to do anything else because the client is already configured to handle spore messages, since we wrote the handler in <a href="/2024/11/14/godot-golang-mmo-part-7#handle-spores" target="_blank">the last part</a>.
+
+So now, if you run the game, you should see that the number of spores on the map stays more-or-less constant, and you should be able to see them spawning in from time to time around the map.
+
+And that's it for today! We've allowed players to eat each other and grow (all validated by the server), and we've addressed some issues with spawning and spore replenishment. The game is starting to look like a competitive MMO, and we are well on our way to having a complete game. In the <strong><a href="/2024/11/16/godot-golang-mmo-part-9" class="sparkle-less">the next part</a></strong>, we will add a hiscore system to the game, so players can compete to be the best in the game. Until then, happy coding!
+
+---
+
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
