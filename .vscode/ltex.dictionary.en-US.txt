@@ -37,3 +37,6 @@ HBoxContainer
 VCenter
 const
 hitbox
+hiscore
+proto
+janky

@@ -1,5 +1,5 @@
 ---
-title: §3 Creating a chatroom with Godot 4 for an MMO with Go
+title: §03 Creating a chatroom with Godot 4 for an MMO with Go
 description: Learn how to create a chatroom in Godot 4 for an MMO with Go using WebSockets and Protocol Buffers.
 redditurl: 
 ---

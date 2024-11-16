@@ -14,3 +14,19 @@
 {"rule":"LOT_OF","sentence":"^\\QThere is quite a lot happening here, so let's break it down:\\E$"}
 {"rule":"A_INFINITIVE","sentence":"^\\QWe also added a small delay between each spore to avoid flooding the send channel and causing packets to be dropped.\\E$"}
 {"rule":"THE_NN_AND_THE_NN","sentence":"^\\QNow we don't want to be too strict about this, because the synchronization between the server and the client isn't ever going to be perfect, and we don't want to punish the player for that.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q{% include highlight.html anchor=\"protoc-usage\" text=\"Now we're free to go ahead and compile our .proto file.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\Q{% include highlight.html anchor=\"protoc-usage\" text=\"Now we're free to go ahead and compile our .proto file.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q{% include highlight.html anchor=\"protoc-usage\" text=\"Now we're free to go ahead and compile our .proto file.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q{% include highlight.html anchor=\"godobuf-usage\" text=\"You should see a new Godobuf tab appear in the bottom left panel, underneath the scene tree, adjacent to the FileSystem tab.\\E$"}
+{"rule":"COMMA_PARENTHESIS_WHITESPACE","sentence":"^\\QThis is where we can input our .proto file and generate our code.\"\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThis is where we can input our .proto file and generate our code.\"\\E$"}
+{"rule":"ID_CASING","sentence":"^\\Qid int A unique identifier for the user\nusername string The username of the user\npassword_hash string An obfuscated version of the user's password\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q{% include highlight.html anchor=\"get-rid-of-chat-handling\" text=\"Now, let's just get rid of the chat handling logic we set up in the HandleMessage method.\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\QThe root node of this scene should be an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QThe \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q scene should look like this:\nNode - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nNode2D - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nCanvasLayer - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nLineEdit\nLog (log.gd)\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QWe'll need to modify the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q function to initialize the spores collection:\\E$"}
+{"rule":"POSSESSIVE_APOSTROPHE","sentence":"^\\QNow we are converting the shared spores collection into a series of batches, each containing 20 spores.\\E$"}
+{"rule":"CURRENCY","sentence":"^\\QIn the diagram, it is clear that the distance between the two circles is \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q$, a.k.a.\\E$"}
+{"rule":"CURRENCY","sentence":"^\\QTo find the player's new radius, \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\QM_1 := \\pi R_1^2\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\QR_1$$:\\E$"}
+{"rule":"CURRENCY","sentence":"^\\QSo, we'll need a method to calculate \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q$ and \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\QR_1$$, call it \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\QThis is a cool feature of Godot that means the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q property will automatically update the collision shape and redraw the actor whenever it appears on the left-hand-side of an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q sign.\\E$"}

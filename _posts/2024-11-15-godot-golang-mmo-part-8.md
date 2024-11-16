@@ -1,5 +1,5 @@
 ---
-title: §8 Adding Scores and Competition to Golang MMO with Godot 4
+title: §08 Adding Scores and Competition to Golang MMO with Godot 4
 description: We are going to let our players grow and fight to be the best in the game, all while letting the Go server validate what's happening to prevent cheating.
 redditurl: 
 ---
@@ -625,7 +625,7 @@ This is a very simple handler that just forwards the spore message to the client
 
 So now, if you run the game, you should see that the number of spores on the map stays more-or-less constant, and you should be able to see them spawning in from time to time around the map.
 
-And that's it for today! We've allowed players to eat each other and grow (all validated by the server), and we've addressed some issues with spawning and spore replenishment. The game is starting to look like a competitive MMO, and we are well on our way to having a complete game. In the <strong><a href="/2024/11/16/godot-golang-mmo-part-9" class="sparkle-less">the next part</a></strong>, we will add a hiscore system to the game, so players can compete to be the best in the game. Until then, happy coding!
+And that's it for today! We've allowed players to eat each other and grow (all validated by the server), and we've addressed some issues with spawning and spore replenishment. The game is starting to look like a competitive MMO, and we are well on our way to having a complete game. In <strong><a href="/2024/11/16/godot-golang-mmo-part-9" class="sparkle-less">the next part</a></strong>, we will add a hiscore system to the game, so players can compete to be the best in the game. Until then, happy coding!
 
 ---
 

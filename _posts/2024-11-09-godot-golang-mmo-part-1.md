@@ -1,5 +1,5 @@
 ---
-title: "§1 Setting Up Your Godot 4 MMO Project with Golang"
+title: "§01 Setting Up Your Godot 4 MMO Project with Golang"
 description: Learn the setup process for a Godot 4 MMO using a Golang backend, covering essential tools, packets, and basic server-client communication.
 redditurl: 
 ---
