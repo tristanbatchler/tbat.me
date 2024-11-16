@@ -6,6 +6,12 @@ redditurl:
 
 Welcome back! In the [last part](/2024/11/14/godot-golang-mmo-part-7), we added spores to our game, and gave players the opportunity to eat them. Today, we are going to expand upon that by letting the server decide if the player should grow after eating spores, then tell all other players about the change. This inherently will give rise to the concept of scores, and combined with the possibility for players to eat each other, we will have a competitive game.
 
+Here is a preview of what we will achieve today:
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/15/ch8-preview.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
 ## Growing the player
 
 First, we left off with the player eating spores and telling the server about it, but the server isn't doing anything with that information. It would be great if the server could validate the player's actions, and either accept or reject them. This way, we can prevent cheating, and make sure that the game is fair for everyone. If the changes are accepted, the server will then broadcast the changes to all other players, for other clients to interpret and display.

@@ -445,8 +445,8 @@ That's much better! Now that we got that out the way, let's get back to the clie
 
 We will create a "Log" class which will be a rich text label with helper functions. This will be the place where events, messages from the server, or chat messages can be logged, and it will make an appearance in quite a few places in the final game.
 
-1. Create a new folder in the Godot FileSystem called `classes`
-2. Right-click the new folder and select **Create new...** and then **Scene**
+1. Create a new folder in the Godot FileSystem at `res://classes/log/`
+2. Right-click the new `log` folder and select **Create new...** and then **Scene**
 3. Enter **log** as the name of the scene
 4. Choose **RichTextLabel** as the root node
 5. Click **OK**
@@ -459,10 +459,10 @@ Also be sure to enable **BBCode** in the **Inspector** panel on the right-hand s
 
 Also enable **Scroll Active** and **Scroll Following** in the **Inspector** panel. This will ensure that the log will always scroll to the bottom when new messages are added.
 
-Now we need to add some functionality to this scene. Attach a new script at `res://classes/log.gd` to the root `Log` node and paste the following code:
+Now we need to add some functionality to this scene. Attach a new script at `res://classes/log/log.gd` to the root `Log` node and paste the following code:
 
 ```directory
-/client/classes/log.gd
+/client/classes/log/log.gd
 ```
 ```gd
 class_name Log
@@ -784,10 +784,12 @@ And just in case you need it, this is what the entire project structure should l
 │   │
 │   ├───addons/
 │   │   └───protobuf/
-│   └───classes/
-│           log.gd
-│           log.tscn
-│
+│   │
+│   ├───classes/
+│   │   └───log/
+│   │           log.gd
+│   │           log.tscn
+│   │
 ├───server/
 │   │   go.mod
 │   │   go.sum
