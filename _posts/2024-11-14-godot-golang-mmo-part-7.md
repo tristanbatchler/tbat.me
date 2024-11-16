@@ -178,7 +178,7 @@ func NewHub() *Hub {
 
 ### Spawning spores
 
-Now, to the interesting stuff: let's add a new file to our `objects` package to handle spawning game objects, since we will need to have the ability to place spores and players around the map, with some eventual logic to stop them from spawning on top of each other, for example. But for now, we'll just have a simple `SpawnCoords` function to give a random position on the map:
+Now, to the interesting stuff: {% include highlight.html anchor="spawning-stuff" text="let's add a new file to our <code>objects</code> package to handle spawning game objects" %}, since we will need to have the ability to place spores and players around the map, with some eventual logic to stop them from spawning on top of each other, for example. But for now, we'll just have a simple `SpawnCoords` function to give a random position on the map:
 
 ```directory
 /server/internal/server/objects/spawn.go
