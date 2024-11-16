@@ -1,5 +1,5 @@
 ---
-title: "§0 Building a Godot 4 MMO with Golang: A Fresh Start"
+title: "§00 Building a Godot 4 MMO with Golang: A Fresh Start"
 description: Embark on a new journey to create a high-performance MMO using Godot 4 and Golang!
 redditurl: 
 ---

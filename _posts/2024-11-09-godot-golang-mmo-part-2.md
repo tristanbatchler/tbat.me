@@ -1,5 +1,5 @@
 ---
-title: §2 Building a WebSocket game server in Go for a Godot 4 MMO
+title: §02 Building a WebSocket game server in Go for a Godot 4 MMO
 description: Learn how to set up a WebSocket server in Go to power multiplayer functionality in your Godot 4 MMO.
 redditurl: 
 ---

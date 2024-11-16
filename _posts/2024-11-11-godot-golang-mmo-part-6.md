@@ -1,5 +1,5 @@
 ---
-title: §6 Adding Gameplay to the MMO with Godot 4 and Golang
+title: §06 Adding Gameplay to the MMO with Godot 4 and Golang
 description: Time to add a new state to our game server and handle player creation, movement, disconnection, and game loop.
 redditurl: 
 ---

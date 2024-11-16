@@ -1,13 +1,13 @@
 ---
-title: §7 Adding Objectives + Polishing the Godot 4 Go MMO
+title: §07 Adding Objectives + Polishing the Godot 4 Go MMO
 description: So we have a basic functioning MMO, but it's not very fun and movement is a bit janky. Let's make things a bit easier on the eyes and keep players engaged with objectives.
 redditurl: 
 ---
 
-Nice to see you again! In [the last post](/2024/11/11/godot-golang-mmo-part-6), we finally got some gameplay down, and we left off in a pretty good spot. We have a basic space where players can move around and spot each other, but it is very unpolished and I wouldn't really call it a "game" since it lacks objectives! Let's fix that today by adding some spores to collect and let the player grow. We will also be making the movement more fluid and restoring the chat functionality we kinda lost in the last post. Let's get right into it!
+Nice to see you again! In [the last post](/2024/11/11/godot-golang-mmo-part-6), we finally got some gameplay down, and we left off in a pretty good spot. We have a basic space where players can move around and spot each other, but it is very unpolished, and I wouldn't really call it a "game" since it lacks objectives! Let's fix that today by adding some spores to collect and let the player grow. We will also be making the movement more fluid and restoring the chat functionality we kinda lost in the last post. Let's get right into it!
 
 ## Bringing back the chat
-Low-hanging fruit, let's quickly restore our chatroom logic we got rid of in <a href="/2024/11/10/godot-golang-mmo-part-5#get-rid-of-chat-handling" target="_blank">§5</a>. All we need to do here is add a new case to the `HandleMessage` method in our `InGame` state handler:
+Low-hanging fruit, let's quickly restore our chatroom logic we got rid of in <a href="/2024/11/10/godot-golang-mmo-part-5#get-rid-of-chat-handling" target="_blank">§05</a>. All we need to do here is add a new case to the `HandleMessage` method in our `InGame` state handler:
 
 ```directory
 /server/internal/server/states/ingame.go
@@ -32,7 +32,7 @@ func (g *InGame) handleChat(senderId uint64, message *packets.Packet_Chat) {
 }
 ```
 
-Note the `handleChat` method is just a repeat of the code we had to remove in §5, which we originally wrote in <a href="/2024/11/09/godot-golang-mmo-part-3#add-chat-logic" target="_blank">§3</a>.
+Note the `handleChat` method is just a repeat of the code we had to remove in §05, which we originally wrote in <a href="/2024/11/09/godot-golang-mmo-part-3#add-chat-logic" target="_blank">§03</a>.
 
 So now, when two players are in the same room, they can chat with each other!
 ![Chatting](/assets/css/images/posts/2024/11/14/chatting.png)
@@ -376,7 +376,7 @@ message Packet {
 }
 ```
 
-<small>*You should be used to recompiling the proto file by now, so this might be the last time I mention it: don't forget to compile your Golang and GDScript code using `protoc` or Godobuf! Instructions for the Golang code compilation can be found in <a href="/2024/11/09/godot-golang-mmo-part-1#protoc-usage" target="_blank">§1</a>, and the Godobuf instructions are in <a href="/2024/11/09/godot-golang-mmo-part-1#godobuf-usage" target="_blank">the same post, a bit further down</a>.*</small>
+<small>*You should be used to recompiling the proto file by now, so this might be the last time I mention it: don't forget to compile your Golang and GDScript code using `protoc` or Godobuf! Instructions for the Golang code compilation can be found in <a href="/2024/11/09/godot-golang-mmo-part-1#protoc-usage" target="_blank">§01</a>, and the Godobuf instructions are in <a href="/2024/11/09/godot-golang-mmo-part-1#godobuf-usage" target="_blank">the same post, a bit further down</a>.*</small>
 
 Now, since both the actor and spore are **Area2D** nodes, we can use the `body_entered` signal to detect when they collide. It will be much more efficient to listen to the player actor's signal, rather than to every spore in the game, so let's connect this signal up to a handler in the `InGame` state script, just after we instantiate the player. 
 
@@ -474,7 +474,7 @@ func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
 }
 ```
 
-Now restart the server and client and you should see something like this:
+Now restart the server and client, and you should see something like this:
 <video controls>
   <source src="/assets/css/images/posts/2024/11/14/consume-spore.webm" type="video/webm">
   Your browser does not support the video tag.
@@ -504,7 +504,7 @@ I hope you are seeing the workflow of this project by now. Whenever we want to a
 * Do we need the server to send this message to the client? If so, create a helper function in the `util.go` file to make it easier to create the message.
 * Do we need to store this information on the server? If so, add a new struct to the `objects` package and a new collection to the `SharedGameObjects` struct in the `hub.go` file.
 * Do we need to render this information on the client? If so, create a new scene and script for the object in the `objects` folder, and add a new method to the `InGame` state script to handle the message and instantiate the object.
-* etc.
+* Et cetera...
 
 We will be following this workflow for most of the features we add to the game from here on, so there's still plenty of time to get used to it. For now though, I figured it's been a while since we've checked our project structure, so I'll give you a quick rundown of what we have so far:
 
