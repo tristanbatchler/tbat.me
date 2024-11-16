@@ -393,7 +393,7 @@ func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> vo
         _add_actor(actor_id, actor_name, x, y, radius, speed, is_player)
     else:
         var direction := player_msg.get_direction()
-        _update_actor(actor_id, x, y, direction, speed, radius)
+		_update_actor(actor_id, x, y, direction, speed, radius, is_player)
 
 func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> void:
     var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
@@ -403,13 +403,19 @@ func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: f
     if is_player:
         actor.area_entered.connect(_on_player_area_entered)
 
-func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: float, radius: float) -> void:
-    var actor := _players[actor_id]
-    actor.position.x = x
-    actor.position.y = y
-    actor.velocity = Vector2.from_angle(direction) * speed
-    actor.radius = radius
+func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: float, radius: float, is_player: bool) -> void:
+	var actor := _players[actor_id]
+	actor.radius = radius
+
+	if actor.position.distance_squared_to(Vector2(x, y)) > 100:
+		actor.position.x = x
+		actor.position.y = y
+	
+	if not is_player:
+		actor.velocity = Vector2.from_angle(direction) * speed
 ```
+
+We are also taking the opportunity to update the player's radius when they receive a new message from the server, because the information is there: we might as well use it! Also, we will only update the actor's position to the new position if there is a distance of more than 10 pixels between them. This is useful to give the player a bit of leeway when moving around, rather than feeling like they are always being dragged around by the server. We never update the player's velocity either, because the experience is never going to feel good that way.
 
 Now, of course we need to add the `_on_player_area_entered` method to handle the collision:
 
@@ -423,7 +429,7 @@ func _on_player_area_entered(area: Area2D) -> void:
         _consume_spore(area as Spore)
 ```
 
-We are splitting this off into another method called `_consume_spore`, because we will need to also handle the case where the player collides with another actor (but we won't be doing that in this post). To keep things clean, let's move on to implementing the `_consume_spore` method:
+{% include highlight.html anchor="consuming-spores" text="We are splitting this off into another method called <code>_consume_spore</code>, because we will need to also handle the case where the player collides with another actor (but we won't be doing that in this post). To keep things clean, let's move on to implementing the <code>_consume_spore</code> method:" %}
 
 ```directory
 /client/states/ingame/ingame.gd

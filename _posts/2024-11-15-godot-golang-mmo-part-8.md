@@ -149,7 +149,7 @@ Finally, we can implement the `handleSporeConsumed` method.
 ```go
 func (g *InGame) handleSporeConsumed(senderId uint64, message *packets.Packet_SporeConsumed) {
     if senderId != g.client.Id() {
-        g.logger.Println("Received spore consumption message from another player, ignoring")
+        g.client.SocketSendAs(message, senderId)
         return
     }
 
@@ -176,16 +176,222 @@ func (g *InGame) handleSporeConsumed(senderId uint64, message *packets.Packet_Sp
     g.player.Radius = g.nextRadius(sporeMass)
 
     go g.client.SharedGameObjects().Spores.Remove(sporeId)
-    
-    updatePacket := packets.NewPlayer(g.client.Id(), g.player)
-    g.client.Broadcast(updatePacket)
-    go g.client.SocketSend(updatePacket)
+
+    g.client.Broadcast(message)
 }
 ```
 
-We are using a strategy where we check for the easiest things first, and if we fail at any point, we return early. This way, we can avoid making the server crunch numbers unnecessarily. If we make it to the end, we can be confident that the player's growth is valid, and we can broadcast the change to all players (including the player who grew: we already have logic on the client side to update the player's size, so we might as well use it).
+We are using a strategy where we check for the easiest things first, and if we fail at any point, we return early. This way, we can avoid making the server crunch numbers unnecessarily. If we make it to the end, we can be confident that the player's growth is valid, and we can broadcast the event to all players. Speaking of which, what happens when this event is broadcasted to us? It is handled at the top of the method, where we just forward the message on to the client. This way, the client can update the player's size and remove the spore from the game.
 
-We are also using goroutines for things that don't need to be done synchronously, like removing the spore from the hub and sending the update packet to the client. This way, we can keep the server responsive and not block it on I/O operations or waiting to acquire locks. We don't really care about the outcome or order of these operations, so we can justify firing and forgetting them.
+We are also using a goroutine to remove the spore from the hub, because we don't really care when it happens, as long as it happens. This way, we can avoid blocking the server while it waits to acquire a lock.
 
 Note that we are not doing anything when we detect foul play, but you could consider having a system to penalize players who cheat. For now, we are just logging the error and moving on. It would cause the cheater's game to go out of sync with the server (because on the client side, the spores they collide with would still be there), but so be it; they don't deserve a pristine experience if they are going to cheat!
 
+### Processing spore consumption on the client side
+
+Now that the server is correctly handling spore consumption and sending the event to all clients if it is valid, we need to process this event in Godot. We will need to update the player's size and remove the spore from the game. Let's listen for that in the `InGame` state's `_on_ws_packet_received` method and make a call to a new handler:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gd
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    # ...
+    elif packet.has_spore_consumed():
+        _handle_spore_consumed(sender_id, packet.get_spore_consumed())
+
+func _handle_spore_consumed(sender_id: int, spore_consumed_msg: packets.SporeConsumedMessage) -> void:
+    if sender_id in _players:
+        var actor := _players[sender_id]
+        var actor_mass := _rad_to_mass(actor.radius)
+
+        var spore_id := spore_consumed_msg.get_spore_id()
+        if spore_id in _spores:
+            var spore := _spores[spore_id]
+            var spore_mass := _rad_to_mass(spore.radius)
+            actor.update_mass(actor_mass + spore_mass)
+            _remove_spore(spore)
+
+func _rad_to_mass(radius: float) -> float:
+    return radius * radius * PI
+```
+
+This is pretty much a direct translation of the Go code we wrote for the server, so I don't think I need to explain it in detail. The only difference is that instead of having a `nextRadius` method, we are going to define a method in `actor.gd` called `update_mass`, which will perform the same calculations. This way, it's a bit more encapsulated and aptly named.
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gd
+func update_mass(new_mass: float) -> void:
+    radius = sqrt(new_mass / PI)
+    _collision_shape.set_radius(radius)
+    queue_redraw()
+```
+
+Now it might be clearer to see why we made a new method for this in the actor script. We also need to update the hitbox and tell the game to redraw the actor, so we can see the change in size. There will be more things later on, like zooming out the camera and resizing the player's name, but for now, this is enough.
+
+So now, if you run the game, you should see other players growing in size when they eat, but you won't see yourself grow yet! This is because we aren't sending the spore consumption event to ourselves (no need since we already know we ate the spore). We simply need to use our new `update_mass` method in the `_consume_spore` method we wrote in <a href="/2024/11/14/godot-golang-mmo-part-7#consuming-spores" target="_blank">the last part</a>.
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gd
+func _consume_spore(spore: Spore) -> void:
+    var player = _actors[GameManager.client_id]
+    var player_mass := _rad_to_mass(player.radius)
+    var spore_mass := _rad_to_mass(spore.radius)
+    player.update_mass(player_mass + spore_mass)
+    
+    # ...
+```
+
+Now, when you eat a spore, you should see yourself grow as well!
+
+## Eating other players
+
+Now that we have the concept of mass, and players can see themselves and their opponents grow, it is a good time to introduce the concept of eating other players. Implementing this feature will be very similar to eating spores, but with a couple of key differences:
+1. You can only eat another player if your mass is 150% of theirs or more.
+2. When you eat another player, you will gain their mass, and they will respawn at a random location with a smaller mass.
+
+Let's get to work on this! First, we need to add a new message type to our protocol buffer file.
+
+```directory
+/protocol/packets.proto
+```
+
+```proto
+message PlayerConsumedMessage { uint64 player_id = 1; }
+
+message Packet {
+    // ...
+    oneof msg {
+        // ...
+        PlayerConsumedMessage player_consumed = 13;
+    }
+}
+```
+
+Now, on the client side's `InGame` state code, we can add to our `_on_player_area_entered` function to check if we're colliding with another actor and call a new function called `_collide_actor` if we are.
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gd
+func _on_player_area_entered(area: Area2D) -> void:
+    # ...
+    elif area is Actor:
+        _collide_actor(area as Actor)
+
+func _collide_actor(actor: Actor) -> void:
+    var player := _players[GameManager.client_id]
+    var player_mass := _rad_to_mass(player.radius)
+    var actor_mass := _rad_to_mass(actor.radius)
+
+    if player_mass > actor_mass * 1.5:
+        _consume_actor(actor)
+```
+
+So here is a simple check to see if the player's mass is 150% of the actor's mass. If it is, we call a new method called `_consume_actor`, which we will define in a moment. We don't need to worry about checking the reverse case, where *we* are the ones being eaten, because the server will tell us if that happens (because another client will have called `_consume_actor` on their end). We will handle that later.
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gd
+func _consume_actor(actor: Actor) -> void:
+    var player := _players[GameManager.client_id]
+    var player_mass := _rad_to_mass(player.radius)
+    var actor_mass := _rad_to_mass(actor.radius)
+    player.update_mass(player_mass + actor_mass)
+
+    var packet := packets.Packet.new()
+    var player_consumed_msg := packet.new_player_consumed()
+    player_consumed_msg.set_player_id(actor.actor_id)
+    WS.send(packet)
+    _remove_player(actor)
+```
+
+This is almost identical to the `_consume_spore` method, so nothing should be very shocking here. We are sending new information to the server which we need to remember to handle, but for now, we also need to define the `_remove_player` method, which shouldn't need any explanation either.
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gd
+func _remove_player(actor: Actor) -> void:
+    _players.erase(actor.actor_id)
+    actor.queue_free()
+```
+
+Now, we need to handle this new message type on the server side.
+
+```directory
+/server/internal/server/states/ingame.go
+```
+
+```go
+func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
+    switch message := message.(type) {
+    // ...
+    case *packets.Packet_PlayerConsumed:
+        g.handlePlayerConsumed(senderId, message)
+    }
+}
+
+func (g *InGame) handlePlayerConsumed(senderId uint64, message *packets.Packet_PlayerConsumed) {
+    if senderId != g.client.Id() {
+        g.client.SocketSendAs(message, senderId)
+
+        if message.PlayerConsumed.PlayerId == g.client.Id() {
+            log.Println("Player was consumed, respawning")
+            g.client.SetState(&InGame{
+                player: &objects.Player{
+                    Name: g.player.Name,
+                },
+            })
+        }
+
+        return
+    }
+
+    // If the other player was supposedly consumed by our own player, we need to verify the plausibility of the event
+    errMsg := "Could not verify player consumption: "
+
+    // First check if the player exists
+    otherId := message.PlayerConsumed.PlayerId
+    other, err := g.getOtherPlayer(otherId)
+    if err != nil {
+        g.logger.Println(errMsg + err.Error())
+        return
+    }
+
+    // Next, check if the player is close enough to the other to be consumed
+    err = g.validatePlayerCloseToObject(other.X, other.Y, other.Radius, 10)
+    if err != nil {
+        g.logger.Println(errMsg + err.Error())
+        return
+    }
+
+    // If we made it this far, the player consumption is valid, so grow the player, remove the consumed other, and broadcast the event
+    otherMass := radToMass(other.Radius)
+    g.player.Radius = g.nextRadius(otherMass)
+
+    go g.client.SharedGameObjects().Players.Remove(otherId)
+
+    g.client.Broadcast(message)
+}
+
+func (g *InGame) getOtherPlayer(otherId uint64) (*objects.Player, error) {
+    other, exists := g.client.SharedGameObjects().Players.Get(otherId)
+    if !exists {
+        return nil, fmt.Errorf("player with ID %d does not exist", otherId)
+    }
+    return other, nil
+}
+```
+
+So the player consumption logic is pretty much the same as that for the spores, except we have a check to see if the player being eaten is own own player. If that's the case, we simply restart the state, which will respawn the player at a random location with a smaller mass. We don't need to remove the player from the shared collection, because that will be done by the client whose player ate us, plus we will be added back with the same ID when we respawn anyway.

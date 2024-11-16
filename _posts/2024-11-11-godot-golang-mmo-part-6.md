@@ -439,10 +439,13 @@ func (g *InGame) syncPlayer(delta float64) {
 
     updatePacket := packets.NewPlayer(g.client.Id(), g.player)
     g.client.Broadcast(updatePacket)
+    go g.client.SocketSend(updatePacket)
 }
 ```
 
 Here, we are using a bit of simple trigonometry to calculate the new position of the player based on the player's current direction and speed. You can interact with the formula [here](https://www.desmos.com/calculator/lktktkssjs) to see it in action.
+
+We are then updating the player's position and sending the update to all clients. We are also sending the update to the client that owns the player, so that they can ensure they are in-sync with the server. This can cause rubber-banding if the client's position is too far from the server's position, but we will address this in a future post. Notice we are sending the packet in a goroutine, so that we don't block the game loop, and because we don't really care about the result of the send operation, or when it completes.
 
 Since we are broadcasting the `PlayerMessage` packet, we need to expect it in the `HandleMessage` method. In this case, all we need to do is forward the packet on to the client on behalf of the sender.
 
@@ -585,17 +588,18 @@ Now, where we are already handling the `PlayerMessage` packet, we need to surrou
 /client/states/ingame/ingame.gd
 ```
 ```gd
-# ...
-if actor_id not in _players:
-    # This is a new player, so we need to create a new actor
-    var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
-    _world.add_child(actor)
-    _players[actor_id] = actor
-else:
-    # This is an existing player, so we need to update their position
-    var actor := _players[actor_id]
-    actor.position.x = x
-    actor.position.y = y
+func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> void:
+    # ...
+    if actor_id not in _players:
+        # This is a new player, so we need to create a new actor
+        var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
+        _world.add_child(actor)
+        _players[actor_id] = actor
+    else:
+        # This is an existing player, so we need to update their position
+        var actor := _players[actor_id]
+        actor.position.x = x
+        actor.position.y = y
 ```
 
 If you run the game now with two clients connected, it should be possible to find the other player and see them moving around the screen. If you are having difficulty finding the other, you can change the camera's zoom level to zoom out and see the entire game world. Just add something like the following to the `_input` function of `res://objects/actor/actor.gd`. It will allow you to zoom in and out using the scroll wheel:
