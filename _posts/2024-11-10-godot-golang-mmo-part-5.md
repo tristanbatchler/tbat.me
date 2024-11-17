@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 ```
 
-This piece of SQL code will create a table in our database called `users`, which will have this structure:
+{% include highlight.html anchor="schema-setup" text="This piece of SQL code will create a table in our database called <code>users</code>, which will have this structure:" %}
 
 | Column Name | Data Type | Description |
 | --- | --- | --- |
