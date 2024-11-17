@@ -339,4 +339,147 @@ Also, note we are using the `message.RegisterRequest.Username` as the player's n
 
 ## Tracking hiscores in the database
 
+Now that we have a way to create players in the database, we need to update the player's best score whenever they eat something. We will need a new query to update the player's best score, and we will need to call this query whenever a player's mass changes. 
+
+But we only want to update the player's best score if the new mass is greater than the current best score. So how do we get that? We could query the database every time we want to update the player's best score, but that seems like a lot of unnecessary work. Instead, we can keep track of the player's best score in the `objects.Player` struct, which is retrieved from the database when the player logs in. This way, we can simply compare the new mass to the player's best score, and only update the database if the new mass is greater.
+
+So let's add some new fields to the `objects.Player` struct to help keep track of the player's best score.
+
+```directory
+/server/internal/server/objects/gameObjects.go
+```
+
+```go
+type Player struct {
+    // ...
+    DbId      int64
+    BestScore int64
+}
+```
+
+We are adding a new field called `DbId`, which will store the player's ID in the database. This will be useful for making queries that require the player's ID, like updating the player's best score. We are also adding a new field called `BestScore`, which is more self-explanatory.
+
+We will also need a new query to get a player based on their ID (we limited the query to one result, since we are only ever going to get one player with a given ID). 
+
+```directory
+/server/internal/db/queries.go
+```
+
+```sql
+-- name: GetPlayerByUserID :one
+SELECT * FROM players
+WHERE user_id = ? LIMIT 1;
+```
+
+Remember to compile the queries again as we did above, before moving on to the next step.
+
+Now, when we handle the login request in the `Connected` state, let's retrieve the player's best score from the database and store it in the `Player` struct we pass to the `InGame` state. So enter the following code at the end of the `handleLogin` function, after we send the `Ok` response to the client.
+
+```directory
+/server/internal/server/states/connected.go
+```
+
+```go
+func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
+    // ...
+    player, err := c.queries.GetPlayerByUserID(c.dbCtx, user.ID)
+
+    if err != nil {
+        c.logger.Printf("Error getting player for user %s: %v\n", username, err)
+        c.client.SocketSend(genericFailMessage)
+        return
+    }
+
+    c.client.SetState(&InGame{
+        player: &objects.Player{
+            Name:      player.Name,
+            DbId:      player.ID,
+            BestScore: player.BestScore,
+        },
+    })
+}
+```
+
+Now, onto actually updating the player's best score. We will need a new query to update the player's best score, and we will need to call this query whenever a player's mass changes. 
+
+```directory
+/server/internal/db/queries.go
+```
+
+```sql
+-- name: UpdatePlayerBestScore :exec
+UPDATE players
+SET best_score = ?
+WHERE id = ?;
+```
+
+This is a very simple query to update the `best_score` field of a player with the given ID. We use `:exec` to denote the fact that this query doesn't return any rows. 
+
+Now, we need to call this query whenever we update the eats something, but only if the resulting mass is greater than the player's current best score. To handle that's let's make a new function in the `InGame` state called `syncPlayerBestScore`.
+
+```directory
+/server/internal/server/states/ingame.go
+```
+    
+```go
+func (g *InGame) syncPlayerBestScore() {
+    currentScore := int64(math.Round(radToMass(g.player.Radius)))
+    if currentScore > g.player.BestScore {
+        g.player.BestScore = currentScore
+        err := g.client.DbTx().Queries.UpdatePlayerBestScore(g.client.DbTx().Ctx, db.UpdatePlayerBestScoreParams{
+            ID:        g.player.DbId,
+            BestScore: g.player.BestScore,
+        })
+        if err != nil {
+            g.logger.Printf("Error updating player best score: %v\n", err)
+        }
+    }
+}
+```
+
+Most of the time, we don't really care about the result of the query, or when exactly it runs, so we can just sort of "fire and forget" it with a goroutine. We will do this at the end of the `handleSporeConsumed` and `handlePlayerConsumed` functions:
+
+```directory
+/server/internal/server/states/ingame.go
+```
+
+```go
+func (g *InGame) handleSporeConsumed(senderId uint64, message *packets.Packet_SporeConsumed) {
+    // ...
+    go g.syncPlayerBestScore()
+}
+
+func (g *InGame) handlePlayerConsumed(senderId uint64, message *packets.Packet_PlayerConsumed) {
+    // ...
+    go g.syncPlayerBestScore()
+}
+```
+
+The only time we really care about the result of the query is when the player leaves the game, because we want to make sure the player's best score is updated before they leave. So we will call the `syncPlayerBestScore` function directly in the `OnExit` function of the `InGame` state.
+
+```directory
+/server/internal/server/states/ingame.go
+```
+
+```go
+func (g *InGame) OnExit() {
+    g.syncPlayerBestScore()
+}
+```
+
+Here's an example of where it would be nice to be managing our database contexts a bit better, because this would be a great place to implement some retry logic in case the query fails. But for now, we just log the error and accept that the player's best score may not be updated in the database if the query fails.
+
+Now, when we run the game, we should see the player's best score updating in the database as they eat things. We can verify this by running the following query on the database:
+
+```sql
+SELECT * FROM players;
+```
+
+I won't go into too much detail on how to do that here, as there are many resources online that can help with that, but I am using a VS Code extension called [SQLite](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite) to run the query directly from the editor.
+![SQLite extension](/assets/css/images/posts/2024/11/16/sqlite-extension.png)
+
+So that ticks off stage 3 of our plan. Now, let's move on to stage 4: adding protobuf messages to handle requesting and sending hiscores.
+
+## Adding new protobuf messages
+
 *Coming soon...*

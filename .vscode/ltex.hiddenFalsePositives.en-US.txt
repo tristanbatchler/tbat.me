@@ -31,3 +31,4 @@
 {"rule":"CURRENCY","sentence":"^\\QSo, we'll need a method to calculate \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q$ and \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\QR_1$$, call it \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}
 {"rule":"EN_A_VS_AN","sentence":"^\\QThis is a cool feature of Godot that means the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q property will automatically update the collision shape and redraw the actor whenever it appears on the left-hand-side of an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q sign.\\E$"}
 {"rule":"THANK_FULL","sentence":"^\\QTo do this, simply use Full Rect anchor preset at the top of the scene editor when you have the root node selected.\\E$"}
+{"rule":"EN_COMPOUNDS","sentence":"^\\QSo that ticks off stage 3 of our plan.\\E$"}
