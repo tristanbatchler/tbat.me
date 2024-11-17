@@ -249,4 +249,94 @@ Now, let's tackle stage 2 of our plan: saving the player's best score to the dat
 
 ## Saving players in the database
 
+We are going to need a new table in the database to store player information, including their best score. Later on, we will want to save more information, like when we add character customization, but for now, we will just save the player's name and their best score.
+
+It's been a while since we've done this; we first set up the database in <a href="/2024/11/10/godot-golang-mmo-part-5#schema-setup" target="_blank">§05</a>, so let's refresh our memory on how to do this.
+
+Open up the `schema.sql` config file in our `/server/internal/db/config/` directory. Recall this is where we give the definition of all the tables we want to create in our database. Add the following to the bottom of the file:
+
+```directory
+/server/internal/db/config/schema.sql
+```
+
+```sql
+CREATE TABLE IF NOT EXISTS players (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL UNIQUE,
+    best_score INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+This will create a table called `players` with the following structure:
+
+| Column Name | Data Type | Description |
+| --- | --- | --- |
+| id | int | A unique identifier for the player |
+| name | string | The name of the player |
+| best_score | int | The player's best score of all time |
+| user_id | int | A reference to the user who owns this player |
+
+Including the `user_id` column will allow us to easily associate a player with a user, which can be useful for things like finding the player a particular user is playing as, or for deleting all of a user's players when they delete their account, etc. We probably won't use it in this series, but it's good to have it there for future reference.
+
+Now, if we simply re-run the server, it will automatically create the table for us, but no data will be added to it. We obviously have a few users in the database at this point, but none of them will magically have a player associated with them. Typically, manipulating data after the fact, especially on a production server, is done with what's called a "migration". `sqlc` does not support migrations, and I personally think they are a bit overkill for a small project like this, so we will simply delete the database and start fresh. If you are working on a production server, you could hand-write a migration script to populate the `players` table with the necessary data, or check if a user has a player associated with them when they log in, and create one if they don't.
+
+To delete the database, simply remove the `db.sqlite` file in the `/server/cmd/` directory, then re-run the server. This will create a new, empty database for us to work with.
+
+To save a player to the database, we will need to add a new SQL query to the `queries.sql` file in the `/server/internal/db/` directory. This query will insert a new player into the `players` table, and return the new player to us. 
+
+```directory
+/server/internal/db/queries.go
+```
+
+```sql
+-- name: CreatePlayer :one
+INSERT INTO players (
+    user_id, name
+) VALUES (
+    ?, ?
+)
+RETURNING *;
+```
+
+This query is very simple, since we only need to specify the player's user ID and name. All other fields have default values, so we don't need to worry about them.
+
+Run the following command from the root of the project to generate a new Go function called `CreatePlayer` in our `db` package:
+
+```bash
+sqlc generate -f server/internal/server/db/config/sqlc.yml
+```
+
+Now, we can actually use this query to create a new player when a new user registers. Let's revisit the `Connected` state and find the `handleRegister` function. We will create the player right near the end of the function, after we create the user and immediately before we send the `Ok` packet back to the client.
+
+```directory
+/server/internal/server/states/connected.go
+```
+
+```go
+func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_RegisterRequest) {
+    // ...
+
+    _, err = c.queries.CreatePlayer(c.dbCtx, db.CreatePlayerParams{
+        UserID: user.ID,
+        Name:   message.RegisterRequest.Username,
+    })
+
+    if err != nil {
+        c.logger.Printf("Failed to create player for user %s: %v\n", username, err)
+        c.client.SocketSend(genericFailMessage)
+        return
+    }
+    
+    // ...
+}
+```
+
+You will probably have not declared the `user` variable, since we weren't doing anything with the result of the `CreateUser` response, we simply threw it away before. But now we need its ID to create the players, so instead of the line `_, err = c.db.CreateUser(...)`, simply change it to `user, err := c.db.CreateUser(...)`.
+
+Also, note we are using the `message.RegisterRequest.Username` as the player's name. This is the string that the client sent to the server, before we validated it and transformed it to lowercase. This is ideal for the player name, since it may have stylistic capitalization that the user wants to keep, which is fine for the player name, but not for the username.
+
+## Tracking hiscores in the database
+
 *Coming soon...*
