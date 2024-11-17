@@ -42,3 +42,4 @@ proto
 janky
 Hiscore
 hiscores
+Hiscores

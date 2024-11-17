@@ -216,22 +216,22 @@ func _handle_spore_consumed(sender_id: int, spore_consumed_msg: packets.SporeCon
         if spore_id in _spores:
             var spore := _spores[spore_id]
             var spore_mass := _rad_to_mass(spore.radius)
-            actor.update_mass(actor_mass + spore_mass)
+            _set_actor_mass(actor, actor_mass + spore_mass)
             _remove_spore(spore)
 
 func _rad_to_mass(radius: float) -> float:
     return radius * radius * PI
 ```
 
-This is pretty much a direct translation of the Go code we wrote for the server, so I don't think I need to explain it in detail. The only difference is that instead of having a `nextRadius` method, we are going to define a method in `actor.gd` called `update_mass`, which will perform the same calculations. This way, it's a bit more encapsulated and aptly named.
+This is pretty much a direct translation of the Go code we wrote for the server, so I don't think I need to explain it in detail. The only difference is that instead of having a `nextRadius` method, we are going to define a function called `_set_actor_mass`, which will perform the same calculations. This way, it gives us an opportunity to add some extra logic if we need to in the future.
 
 ```directory
-/client/objects/actor/actor.gd
+/client/states/ingame/ingame.gd
 ```
 
 ```gd
-func update_mass(new_mass: float) -> void:
-    radius = sqrt(new_mass / PI)
+func _set_actor_mass(actor: Actor, new_mass: float) -> void:
+    actor.radius = sqrt(new_mass / PI)
 ```
 
 So now, if you run the game, you might be surprised to see that nobody is growing! There is one key detail we missed: `_draw` is only called once when an actor is created, so we don't see anyone's size change when we update `radius`. Even if we did, it would be meaningless because we also forgot to update the collision shape's radius along with the visual radius. Let's make sure it's impossible to forget this by adding a setter for the radius that updates the collision shape and redraws the actor.
@@ -250,7 +250,7 @@ var radius: float:
 
 This is a cool feature of Godot that means the `radius` property will automatically update the collision shape and redraw the actor whenever it appears on the left-hand-side of an `=` sign. This effectively makes it so that we can't forget to update the collision shape and redraw the actor when we change the radius.
 
-**Now** if we run the game, we will see other players growing in size when they eat, but you won't see yourself grow yet! What gives? This is because we aren't sending the spore consumption event to ourselves (no need since we already know we ate the spore). We simply need to use our new `update_mass` method in the `_consume_spore` method we wrote in <a href="/2024/11/14/godot-golang-mmo-part-7#consuming-spores" target="_blank">the last part</a>.
+**Now** if we run the game, we will see other players growing in size when they eat, but you won't see yourself grow yet! What gives? This is because we aren't sending the spore consumption event to ourselves (no need since we already know we ate the spore). We simply need to use our new `_set_actor_mass` method in the `_consume_spore` method we wrote in <a href="/2024/11/14/godot-golang-mmo-part-7#consuming-spores" target="_blank">the last part</a>.
 
 ```directory
 /client/objects/actor/actor.gd
@@ -261,7 +261,7 @@ func _consume_spore(spore: Spore) -> void:
     var player = _actors[GameManager.client_id]
     var player_mass := _rad_to_mass(player.radius)
     var spore_mass := _rad_to_mass(spore.radius)
-    player.update_mass(player_mass + spore_mass)
+    _set_actor_mass(player, player_mass + spore_mass)
     
     # ...
 ```
@@ -324,7 +324,7 @@ func _consume_actor(actor: Actor) -> void:
     var player := _players[GameManager.client_id]
     var player_mass := _rad_to_mass(player.radius)
     var actor_mass := _rad_to_mass(actor.radius)
-    player.update_mass(player_mass + actor_mass)
+    _set_actor_mass(player, player_mass + actor_mass)
 
     var packet := packets.Packet.new()
     var player_consumed_msg := packet.new_player_consumed()
