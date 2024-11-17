@@ -482,4 +482,283 @@ So that ticks off stage 3 of our plan. Now, let's move on to stage 4: adding pro
 
 ## Adding new protobuf messages
 
-*Coming soon...*
+For now, we need a way for the client to request the hiscore leaderboard from the server, and for the server to respond with the hiscore leaderboard. The former is dead simple since it requires no payload, and the latter can be achieved using protobuf's `repeated` field type, similarly to what you would have done if you followed the optional optimization at the end of <a href="/2024/11/14/godot-golang-mmo-part-7#repeated-field" target="_blank">§07</a>.
+
+In case you didn't follow that section, a repeated field is just a way of stuffing multiple instances of a message into a single message. This is useful for things like a list of hiscores, where each hiscore is a message with a name and a score.
+
+Let's define the new messages in the `packets.proto` file in the `/shared/` directory.
+
+```directory
+/shared/packets.proto
+```
+
+```protobuf
+message HiscoreBoardRequestMessage { }
+message HiscoreMessage { uint64 rank = 1; string name = 2; uint64 score = 3; }
+message HiscoreBoardMessage { repeated HiscoreMessage hiscores = 1; }
+
+message Packet {
+    // ...
+    oneof msg {
+        // ...
+        HiscoreBoardRequestMessage hiscore_board_request = 14;
+        HiscoreMessage hiscore = 15;
+        HiscoreBoardMessage hiscore_board = 16;
+    }
+}
+```
+
+So the idea is that the client will send a `HiscoreBoardRequestMessage` to the server, when it wants to browse the hiscore leaderboard. The server will respond with a `HiscoreBoardMessage`, which contains a list of `HiscoreMessage` messages, each of which contains a rank, a name, and a score retrieved from the database.
+
+Let's go ahead and define helper functions for the only message the server needs to send in our `util.go` file:
+
+```directory
+/server/pkg/packets/util.go
+```
+
+```go
+func NewHiscoreBoard(hiscores []*HiscoreMessage) Msg {
+    return &Packet_HiscoreBoard{
+        HiscoreBoard: &HiscoreBoardMessage{
+            Hiscores: hiscores,
+        },
+    }
+}
+```
+
+
+It would be good to handle these messages in a different state, since this logic doesn't really fit in to either the `Connected` or `InGame` states. So let's create a new state called `BrowsingHiscores` to handle this.
+
+## Adding a new server state
+
+It's been a while since we've done this, so here's the rundown on how to add a new state to the server:
+First, create a new file in the `/server/internal/server/states/` directory called `browsingHiscores.go`. We will first lay out the methods required to implement the `ClientStateHandler` interface that we defined way back in <a href="/2024/11/10/godot-golang-mmo-part-4#clientstatehandler-definition" target="_blank">§04</a>
+```directory
+/server/internal/server/states/browsingHiscores.go
+```
+
+```go
+package states
+
+import (
+    "context"
+    "fmt"
+    "log"
+
+    "server/internal/server"
+    "server/internal/server/db"
+    "server/pkg/packets"
+)
+
+type BrowsingHiscores struct {
+    client  server.ClientInterfacer
+    logger  *log.Logger
+    queries db.Queries
+    dbCtx   context.Context
+}
+
+func (b *BrowsingHiscores) Name() string {
+    return "BrowsingHiscores"
+}
+
+func (b *BrowsingHiscores) SetClient(client server.ClientInterfacer) {
+    b.client = client
+    loggingPrefix := fmt.Sprintf("Client %d [%s]: ", client.Id(), b.Name())
+    b.logger = log.New(log.Writer(), loggingPrefix, log.LstdFlags)
+    b.queries = *client.DbTx().Queries
+    b.dbCtx = client.DbTx().Ctx
+}
+
+func (b *BrowsingHiscores) OnEnter() {
+}
+
+func (b *BrowsingHiscores) HandleMessage(senderId uint64, message packets.Msg) {
+}
+
+func (b *BrowsingHiscores) OnExit() {
+}
+```
+
+*<small>(we know we are going to use the database a lot in this state, so I have gone ahead and set up the `queries` and `dbCtx` fields in the `SetClient` function, much like we did in the `Connected` state back in <a href="/2024/11/10/godot-golang-mmo-part-5#saving-db-params" target="_blank">§05</a>)</small>*
+
+Now, let's see if we can listen for a `HiscoreBoardRequestMessage` in the `Connected` state, and switch to the `BrowsingHiscores` state when we receive one.
+
+```directory
+/server/internal/server/states/connected.go
+```
+
+```go
+func (c *Connected) HandleMessage(senderId uint64, message packets.Msg) {
+    switch message := message.(type) {
+    // ...
+    case *packets.Packet_HiscoreBoardRequest:
+        c.handleHiscoreBoardRequest(senderId, message)
+    }
+}
+
+func (c *Connected) handleHiscoreBoardRequest(senderId uint64, _ *packets.Packet_HiscoreBoardRequest) {
+    c.client.SetState(&BrowsingHiscores{})
+}
+```
+
+Now, in the `OnEnter` function of the `BrowsingHiscores` state, let's send a `HiscoreBoardMessage` back to the client with some dummy data, just to make sure everything is working.
+
+```directory
+/server/internal/server/states/browsingHiscores.go
+```
+
+```go
+func (b *BrowsingHiscores) OnEnter() {
+    b.client.SocketSend(packets.NewHiscoreBoard(
+        []*packets.HiscoreMessage{
+            {Rank: 5, Name: "Bob Barker", Score: 100},
+            {Rank: 4, Name: "Tristan", Score: 250},
+            {Rank: 3, Name: "Adam Sandler", Score: 1000},
+        },
+    ))
+}
+```
+
+Now, that should be enough to get us started and test that the client can request and receive the hiscore leaderboard from the server. Let's move on to the client side.
+
+## Adding a new client state
+
+We will need a new state in the client to handle browsing the hiscore leaderboard. This is where it will be able to do things like display the leaderboard, search for a player, etc.
+
+First, create a new directory at `res://states/browsing_hiscores/` and create a new scene called `browsing_hiscores.tscn` of type `Node2D`.
+
+Before we forget, let's go ahead and register the new state with the game manager:
+
+```directory
+/client/game_manager.gd
+```
+
+```gdscript
+enum State {
+    # ...
+    BROWSING_HISCORES,
+}
+
+var _states_scenes: Dictionary[State, String] = {
+    # ...
+    State.BROWSING_HISCORES: "res://states/browsing_hiscores/browsing_hiscores.tscn",
+}
+```
+
+Now, we should be able to switch to the `BrowsingHiscores` state from the `Connected` state. Let's test this by adding a button to the `Connected` scene that sends a `HiscoreBoardRequestMessage` to the server.
+
+Add a new button to the connected scene, right next to the **Register** button, call it **HiscoresButton** and set the text to "Hiscores".
+![Hiscores button](/assets/css/images/posts/2024/11/16/hiscores-button.png)
+
+Now, let's hook the button up to switch to the `BrowsingHiscores` state when it is pressed. Add the following code to the connected state script:
+
+```directory
+/client/states/connected/connected.gd
+```
+
+```gdscript
+@onready var _hiscores_button := $UI/VBoxContainer/HBoxContainer/HiscoresButton as Button
+
+func _ready() -> void:
+    # ...
+    _hiscores_button.pressed.connect(_on_hiscores_button_pressed)
+
+func _on_hiscores_button_pressed() -> void:
+    GameManager.set_state(GameManager.State.BROWSING_HISCORES)
+```
+
+Now, when we run the game, we should be able to press the **Hiscores** button in the main menu, and then get met with a blank screen. This is because we haven't actually added anything to the `BrowsingHiscores` scene yet. Let's add a hiscore leaderboard to the scene, and then add a script to send the `HiscoreBoardRequestMessage` to the server when the scene is entered, and populate the leaderboard with the response.
+
+First, add a **CanvasLayer** node to the `browsing_hiscores.tscn` scene, and name it `UI`. Then, click and drag our `res://classes/hiscores/hiscores.tscn` scene into the `UI` node to add it to the scene tree. This will add the hiscore leaderboard to the scene, ready to be populated with data.
+
+Attach a script called `browsing_hiscores.gd` to the root node of the `browsing_hiscores.tscn` scene.
+
+```directory
+/client/states/browsing_hiscores/browsing_hiscores.gd
+```
+
+```gdscript
+
+```
+
+Now, when we run the game, we should be able to press the **Hiscores** button in the main menu, and then see the hiscore leaderboard populate with the dummy data we sent from the server.
+![Hiscores scene with dummy data](/assets/css/images/posts/2024/11/16/got-dummy-data.png)
+
+We can also see the server was obviously able to switch to the `BrowsingHiscores` state:
+
+```plaintext
+2024/11/18 07:39:56 New client connected from [::1]:57389
+Client 1: 2024/11/18 07:39:56 Switching from state None to Connected
+Client 1: 2024/11/18 07:39:58 Switching from state Connected to BrowsingHiscores
+```
+
+Great, we are almost there! Now we just need to actually fetch the top 10 hiscores from the database whenever we receive a `HiscoreBoardRequestMessage` in the `BrowsingHiscores` state on the server, and send that data back to the client.
+
+Let's add a new query to the `queries.sql` file to get the top hiscores from the database.
+
+```directory
+/server/internal/db/config/queries.sql
+```
+
+```sql
+-- name: GetTopScores :many
+SELECT p.name, p.best_score
+FROM players p
+ORDER BY p.best_score DESC
+LIMIT ?
+OFFSET ?;
+```
+
+This will simply select `?` rows from the `players` table, ordered by `best_score` from best to worst. We use another parameter to offset the results, so we can easily paginate the results, or get 10 hiscores from a certain rank, etc. We won't be using this feature quite yet, but we are adding it now to make it easier to add later.
+
+After compiling the queries, we can use this in the `BrowsingHiscores` state:
+
+```directory
+/server/internal/server/states/browsingHiscores.go
+```
+
+```go
+func (b *BrowsingHiscores) OnEnter() {
+func (b *BrowsingHiscores) OnEnter() {
+    const limit int64 = 10
+    const offset int64 = 0
+
+    topScores, err := b.queries.GetTopScores(b.dbCtx, db.GetTopScoresParams{
+        Limit:  limit,
+        Offset: offset,
+    })
+    if err != nil {
+        b.logger.Printf("Error getting top %d scores from rank %d: %v\n", limit, offset+1, err)
+        b.client.SocketSend(packets.NewDenyResponse("Failed to get top scores - please try again later"))
+        return
+    }
+
+    hiscoreMessages := make([]*packets.HiscoreMessage, 0, limit)
+    for rank, scoreRow := range topScores {
+        hiscoreMessage := &packets.HiscoreMessage{
+            Rank:  uint64(rank) + uint64(offset) + 1,
+            Name:  scoreRow.Name,
+            Score: uint64(scoreRow.BestScore),
+        }
+        hiscoreMessages = append(hiscoreMessages, hiscoreMessage)
+    }
+
+    b.client.SocketSend(packets.NewHiscoreBoard(hiscoreMessages))
+}
+```
+
+It looks like a lot, but a good chunk of it is error handling and constructing the hiscore messages to stuff inside the response. If you run the game now, you should see some real hiscores in the hiscore leaderboard when you press the **Hiscores** button in the main menu.
+
+## Homework
+
+Just one more thing: there's currently no way to go back to the main menu from the hiscores screen. See if you can figure out how to add a button to the hiscores screen that sends a message to the server to switch back to the `Connected` state, and switch state on the client as well. We will go over the solution in the next post.
+
+## Conclusion
+
+So that's it for this post! We have successfully added live hiscores to the game, saved the player's best score to the database, made a way to request, retrieve, and receive that information.
+
+<strong><a href="/2024/11/18/godot-golang-mmo-part-10" class="sparkle-less">In the next post</a></strong>, we will make the game a bit more interesting by making players drop spores and lose mass over time, and also provide a way to search the leaderboard by player name. Hopefully it will be a shorter post than this one! 
+
+--- 
+
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
