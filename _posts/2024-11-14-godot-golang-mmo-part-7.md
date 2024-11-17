@@ -617,7 +617,7 @@ If you have any questions or feedback, I'd love to hear from you! Either drop a 
 <details markdown="1">
 <summary>Click to expand</summary>
 
-For those of you still around, let's put in a little extra effort to get the initial spores sent to the client in a much more efficient way. This will require a new type of protobuf message we've never seen before: a repeated field. This is a way to send a list of messages in a single packet, which is perfect for sending spores in batches. Let's start by adding a new message type to our protocol buffers:
+For those of you still around, let's put in a little extra effort to get the initial spores sent to the client in a much more efficient way. {% include highlight.html anchor="repeated-field" text="This will require a new type of protobuf message we've never seen before: a repeated field. This is a way to send a list of messages in a single packet, which is perfect for sending spores in batches." %} Let's start by adding a new message type to our protocol buffers:
 
 ```directory
 /shared/packets.proto

@@ -443,7 +443,7 @@ func (c *Connected) HandleMessage(senderId uint64, message packets.Msg) {
 }
 ```
 
-It's going to get a bit cumbersome to always have to write `c.queries` and `c.dbCtx` every time we want to run a query, so let's quickly shorten their names by adding the following fields to the `Connected` struct:
+{% include highlight.html anchor="saving-db-params" text="It's going to get a bit cumbersome to always have to write <code>c.queries</code> and <code>c.dbCtx</code> every time we want to run a query, so let's quickly shorten their names by adding the following fields to the <code>Connected</code> struct:" %}
 
 ```directory
 /server/internal/server/states/connected.go

@@ -15,7 +15,7 @@ There are one two things we want to do with the client's state:
 
 Elaborating on the first point, a client's state handler doesn't need to be anything fancy, it should just need a name, a set of instructions to run when entering and exiting the state, and it needs to be able to handle packets.
 
-With that in mind, let's add a new interface to our `hub.go` file:
+{% include highlight.html anchor="clientstatehandler-definition" text="With that in mind, let's add a new interface to our <code>hub.go</code> file:" %}
 
 ```directory
 /server/internal/server/hub.go
