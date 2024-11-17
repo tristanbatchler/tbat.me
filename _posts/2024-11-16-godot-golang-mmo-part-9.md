@@ -118,7 +118,7 @@ func remove_hiscore(name: String) -> void:
         if name_label.text == name:
             _scores.remove_at(len(_scores) - i - 1)
             
-            entry.queue_free()
+            entry.free()
             return
 ```
 
@@ -152,7 +152,101 @@ Now, when I run the game, I should expect to see "Bob Barker" at the top of the 
 Let's fix that by simply clicking the 👁️ icon to the right of the **HBoxContainer** template in the scene editor of the **Hiscores** scene. This will hide the placeholder entry and make everything right with the world.
 ![Hiscores scene with test data hidden](/assets/css/images/posts/2024/11/16/hiscores-scene-test-data-hidden.png)
 
+You might instead want to keep them visible while you are working on the scene, and hide them programmatically, so for that, feel free to add the following to the `_ready` function in `res://classes/hiscores/hiscores.gd`:
+
+```directory
+/client/classes/hiscores/hiscores.gd
+```
+
+```gdscript
+func _ready() -> void:
+    _entry_template.hide()
+```
+
 Make sure to remove the test code from the `_ready` function in `res://states/connected/connected.gd`, and remove the **Hiscores** scene from the `Connected` scene, as that was just a test. Let's actually add it to the game now.
 
 ## Adding live scores to the game
+
+We are already able to drop in our new **Hiscores** scene to our **InGame** state scene, but first we will need a little restructuring to make it easier to manage the positioning of the elements. Restructure the `UI` canvas layer in the **InGame** scene so that it looks like this:
+- **UI** - called `UI`
+  - **VBoxContainer**
+    - **LineEdit**
+    - **Hiscores**
+    - **Log**
+
+1. Choose the **Full Rect** anchor preset for the **VBoxContainer** node 
+2. Choose the **Shrink End** container sizing option for both the **Vertical** and **Horizontal** options for the **Hiscores** node
+3. Set the **Custom Minimum Size**'s **x** value to 200px for the **Hiscores** node
+4. Set the  **Custom Minimum Size**'s **y** value to 150px for the **Hiscores** node
+
+![New InGame scene](/assets/css/images/posts/2024/11/16/new-ingame-scene.png)
+
+Now, we will have broken our `ingame.gd` script by moving the LineEdit and Log nodes under the VBoxContainer, so let's fix that as well as add a reference to our new Hiscores node.
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+@onready var _line_edit := $UI/VBoxContainer/LineEdit as LineEdit
+@onready var _log := $UI/VBoxConainter/Log as Log
+@onready var _hiscores := $UI/VBoxContainer/Hiscores as Hiscores
+```
+
+Now, whenever we update an actor's mass, we should also update the hiscore list. Luckily we have a function called `_set_actor_mass` already, so let's add to that:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _set_actor_mass(actor: Actor, new_mass: float) -> void:
+    # ...
+    _hiscores.set_hiscore(actor.actor_name, roundi(new_mass))
+```
+
+Now, whenever an actor's mass changes, the hiscore list will update accordingly. But we also need to remove the actor from the hiscores when they are removed from the game, so go ahead and add a similar line to the `_remove_player` function:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _remove_player(actor: Actor) -> void:
+    # ...
+    _hiscores.remove_hiscore(actor.actor_name)
+```
+
+Now, when we run the game, we should see the hiscore list updating as we eat things, and it should dynamically sort itself as different players overtake each other.
+
+There is just one problem, which is that the player's hiscore won't be added when they first join the game - only when they first eat something. Harder to notice is the fact that radius updates from the server (e.g. if an actor's radius is mismatched from the client) won't update the hiscore list either. Both of these are due to the fact that we are setting the actor's radius directly rather than via the `_set_actor_mass` function. Luckily, it is easy to fix, since we just need to use the `_rad_to_mass` function to calculate the mass from the radius, then call `_set_actor_mass` with the result.
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> void:
+    var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
+    _set_actor_mass(actor, _rad_to_mass(radius))
+    # ...
+
+func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: float, radius: float, is_player: bool) -> void:
+    var actor := _players[actor_id]
+    _world.add_child(actor)
+    actor.radius = radius
+    _set_actor_mass(actor, _rad_to_mass(radius))
+    # ...
+```
+
+That should be everything we need to add live hiscores to the game. Here's what it looks like now:
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/16/ingame-hiscores.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+Now, let's tackle stage 2 of our plan: saving the player's best score to the database.
+
+## Saving players in the database
+
 *Coming soon...*
