@@ -154,6 +154,12 @@ We can transition to this state when the client logs in successfully in the `Con
 /server/internal/server/states/connected.go
 ```
 ```go
+import (
+    // ...
+    "server/internal/server/objects"
+    // ...
+)
+
 func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
     // ...  
     c.client.SetState(&InGame{
