@@ -285,6 +285,8 @@ This script serves to expose three things globally:
 
 The first two are pretty self-explanatory. The third has the effect that, when called from another scene, it will instantiate whatever scene is associated with the state passed to it, and add it as a child of the autoload/singleton node which is automatically placed in the root of the scene tree.
 
+> If you receive a complaint from Godot saying `Only arrays can specify collection element types`, you are probably using Godot 4.3 or below. You can fix this by either upgrading to Godot 4.4+, or changing the type of `_states_scenes` to simply `Dictionary` (without specifying the type of the keys and values in the square brackets). <small>*If you opt for the latter, there will be other complaints from Godot about not being able to infer the type of certain variables which are defined to be keys or values from the dictionary. If this happens, you'll need to explicitly cast the values to the correct type when you access them. Since this will probably get in the way of the tutorial, I highly recommend upgrading to Godot 4.4+.*</small>
+
 The way we've set up this script this means is if we register it as a global autoload called `GameManager` and create some scenes for the different states of the game, we can simply call `GameManager.set_state(GameManager.State.ENTERED)` from `main.gd`, for instance, to instance our `entered.tscn` scene and add it to the scene tree. It would end up looking like this in the remote scene tree:
 ![Godot scene tree](/assets/css/images/posts/2024/11/10/godot_scene_tree.png)
 
