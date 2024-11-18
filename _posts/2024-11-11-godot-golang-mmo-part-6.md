@@ -16,7 +16,7 @@ We'll start by adding a new state to our server called `InGame`, make some new p
 
 ## Players
 
-Before we do any of that, we will need to create a new struct to represent our players. It will need to hold a player's name, position, speed, direction, and radius. Keeping track of these players can be done using the `SharedCollection` data structure we created in [part 3](/posts/2024/11/09/godot-golang-mmo-part-3#making-a-custom-data-structure).
+Before we do any of that, we will need to create a new struct to represent our players. It will need to hold a player's name, position, speed, direction, and radius. Keeping track of these players can be done using the `SharedCollection` data structure we created in [part 3](/2024/11/09/godot-golang-mmo-part-3#making-a-custom-data-structure).
 
 Create a new file called `gameObjects.go` in the `/server/internal/server/objects` directory, alongside `sharedCollection.go`. Add the following code to the file:
 
@@ -72,7 +72,7 @@ func NewHub() *Hub {
 We need the `ClientInterfacer` to be able to access the `SharedGameObjects` struct. Add the following new method to the `ClientInterfacer` interface:
 
 ```directory
-/server/internal/server/client.go
+/server/internal/server/hub.go
 ```
 ```go
 type ClientInterfacer interface {
@@ -154,6 +154,12 @@ We can transition to this state when the client logs in successfully in the `Con
 /server/internal/server/states/connected.go
 ```
 ```go
+import (
+    // ...
+    "server/internal/server/objects"
+    // ...
+)
+
 func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
     // ...  
     c.client.SetState(&InGame{
@@ -183,7 +189,7 @@ Client 1 [Connected]: 2024/11/11 07:51:25 Adding player saltytaro to the shared 
 We will need to add some new packets to send player information to the client, and to receive player movement information from the client. Open up your `packets.proto` file and add the following new messages:
 
 ```directory
-/server/pkg/packets/packets.proto
+/shared/packets.proto
 ```
 ```proto
 message PlayerMessage { uint64 id = 1; string name = 2; double x = 3; double y = 4; double radius = 5; double direction = 6; double speed = 7; }
@@ -201,12 +207,12 @@ message Packet {
 }
 ```
 
-Now, don't forget to compile the proto file to generate the new Go code, and do the same for the GDScript code in Godot Godobuf.
+Now, don't forget to compile the proto file to generate the new Go code, and do the same for the GDScript code in Godot Godobuf. Instructions for the Golang code compilation can be found in <a href="/2024/11/09/godot-golang-mmo-part-1#protoc-usage" target="_blank">§01</a>, and the Godobuf instructions are in <a href="/2024/11/09/godot-golang-mmo-part-1#godobuf-usage" target="_blank">the same post, a bit further down</a>.
 
-We will also add a new helper function to your `utils.go` file:
+We will also add a new helper function to your `util.go` file:
 
 ```directory
-/server/pkg/packets/utils.go
+/server/pkg/packets/util.go
 ```
 ```go
 import "server/internal/server/objects"
