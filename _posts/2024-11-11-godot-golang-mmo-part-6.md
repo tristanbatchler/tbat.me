@@ -565,20 +565,7 @@ func (g *InGame) OnExit() {
 }
 ```
 
-To give this a test, let's add some basic logging to the `syncPlayer` function:
-
-```directory
-/server/internal/server/states/ingame.go
-```
-```go
-func (g *InGame) syncPlayer(delta float64) {
-    // ...
-
-    g.logger.Printf("Player %s moved to (%f, %f)", g.player.Name, g.player.X, g.player.Y)
-}
-```
-
-Now, when you run the server and connect to it, you should see the player moving around the screen. You should also see the player's position being updated in the server logs. You can comment out the logging when you are satisfied that it is working as expected, since it can get quite spammy.
+> ⚠️ **Note**: If you try and run the game at this point, you will notice a flood of new players being added every 50 milliseconds. This is because on the client side, we are not keeping track of the players that already exist in the game--we are simply adding a new player every time we receive a `PlayerMessage` packet. We will address this in the next section.
 
 ## Tracking other players on the client
 
