@@ -72,7 +72,7 @@ func NewHub() *Hub {
 We need the `ClientInterfacer` to be able to access the `SharedGameObjects` struct. Add the following new method to the `ClientInterfacer` interface:
 
 ```directory
-/server/internal/server/client.go
+/server/internal/server/hub.go
 ```
 ```go
 type ClientInterfacer interface {
