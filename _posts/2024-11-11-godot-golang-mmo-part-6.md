@@ -189,7 +189,7 @@ Client 1 [Connected]: 2024/11/11 07:51:25 Adding player saltytaro to the shared 
 We will need to add some new packets to send player information to the client, and to receive player movement information from the client. Open up your `packets.proto` file and add the following new messages:
 
 ```directory
-/shared/packets/proto
+/shared/packets.proto
 ```
 ```proto
 message PlayerMessage { uint64 id = 1; string name = 2; double x = 3; double y = 4; double radius = 5; double direction = 6; double speed = 7; }
