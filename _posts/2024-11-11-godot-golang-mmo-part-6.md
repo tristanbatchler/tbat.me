@@ -207,7 +207,7 @@ message Packet {
 }
 ```
 
-Now, don't forget to compile the proto file to generate the new Go code, and do the same for the GDScript code in Godot Godobuf.
+Now, don't forget to compile the proto file to generate the new Go code, and do the same for the GDScript code in Godot Godobuf. Instructions for the Golang code compilation can be found in <a href="/2024/11/09/godot-golang-mmo-part-1#protoc-usage" target="_blank">§01</a>, and the Godobuf instructions are in <a href="/2024/11/09/godot-golang-mmo-part-1#godobuf-usage" target="_blank">the same post, a bit further down</a>.
 
 We will also add a new helper function to your `util.go` file:
 
