@@ -203,10 +203,10 @@ message Packet {
 
 Now, don't forget to compile the proto file to generate the new Go code, and do the same for the GDScript code in Godot Godobuf.
 
-We will also add a new helper function to your `utils.go` file:
+We will also add a new helper function to your `util.go` file:
 
 ```directory
-/server/pkg/packets/utils.go
+/server/pkg/packets/util.go
 ```
 ```go
 import "server/internal/server/objects"
