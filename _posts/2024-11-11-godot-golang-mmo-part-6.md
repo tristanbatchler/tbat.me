@@ -16,7 +16,7 @@ We'll start by adding a new state to our server called `InGame`, make some new p
 
 ## Players
 
-Before we do any of that, we will need to create a new struct to represent our players. It will need to hold a player's name, position, speed, direction, and radius. Keeping track of these players can be done using the `SharedCollection` data structure we created in [part 3](/posts/2024/11/09/godot-golang-mmo-part-3#making-a-custom-data-structure).
+Before we do any of that, we will need to create a new struct to represent our players. It will need to hold a player's name, position, speed, direction, and radius. Keeping track of these players can be done using the `SharedCollection` data structure we created in [part 3](/2024/11/09/godot-golang-mmo-part-3#making-a-custom-data-structure).
 
 Create a new file called `gameObjects.go` in the `/server/internal/server/objects` directory, alongside `sharedCollection.go`. Add the following code to the file:
 
