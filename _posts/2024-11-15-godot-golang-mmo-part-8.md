@@ -37,7 +37,7 @@ func (g *InGame) handleSporeConsumed(senderId uint64, message *packets.Packet_Sp
 
 ```
 
-Now, the handler method is going to have to check a few things:
+{% include highlight.html anchor="spore-consumption-validation" text="Now, the handler method is going to have to check a few things:" %}
 1. Does the spore the player said they ate *actually exist*?
 2. Was the player anywhere *near* the spore they said they ate?
 3. If the player ate the spore, how much should they grow?
