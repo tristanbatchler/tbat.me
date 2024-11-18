@@ -410,7 +410,7 @@ Create a new folder at `res://resources/` and import the following image into th
 ![floor.svg](/assets/css/images/posts/2024/11/11/floor.svg)
 > You can download the image by right-clicking on it and selecting **Save image as** and save it to `/client/resources`.
 
-Now, in the **InGame** scene, under the **World** Node2D, add a new **Sprite** node called `Floor`. Now make the following edits to the `Floor` sprite:
+Now, in the **InGame** scene, under the **World** Node2D, add a new **Sprite2D** node called `Floor`. Now make the following edits to the `Floor` sprite:
 1. Set the **Texture** property to `resources/floor.svg` (use the **Quick Load...** option in the drop-down)
 2. Tick the **Enabled** checkbox under **Region**
 3. Set the **Rect**'s **w** and **h** to `10000` each, under **Region**
@@ -430,6 +430,12 @@ In the `InGame` state, we'll create a new function called `syncPlayer`, which wi
 /server/internal/server/states/ingame.go
 ```
 ```go
+import (
+    // ...
+    "math"
+    // ...
+)
+
 func (g *InGame) syncPlayer(delta float64) {
     newX := g.player.X + g.player.Speed*math.Cos(g.player.Direction)*delta
     newY := g.player.Y + g.player.Speed*math.Sin(g.player.Direction)*delta
@@ -455,10 +461,8 @@ Since we are broadcasting the `PlayerMessage` packet, we need to expect it in th
 ```go
 func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
     switch message := message.(type) {
-    // ...
     case *packets.Packet_Player:
         g.handlePlayer(senderId, message)
-    // ...
     }
 }
 
@@ -521,6 +525,7 @@ Now let's get this loop started in a goroutine as soon as the first `PlayerDirec
 ```go
 func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
     switch message := message.(type) {
+    // ...
     case *packets.Packet_PlayerDirection:
         g.handlePlayerDirection(senderId, message)
     }
