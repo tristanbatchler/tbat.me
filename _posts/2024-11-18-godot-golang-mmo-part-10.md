@@ -103,20 +103,20 @@ func (g *InGame) syncPlayer(delta float64) {
     // ...
 
     // Drop a spore
-	probability := g.player.Radius / float64(server.MaxSpores*5)
-	if rand.Float64() < probability && g.player.Radius > 10 {
-		spore := &objects.Spore{
-			X:      g.player.X,
-			Y:      g.player.Y,
-			Radius: min(5+g.player.Radius/50, 15),
-		}
-		sporeId := g.client.SharedGameObjects().Spores.Add(spore)
-		g.client.Broadcast(packets.NewSpore(sporeId, spore))
-		go g.client.SocketSend(packets.NewSpore(sporeId, spore))
-		g.player.Radius = g.nextRadius(-radToMass(spore.Radius))
-	}
+    probability := g.player.Radius / float64(server.MaxSpores*5)
+    if rand.Float64() < probability && g.player.Radius > 10 {
+        spore := &objects.Spore{
+            X:      g.player.X,
+            Y:      g.player.Y,
+            Radius: min(5+g.player.Radius/50, 15),
+        }
+        sporeId := g.client.SharedGameObjects().Spores.Add(spore)
+        g.client.Broadcast(packets.NewSpore(sporeId, spore))
+        go g.client.SocketSend(packets.NewSpore(sporeId, spore))
+        g.player.Radius = g.nextRadius(-radToMass(spore.Radius))
+    }
 
-	// Broadcast the updated player state
+    // Broadcast the updated player state
     // ...
 }
 ```
@@ -164,13 +164,13 @@ func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
     # ...
     var underneath_player := false
     if GameManager.client_id in _players:
-		var player := _players[GameManager.client_id]
-		var player_pos := Vector2(player.position.x, player.position.y)
-		var spore_pos := Vector2(x, y)
-		underneath_player = player_pos.distance_squared_to(spore_pos) < player.radius * player.radius
+        var player := _players[GameManager.client_id]
+        var player_pos := Vector2(player.position.x, player.position.y)
+        var spore_pos := Vector2(x, y)
+        underneath_player = player_pos.distance_squared_to(spore_pos) < player.radius * player.radius
 
     if spore_id not in _spores:
-		var spore := Spore.instantiate(spore_id, x, y, radius, underneath_player)
+        var spore := Spore.instantiate(spore_id, x, y, radius, underneath_player)
         # ...
 ```
 
@@ -185,22 +185,22 @@ We are inserting the logic just after we define the variables from the message, 
 ```
 ```gdscript
 func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
-	var spore_id := spore_msg.get_id()
-	var x := spore_msg.get_x()
-	var y := spore_msg.get_y()
-	var radius := spore_msg.get_radius()
-	var underneath_player := false
-	
-	if GameManager.client_id in _players:
-		var player := _players[GameManager.client_id]
-		var player_pos := Vector2(player.position.x, player.position.y)
-		var spore_pos := Vector2(x, y)
-		underneath_player = player_pos.distance_squared_to(spore_pos) < player.radius * player.radius
+    var spore_id := spore_msg.get_id()
+    var x := spore_msg.get_x()
+    var y := spore_msg.get_y()
+    var radius := spore_msg.get_radius()
+    var underneath_player := false
+    
+    if GameManager.client_id in _players:
+        var player := _players[GameManager.client_id]
+        var player_pos := Vector2(player.position.x, player.position.y)
+        var spore_pos := Vector2(x, y)
+        underneath_player = player_pos.distance_squared_to(spore_pos) < player.radius * player.radius
 
-	if spore_id not in _spores:
-		var spore := Spore.instantiate(spore_id, x, y, radius, underneath_player)
-		_world.add_child(spore)
-		_spores[spore_id] = spore
+    if spore_id not in _spores:
+        var spore := Spore.instantiate(spore_id, x, y, radius, underneath_player)
+        _world.add_child(spore)
+        _spores[spore_id] = spore
 ```
 </details>
 
@@ -244,7 +244,7 @@ func (g *InGame) syncPlayer(delta float64) {
         spore := &objects.Spore{
             // ...
             DroppedBy: g.player,
-			DroppedAt: time.Now(),
+            DroppedAt: time.Now(),
         }
         // ...
     }
@@ -254,6 +254,8 @@ func (g *InGame) syncPlayer(delta float64) {
 
 Now, over to the spore consumption validation logic we implemented in <a href="/2024/11/15/godot-golang-mmo-part-8#spore-consumption-validation" target="_blank">§08</a>. We will add a new check to ensure that the spore wasn't dropped after the time it takes for the player to travel combined radius of the player and the spore. This works because the minimum distance the player has to travel so the spore is not underneath them is their own radius, then the spore's radius. Then, best case scenario, the player turns around instantly and consumes the spore.
 
+We know the player's speed in units per second, since the server assigns it to the player. Rearranging the simlple formula $$\text{distance} = \text{speed} \times \text{time}$$, we know that $$\text{time} = \frac{\text{distance}}{\text{speed}}$$. So, the minimum time (in seconds) it should take for the player to consume the spore is the sum of the radii of the player and the spore, divided by the player's speed. We will add this check to the `handleSporeConsumed` method:
+
 ```directory
 /server/internal/server/states/ingame.go
 ```
@@ -262,20 +264,32 @@ func (g *InGame) handleSporeConsumed(senderId uint64, message *packets.Packet_Sp
     // First check if the spore exists
     // ...
 
-    // Next, check if the spore is close enough to the player to be consumed
+    // Next, check if the spore is close enough...
     // ...
 
     // Finally, check if the spore wasn't dropped by the player too recently
-	minAcceptableDistance := spore.Radius + g.player.Radius
-	minAcceptableTime := time.Duration(minAcceptableDistance/g.player.Speed) * time.Second
-	if spore.DroppedBy == g.player && time.Since(spore.DroppedAt) < minAcceptableTime {
-		g.logger.Println(errMsg + "spore was dropped by the player too recently")
-		return
-	}
+    err = g.validatePlayerDropCooldown(spore, 10)
+    if err != nil {
+        g.logger.Println(errMsg + err.Error())
+        return
+    }
     
-    // If we made it this far, the spore consumption is valid, so grow the player, remove the spore, and broadcast the event
-    // ...
+    // If we made it this far, the spore consumption is valid...
+}
+
+func (g *InGame) validatePlayerDropCooldown(spore *objects.Spore, buffer float64) error {
+    minAcceptableDistance := spore.Radius + g.player.Radius - buffer
+    minAcceptableTime := time.Duration(minAcceptableDistance/g.player.Speed) * time.Second
+    if spore.DroppedBy == g.player && time.Since(spore.DroppedAt) < minAcceptableTime {
+        return fmt.Errorf("player dropped the spore too recently (time since drop: %v, min acceptable time: %v)", time.Since(spore.DroppedAt), minAcceptableTime)
+    }
+    return nil
 }
 ```
 
-*To be continued...*
+We also include a buffer distance in this check, to allow for a little bit of leeway in case the server isn't synced perfectly with the client. This buffer is set to 10 units, but you can adjust this value to your liking.
+
+Now, if you run the game, you shouldn't see any difference. The spores will still drop, and the players will still consume them. However, if you were to modify the client to consume spores that are underneath them (i.e. undo the changes we made to the client just above), you'll see the server complaining about the player dropping the spore too recently, and the player will appear to consume the spore but keep shrinking regardless. Any players witnessing this will see the player shrinking, but the dropped spores will still be there.
+
+## Searching the leaderboard
+*Coming soon...*
