@@ -569,7 +569,7 @@ func (g *InGame) OnExit() {
 
 ## Tracking other players on the client
 
-Now that we have the server broadcasting player updates to all clients, we need to listen for these updates on the client side and update the player's position accordingly. Let's add this logic to the `in_game.gd` script that manages our in-game state. We will need to keep a map of all the players in the game, and we can use the player's ID as the key. Let's add this map to the script:
+Now that we have the server broadcasting player updates to all clients, we need to listen for these updates on the client side and update the player's position accordingly. Let's add this logic to the `ingame.gd` script that manages our in-game state. We will need to keep a map of all the players in the game, and we can use the player's ID as the key. Let's add this map near the top of the script:
 
 ```directory
 /client/states/ingame/ingame.gd
@@ -603,7 +603,7 @@ func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> vo
 If you run the game now with two clients connected, it should be possible to find the other player and see them moving around the screen. If you are having difficulty finding the other, you can change the camera's zoom level to zoom out and see the entire game world. Just add something like the following to the `_input` function of `res://objects/actor/actor.gd`. It will allow you to zoom in and out using the scroll wheel:
 
 ```directory
-/client/states/ingame/ingame.gd
+/client/objects/actor/actor.gd
 ```
 ```gd
 func _input(event):
