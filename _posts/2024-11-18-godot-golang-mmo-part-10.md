@@ -292,4 +292,292 @@ We also include a buffer distance in this check, to allow for a little bit of le
 Now, if you run the game, you shouldn't see any difference. The spores will still drop, and the players will still consume them. However, if you were to modify the client to consume spores that are underneath them (i.e. undo the changes we made to the client just above), you'll see the server complaining about the player dropping the spore too recently, and the player will appear to consume the spore but keep shrinking regardless. Any players witnessing this will see the player shrinking, but the dropped spores will still be there.
 
 ## Searching the leaderboard
-*Coming soon...*
+
+Our leaderboard currently shows the top 10 players, but it would be even more exciting if we could search for a specific player who maybe isn't in the top 10. This is what we will be going for in this sesion.
+
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/18/hiscores_demo.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+We're going to need a few things to make this work:
+1. A new packet to send the search query to the server
+2. A new query on the database to search for the player
+3. A new method on the server to handle the search query
+4. A search bar on the client to send the search query
+5. A way to highlight the searched player in the leaderboard
+
+Let's get started and tackle these one by one.
+
+### Hiscores search packet
+
+This will be another simple packet, with the only data being the name of the player we want to search for:
+
+```directory
+/shared/packets.proto
+```
+
+```protobuf
+message SearchHiscoreMessage { string name = 1; }
+
+message Packet {
+    // ...
+    oneof msg {
+        SearchHiscoreMessage search_hiscore = 18;
+    }
+}
+```
+
+### Hiscores search query
+
+We need a query to retrieve the player's rank from the database. We will be able to use that to determine the offset to use in the leaderboard results to send back to the client. Let's go ahead and try to write this query:
+
+```directory
+/server/internal/db/config/queries.sql
+```
+
+```sql
+-- name: GetPlayerByName :one
+SELECT * FROM players
+WHERE name LIKE ?
+LIMIT 1;
+
+-- name: GetPlayerRank :one
+SELECT COUNT(*) + 1 AS "rank" FROM players
+WHERE best_score > (
+    SELECT best_score FROM players p2
+    WHERE p2.id = ?
+);
+```
+
+The `GetPlayerByName` is more of a helper query, used as a stepping stone to get the player's rank. The only thing to note here is we are using the `LIKE` operator to make the search case-insensitive.
+
+The `GetPlayerRank` query is a bit more complex than the queries we've seen so far, but it is still quite simple. We are using a subquery to get the player's best score, then counting the number of players with a better score than that player. We add 1 to the count to get something starting from 1, rather than 0.
+
+### Hiscores search handler
+
+In our `BrowsingHiscores` state handler on the server, we will need to add a new case to handle the search query:
+
+```directory
+/server/internal/server/states/browsingHiscores.go
+```
+
+```go
+func (b *BrowsingHiscores) HandleMessage(senderId uint64, message packets.Msg) {
+    switch message := message.(type) {
+    // ...
+    case *packets.Packet_SearchHiscore:
+        b.handleSearchHiscores(senderId, message)
+    }
+}
+
+func (b *BrowsingHiscores) handleSearchHiscores(_ uint64, message *packets.Packet_SearchHiscore) {
+    player, err := b.queries.GetPlayerByName(b.dbCtx, message.SearchHiscore.Name)
+
+    if err != nil {
+        b.logger.Printf("Error getting player %s: %v\n", message.SearchHiscore.Name, err)
+        b.client.SocketSend(packets.NewDenyResponse("No player found with that name"))
+        return
+    }
+
+    playerRank, err := b.queries.GetPlayerRank(b.dbCtx, player.ID)
+    if err != nil {
+        b.logger.Printf("Error getting rank for player %s: %v\n", message.SearchHiscore.Name, err)
+        b.client.SocketSend(packets.NewDenyResponse("Player is unranked"))
+        return
+    }
+
+    const limit int64 = 10
+    offset := playerRank - limit/2
+    b.sendTopScores(limit, max(0, offset))
+}
+```
+
+This code simply retrieves the player's rank from the database using the queries we wrote above, then sends the 10 players surrounding that player to the client. If the player happens to be in the top 5 players, the offset calculation needs to be adjusted to ensure we don't send negative offsets to the database.
+
+You will notice we are referring to a function that does not exist yet: `b.sendTopScores`. This is because we are going to refactor slightly to extract the `OnEnter` logic into a separate method so that we can reuse it for the search query. Let's do that now. Simply replace the `OnEnter` method with the following:
+
+```directory
+/server/internal/server/states/browsingHiscores.go
+```
+
+```go
+func (b *BrowsingHiscores) OnEnter() {
+    b.sendTopScores(10, 0)
+}
+```
+
+Now we can add the `sendTopScores` method which will contain the logic that previously was in the `OnEnter` method:
+
+```directory
+/server/internal/server/states/browsingHiscores.go
+```
+
+```go
+func (b *BrowsingHiscores) sendTopScores(limit int64, offset int64) {
+    topScores, err := b.queries.GetTopScores(b.dbCtx, db.GetTopScoresParams{
+        Limit:  limit,
+        Offset: offset,
+    })
+    if err != nil {
+        b.logger.Printf("Error getting top %d scores from rank %d: %v\n", limit, offset+1, err)
+        b.client.SocketSend(packets.NewDenyResponse("Failed to get top scores - please try again later"))
+        return
+    }
+
+    hiscoreMessages := make([]*packets.HiscoreMessage, 0, limit)
+    for rank, scoreRow := range topScores {
+        hiscoreMessage := &packets.HiscoreMessage{
+            Rank:  uint64(rank) + uint64(offset) + 1,
+            Name:  scoreRow.Name,
+            Score: uint64(scoreRow.BestScore),
+        }
+        hiscoreMessages = append(hiscoreMessages, hiscoreMessage)
+    }
+
+    b.client.SocketSend(packets.NewHiscoreBoard(hiscoreMessages))
+}
+```
+
+Now, we shouldn't have any problems running our game and browsing the leaderboard as we did before. We're done with the server side of things, so let's move on to the client.
+
+### Hiscores search bar
+
+Let's go ahead and add some more UI to the hiscores scene to allow players to search for a player. We will group the exiting back button, with the new search bar and search button, in a `HBoxContainer` which will sit at the top of the `VBoxContainer`. Your scene tree should look like this:
+
+- **Node** - called `BrowsingHiscores`
+  - **CanvasLayer** - called `UI`
+    - **VBoxContainer**
+      - **HBoxContainer**
+        - **Button** - called `BackButton`
+        - **LineEdit**
+        - **Button** - called `SearchButton`
+      - **Hiscores**
+
+The **LineEdit** node's **Expand** property should be enabled underneath the **Layout** > **Container Sizing** > **Horizontal** section of the inspector, or via the sizing settings button at the top of the scene editor.
+
+The **SearchButton** node should have its **Text** property set to "Search".
+
+![Hiscores scene tree](/assets/css/images/posts/2024/11/18/hiscores_scene_tree.png)
+
+Now, we will have knocked loose the reference to the `BackButton` node in the script, so we need to fix that and add the new search button and line edit nodes:
+
+```directory
+/client/states/browsing_hiscores/browsing_hiscores.gd
+```
+
+```gdscript
+@onready var _back_button := $UI/VBoxContainer/HBoxContainer/BackButton as Button
+@onready var _line_edit := $UI/VBoxContainer/HBoxContainer/LineEdit as LineEdit
+@onready var _search_button := $UI/VBoxContainer/HBoxContainer/SearchButton as Button
+
+func _ready() -> void:
+    _line_edit.text_submitted.connect(_on_line_edit_text_submitted)
+    _search_button.pressed.connect(_on_search_button_pressed)
+    # ...
+
+func _on_line_edit_text_submitted(_new_text: String) -> void:
+    _on_search_button_pressed()
+
+func _on_search_button_pressed() -> void:
+    var packet := packets.Packet.new()
+    var search_hiscore_msg := packet.new_search_hiscore()
+    search_hiscore_msg.set_name(_line_edit.text)
+    WS.send(packet)
+```
+
+This code will send the search query to the server when the search button is pressed, or when the user presses enter in the line edit. When the server responds, we are already mostly set up to handle the response, since we are listening to `HiscoreBoardMessage`s already <small>(although there are some issues)</small>. We just need to handle the case where the server responds with a `DenyResponse`.
+
+Let's add a `Log (log.gd)` node to the scene, just under the `Hiscores` node, and set its **Custom Minimum Size**'s **y** value to, say, 100px. This will allow us to display the error message to the player if the server responds with a `DenyResponse`. 
+![Hiscores scene tree with log node](/assets/css/images/posts/2024/11/18/hiscores_scene_tree_log.png)
+
+We will also need to add a new method to handle this response:
+
+```directory
+/client/states/browsing_hiscores/browsing_hiscores.gd
+```
+
+```gdscript
+@onready var _log := $UI/VBoxContainer/Log as Log
+
+func _handle_deny_response(deny_response_msg: packets.DenyResponseMessage) -> void:
+    _log.error(deny_response_msg.get_reason())
+```
+
+Now, when you run the game, you should have no problem searching for an existent-or-non-existent player, and the server should respond with the appropriate message. The only problem is, the leaderboard kinda just throws new entries in with the old ones, and you can end up in situations where there are more than 10 entries present, not necessarily consecutive. To fix this, we simply need to clear the leaderboard before adding the new entries. We haven't built a method to do this yet, but it should be quite simple to implement. We will add a new method to the `hiscores.gd` script:
+
+```directory
+/client/classes/hiscores/hiscores.gd
+```
+
+```gdscript
+func clear_hiscores() -> void:
+func clear_hiscores() -> void:
+    _scores.clear()
+    for entry in _vbox.get_children():
+        if entry != _entry_template:
+            entry.free()
+```
+
+Note we are being careful not to remove the template entry, as that's what we use when creating new entries. Now, we just need to call this method before adding the new entries in the `handle_hiscore_board` method:
+
+```directory
+/client/states/browsing_hiscores/browsing_hiscores.gd
+```
+
+```gdscript
+func _handle_hiscore_board_msg(hiscore_board_msg: packets.HiscoreBoardMessage) -> void:
+    _hiscores.clear_hiscores()
+    # ...
+```
+
+Now, we should have a fully functioning search feature in our game! It will always return a window of the dataset, centered about our player of interested. But it's not so obvious that this is the case because it's not highlighted in any way. Let's add a highlight to the searched player in the leaderboard.
+
+### Highlighting the searched player
+
+We will finally modify the `set_hiscore` method in the `hiscore_entry.gd` script to optionally highlight the entry. We can then use that to decide whether to highlight the hiscore entry received from the server, based on what we have in the search bar. Let's add a new parameter to the `set_hiscore` method:
+
+```directory
+/client/classes/hiscores/hiscores.gd
+```
+
+```gdscript
+func set_hiscore(name: String, score: int, highlight: bool = false) -> void:
+    # ...
+    _add_hiscore(name, score, highlight)
+
+func _add_hiscore(name: String, score: int, highlight: bool) -> void:
+    # ...
+    if highlight:
+        name_label.add_theme_color_override("font_color", Color.YELLOW)
+```
+
+Now, we just need to modify the `handle_hiscore_board` method to highlight the searched player (it's best to refactor a bit here, so I'll show the full method):
+
+```directory
+/client/states/browsing_hiscores/browsing_hiscores.gd
+```
+
+```gdscript
+func _handle_hiscore_board_msg(hiscore_board_msg: packets.HiscoreBoardMessage) -> void:
+    _hiscores.clear_hiscores()
+    for hiscore_msg: packets.HiscoreMessage in hiscore_board_msg.get_hiscores():
+        var name := hiscore_msg.get_name()
+        var rank_and_name := "%d. %s" % [hiscore_msg.get_rank(), name]
+        var score: int = hiscore_msg.get_score()
+        var highlight := name == _line_edit.text
+        _hiscores.set_hiscore(rank_and_name, score, highlight)
+```
+
+So now, when you search for a player, the middle entry, the one you searched for, will be highlighted in yellow.
+![Hiscores search highlight](/assets/css/images/posts/2024/11/18/hiscores_search_highlight.png)
+
+## Conclusion
+
+So that ticks off everything we wanted to in this post! We added a new mechanic to keep players engaged, and a search feature to encourage competition and social interaction.
+
+Even though we have a fully functioning game at this point, there is still much to be desired in the looks department. In <strong><a href="/2024/11/20/godot-golang-mmo-part-11" class="sparkle-less">the next part</a></strong>, we will focus purely on polishing up anything that needs it, and making the game look as good as possible. This will set us up nicely for the final part, where we will deploy the game and make it available for others to play. Until then, good luck with your game development!
+
+--- 
+
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
