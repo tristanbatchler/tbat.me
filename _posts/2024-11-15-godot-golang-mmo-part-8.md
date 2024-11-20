@@ -253,7 +253,7 @@ This is a cool feature of Godot that means the `radius` property will automatica
 **Now** if we run the game, we will see other players growing in size when they eat, but you won't see yourself grow yet! What gives? This is because we aren't sending the spore consumption event to ourselves (no need since we already know we ate the spore). We simply need to use our new `_set_actor_mass` method in the `_consume_spore` method we wrote in <a href="/2024/11/14/godot-golang-mmo-part-7#consuming-spores" target="_blank">the last part</a>.
 
 ```directory
-/client/objects/actor/actor.gd
+/client/states/ingame/ingame.gd
 ```
 
 ```gd
