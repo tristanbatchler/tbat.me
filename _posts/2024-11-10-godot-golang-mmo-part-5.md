@@ -265,7 +265,7 @@ Now that we have satisfied the compiler, we can move back to `hub.go` and **fina
 ```
 ```go
 func (h *Hub) Run() {
-    // Create the database and generate the schema
+    log.Println("Initializing database...")
     if _, err := h.dbPool.ExecContext(context.Background(), schemaGenSql); err != nil {
         log.Fatal(err)
     }
