@@ -144,7 +144,7 @@ And on the server side, you should see something like this:
 
 ```
 2024/11/09 16:40:54 Starting server on :8080
-2024/11/09 16:40:54 Awaiting client registrations
+2024/11/09 16:40:54 Awaiting client registrations...
 2024/11/09 16:42:24 New client connected from [::1]:53684
 ```
 
@@ -175,7 +175,7 @@ And something like this on the server side:
 
 ```
 2024/11/09 16:54:59 Starting server on :8080
-2024/11/09 16:54:59 Awaiting client registrations
+2024/11/09 16:54:59 Awaiting client registrations...
 2024/11/09 16:55:01 New client connected from [::1]:53922
 Client 1: 2024/11/09 16:55:01 Received message: *packets.Packet_Chat from client - echoing back...
 ```
@@ -200,7 +200,7 @@ Now, if you run the game, you should see two windows pop up and connect to the s
 
 ```
 2024/11/09 18:51:52 Starting server on :8080
-2024/11/09 18:51:52 Awaiting client registrations
+2024/11/09 18:51:52 Awaiting client registrations...
 2024/11/09 18:53:50 New client connected from [::1]:55699
 2024/11/09 18:53:50 New client connected from [::1]:55700
 (2) Client 1: 2024/11/09 18:53:50 Received message: *packets.Packet_Chat from client - echoing back...
@@ -396,7 +396,7 @@ Now there's quite a few changes to make in the `Run` method, so I'll just show y
 ```
 ```go
 func (h *Hub) Run() {
-    log.Println("Awaiting client registrations")
+    log.Println("Awaiting client registrations...")
     for {
         select {
         case client := <-h.RegisterChan:
@@ -432,7 +432,7 @@ Now, if we restart the server and try to repeat our test of running multiple ins
 
 ```
 2024/11/09 19:28:30 Starting server on :8080
-2024/11/09 19:28:30 Awaiting client registrations
+2024/11/09 19:28:30 Awaiting client registrations...
 2024/11/09 19:28:43 New client connected from [::1]:56397
 2024/11/09 19:28:43 New client connected from [::1]:56396
 Client 1: 2024/11/09 19:28:43 Received message: *packets.Packet_Chat from client - echoing back...
