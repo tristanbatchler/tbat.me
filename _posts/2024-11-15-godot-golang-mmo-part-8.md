@@ -258,7 +258,7 @@ This is a cool feature of Godot that means the `radius` property will automatica
 
 ```gd
 func _consume_spore(spore: Spore) -> void:
-    var player = _actors[GameManager.client_id]
+    var player = _players[GameManager.client_id]
     var player_mass := _rad_to_mass(player.radius)
     var spore_mass := _rad_to_mass(spore.radius)
     _set_actor_mass(player, player_mass + spore_mass)
