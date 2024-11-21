@@ -171,19 +171,21 @@ Now that we've zhuzhed up the in-game UI, let's do the same for the login screen
 
 ### Centering the form and adding a title
 
-Let's get everything centered and away from the top edge of the screen. We can do that by simply opening up the `res://states/connected/connects.tscn` scene and setting the top VBoxContainer's anchor preset to **Center** and then setting the **Custom Minimum Size**'s **x** value to something like 300. Because we've already set the other elements to expand, this is all we should need to do to get it looking pretty centered.
+Let's get everything centered and away from the top edge of the screen. We can do that by simply opening up the `res://states/connected/connected.tscn` scene and inserting a margin container, much like we did for the in-game scene, as a parent of the VBoxContainer's. Then set the margin container's anchor preset to **Full Rect** and override the theme's margin constants to whatever you like.
 
 We should center the buttons as well, though, so set the HBoxContainer's **Alignment** property to **Center** too.
 
-Finally, we should add a cool background and title to the login screen! Add a **RichTextLabel** node to the top of the VBoxContainer and set its **Text** property to whatever you want to call your game. I'm going with "Radius Rumble". Make sure to check the **Fit Content** property, so the text doesn't get cut off.
+![Centered Login Screen](/assets/css/images/posts/2024/11/20/centered_login_screen.png)
+
+We should add a cool title to the login screen! Add a **RichTextLabel** node to the top of the VBoxContainer and set its **Text** property to whatever you want to call your game. I'm going with "Radius Rumble". Make sure to check the **Fit Content** property, so the text doesn't get cut off.
 
 There's [a lot of cool stuff](https://docs.godotengine.org/en/stable/tutorials/ui/bbcode_in_richtextlabel.html) you can do if you enable the **BBCode Enabled** property on the RichTextLabel, for example:
 
 ```bbcode
-[center][rainbow][shake]Radius Rumble[/shake][/rainbow][/center]
+[center][rainbow][shake][b]Radius Rumble[/b][/shake][/rainbow][/center]
 ```
 
-You can also make the text bigger by using the **Theme Overrides > Font Sizes > Normal Font Size** property.
+You can also make the text bigger by using the **Theme Overrides > Font Sizes > Bold Font Size** property.
 
 ![Login Screen](/assets/css/images/posts/2024/11/20/login_screen.png)
 
@@ -198,15 +200,16 @@ To do this, simply add a **Sprite2D** node as a child of the root `Connected` no
 - **Node** - called `Connected`
     - **Sprite2D** - called `Background`
     - **CanvasLayer** - called `UI`
-      - **VBoxConatainer**
-        - **RichTextLabel**
-        - **LineEdit** - called `Username`
-        - **LineEdit** - called `Password`
-        - **HBoxContainer**
-          - **Button** - called `LoginButton`
-          - **Button** - called `RegisterButton`
-          - **Button** - called `HiscoresButton`
-        - **Log (log.gd)** - called `Log`
+      - **MarginContainer**
+        - **VBoxConatainer**
+          - **RichTextLabel**
+          - **LineEdit** - called `Username`
+          - **LineEdit** - called `Password`
+          - **HBoxContainer**
+            - **Button** - called `LoginButton`
+            - **Button** - called `RegisterButton`
+            - **Button** - called `HiscoresButton`
+          - **Log (log.gd)** - called `Log`
 
 Now make the following edits to the `Background` sprite:
 1. Set the **Texture** property to `resources/floor.svg` (use the **Quick Load...** option in the drop-down)
@@ -257,7 +260,7 @@ There's a lot more we could do here, like letting users press Enter to log in, o
 
 ### Revamping the hiscores screen
 
-Finally, let's pretty much do the same thing to the hiscores screen. We'll be adding the same title, the same centering technique, and the same background image and shader effect. I will leave this as an exercise for the reader (hint: you can copy and paste the `Background` sprite and RichTextLabel from the `Connected` scene and all the properties will be the same).
+Finally, let's pretty much do the same thing to the hiscores screen. We'll be adding the same title and the same background image and shader effect. You can also add a margin container like we did with the in-game UI. I will leave this as an exercise for the reader (hint: you can copy and paste the `Background` sprite and RichTextLabel from the `Connected` scene and all the properties will be the same).
 
 <video controls>
   <source src="/assets/css/images/posts/2024/11/20/copypaste.webm" type="video/webm">
@@ -295,6 +298,11 @@ So now our game looks like this:
 ![Connected Screen](/assets/css/images/posts/2024/11/20/connected_screen.png)
 
 This is cool and all, but there's just one more feature I want to add before we call it a day. It would be really great if players could choose their color when they register, and having a separate registration screen would make more sense. That way, we can also get users to type their password twice to confirm it.
+
+## Making the window resizable
+
+It is possible to resize the window currently, but it has a couple of issues. It doesn't scale the UI or the game world, so it gives an unfair advantage to players who have a larger screen while also making it harder to read the text on-screen. We can fix that by going to **Project Settings > Display > Window > Stretch** and setting the stretch **Mode** to **viewport** and the **Aspect** to **Keep**. 
+
 
 ## Adding a separate registration screen
 *Coming soon...*
