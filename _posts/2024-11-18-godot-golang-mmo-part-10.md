@@ -565,7 +565,7 @@ func _handle_hiscore_board_msg(hiscore_board_msg: packets.HiscoreBoardMessage) -
         var name := hiscore_msg.get_name()
         var rank_and_name := "%d. %s" % [hiscore_msg.get_rank(), name]
         var score: int = hiscore_msg.get_score()
-        var highlight := name == _line_edit.text
+        var highlight := name.to_lower() == _line_edit.text.to_lower()
         _hiscores.set_hiscore(rank_and_name, score, highlight)
 ```
 
