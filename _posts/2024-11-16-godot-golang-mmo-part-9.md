@@ -189,7 +189,7 @@ Now, we will have broken our `ingame.gd` script by moving the LineEdit and Log n
 
 ```gdscript
 @onready var _line_edit := $UI/VBoxContainer/LineEdit as LineEdit
-@onready var _log := $UI/VBoxConainter/Log as Log
+@onready var _log := $UI/VBoxContainer/Log as Log
 @onready var _hiscores := $UI/VBoxContainer/Hiscores as Hiscores
 ```
 

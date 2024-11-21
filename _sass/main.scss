@@ -31,7 +31,7 @@ body {
         font-size: smaller;
         margin-top: -1.5rem;
     }
-    
+
     h1 {
         color: $header;
 
@@ -54,11 +54,14 @@ body {
         color: $header;
     }
 
-    img, video {
+    img,
+    video {
         height: auto;
-        
-        &, & + em {
+
+        &,
+        &+em {
             display: block;
+
             &:not(.info) {
                 margin-left: auto;
                 margin-right: auto;
@@ -67,8 +70,9 @@ body {
 
                 max-width: 80%;
 
-                transition:transform 0.25s ease;
+                transition: transform 0.25s ease;
             }
+
             &.info {
                 // Info quotes
                 height: 3em;
@@ -111,7 +115,8 @@ body {
         background-color: $void;
         margin: 10px;
         padding: 10px;
-        & > code {
+
+        &>code {
             display: block;
         }
 
@@ -126,13 +131,18 @@ body {
             border: none;
             border-radius: 0 0 0 5px;
             cursor: pointer;
-            &:active, &:focus, &:hover {
+
+            &:active,
+            &:focus,
+            &:hover {
                 background-color: $accent;
                 opacity: 1;
             }
         }
 
-        &:active, &:focus, &:hover {
+        &:active,
+        &:focus,
+        &:hover {
             .copy-button {
                 opacity: 1;
             }
@@ -160,8 +170,10 @@ body {
 #header {
     display: flex;
     justify-content: center;
+
     nav a {
         padding: 15px;
+
         &.current {
             color: $header;
         }
@@ -176,11 +188,13 @@ body {
 #footer {
     display: flex;
     justify-content: center;
+
     div.social a {
         text-decoration: none;
         color: $foreground;
         padding: 15px;
     }
+
     padding-top: 20px;
 }
 
@@ -209,9 +223,11 @@ iframe.responsive-iframe {
 
 table {
     margin: auto;
-    th, td {
+
+    th,
+    td {
         padding: 5px 15px;
-    } 
+    }
 
     thead tr th {
         font-weight: bold;
