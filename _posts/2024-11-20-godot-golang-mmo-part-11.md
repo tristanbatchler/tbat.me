@@ -250,7 +250,9 @@ Looking good! Let's add some accessibility features to the login screen now.
 
 ### Accessibility / privacy
 
-I'll just blast through this: we need to censor the password field, and easily let users cycle through the fields with the tab key. We can do this by enabling the **Secret** property on the password line edit in the inspector. We can also choose all the relevant the **Neighbor** nodes under the **Focus** section of the inspector for each line edit and button. There are more details in the official documentation [here](https://docs.godotengine.org/en/stable/tutorials/ui/gui_navigation.html).
+I'll just blast through this: we need to censor the password field, and easily let users cycle through the fields with the tab key. We can do this by enabling the **Secret** property on the password line edit in the inspector. For users on mobile devices, it's important the auto-suggest feature doesn't show their password, so you can also select **Password** under the **Virtual Keyboard Type** property.
+
+We can also choose all the relevant the **Neighbor** nodes under the **Focus** section of the inspector for each line edit and button. There are more details in the official documentation [here](https://docs.godotengine.org/en/stable/tutorials/ui/gui_navigation.html).
 
 Let's also enable the `Log` node's **Scroll Following** property, so the log will always show the most recent messages. We should do that in the InGame and BrowsingHiscores scenes too, while we think of it.
 
@@ -281,7 +283,6 @@ I will just be making a few simple changes though, so I will walk you through th
 
 1. Click on the **`+`** button at the top-right of the **Theme** panel
    ![Add Style](/assets/css/images/posts/2024/11/20/add_style.png)
-    ![alt text](image.png)
 
 2. Choose Button and click **Add Type**
 3. Click on the **Font Size** tab and click the **`+`** button to override the default font size
@@ -297,12 +298,322 @@ Let's also give a bit more contrast to your labels and rich text labels by chang
 So now our game looks like this:
 ![Connected Screen](/assets/css/images/posts/2024/11/20/connected_screen.png)
 
-This is cool and all, but there's just one more feature I want to add before we call it a day. It would be really great if players could choose their color when they register, and having a separate registration screen would make more sense. That way, we can also get users to type their password twice to confirm it.
-
 ## Making the window resizable
 
 It is possible to resize the window currently, but it has a couple of issues. It doesn't scale the UI or the game world, so it gives an unfair advantage to players who have a larger screen while also making it harder to read the text on-screen. We can fix that by going to **Project Settings > Display > Window > Stretch** and setting the stretch **Mode** to **viewport** and the **Aspect** to **Keep**. 
 
+Now, when you resize the window, the game will scale to fit the window, and the UI will scale with it. When we eventually deploy our game to the web, this will be very important, as our game might be embedded into different sized frames, so we need to account for that.
+
 
 ## Adding a separate registration screen
+
+It would be really great if players could choose their color when they register, and having a separate registration screen would make more sense. That way, we can also get users to type their password twice to confirm it as well.
+
+### Extracting the login form to a new scene
+
+Let's start by extracting the username and password fields into a separate scene. Create a new folder called `res://classes/login_form/` and save a new scene called `login_form.tscn` in there. Create a new scene at `res://classes/login_form/login_form.tscn` with root node type `VBoxContainer`. Make the following scene:
+
+- **VBoxContainer** - called `LoginForm`
+  - **LineEdit** - called `Username`
+  - **LineEdit** - called `Password`
+  - **HBoxContainer**
+    - **Button** - called `LoginButton`
+    - **Button** - called `HiscoresButton`
+
+To speed things along, you can simply copy and paste node we need from the already existing `Connected` scene.
+
+Set the **Anchor** property of the `LoginForm` to **Full Rect**. Now, remove the `Username` and `Password` line edits, as well as the entire HBoxContainer from the `Connected` scene. We will add this scene back to the `Connected` scene underneath the `RichTextLabel` node (simply click and drag `login_form.tscn` from the FileSystem panel into the `Connected` scene tree). 
+
+We have lost the register button and broken our `connected.gd` script, but don't panic; we will be adding it back somewhere more suitable and fixing things up.
+
+At the moment, your `Connected` scene should look like this:
+
+- **Node** - called `Connected`
+  - **Sprite2D** - called `Background`
+  - **CanvasLayer** - called `UI`
+    - **MarginContainer**
+      - **VBoxContainer**
+        - **RichTextLabel**
+        - **LoginForm (instanced login_form.tscn)**
+        - **Log (log.gd)**
+
+![Half refactored Connected scene](/assets/css/images/posts/2024/11/20/half_refactored_connected.png)
+
+
+Now, we need our `connected.gd` script to know whenever the login form has been submitted. The best way to achieve this is through a custom signal on the login form. Attach a new script to the `LoginForm` node and add the following code.
+
+```directory
+/client/classes/login_form/login_form.gd
+```
+
+```gdscript
+class_name LoginForm
+extends VBoxContainer
+
+@onready var _username_field := $Username as LineEdit
+@onready var _password_field := $Password as LineEdit
+@onready var _login_button := $HBoxContainer/LoginButton as Button
+@onready var _hiscores_button := $HBoxContainer/HiscoresButton as Button
+
+signal form_submitted(username: String, password: String)
+
+func _ready() -> void:
+    _login_button.pressed.connect(_on_login_button_pressed)
+    _hiscores_button.pressed.connect(_on_hiscores_button_pressed)
+
+func _on_login_button_pressed() -> void:
+    form_submitted.emit(_username_field.text, _password_field.text)
+
+func _on_hiscores_button_pressed() -> void:
+    GameManager.set_state(GameManager.State.BROWSING_HISCORES)
+```
+
+Here, we are straight up copying the logic for the hiscores button from the `connected.gd` script. We are also emitting a signal whenever the login button is pressed, passing the username and password as arguments.
+
+Let's head back to the `connected.gd` script to fix up the references to nodes that don't exist anymore, and replace it with logic to handle the new signal.
+
+1. **Remove** the following references:
+
+    ```directory
+    /client/states/connected/connected.gd
+    ```
+
+    ```gdscript
+    # Remove these four references
+    @onready var _username_field := $UI/MarginContainer/VBoxContainer/Username as LineEdit
+    @onready var _password_field := $UI/MarginContainer/VBoxContainer/Password as LineEdit
+    @onready var _login_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/LoginButton as Button
+    @onready var _hiscores_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/HiscoresButton as Button
+
+    func _ready() -> void: # Don't actually remove *this* line
+        _login_button.pressed.connect(_on_login_button_pressed) # Remove this
+        _register_button.pressed.connect(_on_register_button_pressed) # and this
+        _hiscores_button.pressed.connect(_on_hiscores_button_pressed) # this too
+
+    # Remove all of these methods entirely
+    func _on_login_button_pressed() -> void:
+        # ...
+
+    func _on_register_button_pressed() -> void:
+        # ...
+
+    func _on_hiscores_button_pressed() -> void:
+        # ...
+    ```
+
+2. **Add** the following code:
+
+    ```directory
+    /client/states/connected/connected.gd
+    ```
+
+    ```gdscript
+    @onready var _login_form := $UI/MarginContainer/VBoxContainer/LoginForm as LoginForm
+
+    func _ready() -> void:
+        # ...
+        _login_form.form_submitted.connect(_on_login_form_submitted)
+
+    func _on_login_form_submitted(username: String, password: String) -> void:
+        var packet := packets.Packet.new()
+        var login_request_msg := packet.new_login_request()
+        login_request_msg.set_username(username)
+        login_request_msg.set_password(password)
+        WS.send(packet)
+        _action_on_ok_received = func(): GameManager.set_state(GameManager.State.INGAME)
+    ```
+
+For reference, the new `connected.gd` script should look like this:
+
+<details markdown="1">
+<summary>Click to expand</summary>
+
+```directory
+/client/states/connected/connected.gd
+```
+
+```gdscript
+extends Node
+
+const packets := preload("res://packets.gd")
+
+var _action_on_ok_received: Callable
+
+@onready var _register_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/RegisterButton as Button
+@onready var _log := $UI/MarginContainer/VBoxContainer/Log as Log
+@onready var _login_form := $UI/MarginContainer/VBoxContainer/LoginForm as LoginForm
+
+func _ready() -> void:
+    WS.packet_received.connect(_on_ws_packet_received)
+    WS.connection_closed.connect(_on_ws_connection_closed)
+    _login_form.form_submitted.connect(_on_login_form_submitted)
+
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    var sender_id := packet.get_sender_id()
+    if packet.has_deny_response():
+        var deny_response_message := packet.get_deny_response()
+        _log.error(deny_response_message.get_reason())
+    elif packet.has_ok_response():
+        _action_on_ok_received.call()
+    
+func _on_ws_connection_closed() -> void:
+    pass
+    
+func _on_login_form_submitted(username: String, password: String) -> void:
+    var packet := packets.Packet.new()
+    var login_request_msg := packet.new_login_request()
+    login_request_msg.set_username(username)
+    login_request_msg.set_password(password)
+    WS.send(packet)
+    _action_on_ok_received = func(): GameManager.set_state(GameManager.State.INGAME)
+```
+</details>
+
+Now, you should be able to log in with the new login form, and browse the hiscores too. Nothing should be different from before except for the fact we've lost the register button. We will add that back in now.
+
+### Adding a new registration form
+
+Let's create new folder called `res://classes/register_form/` and duplicate the `login_form.tscn` scene as `register_form.tscn` and move it into the new folder. Open the scene and rename the `LoginForm` node to `RegisterForm`. Also make the following changes:
+
+1. Duplicate the `Password` line edit and call it `ConfirmPassword`. Change the placeholder text to "Confirm password".
+2. Rename the `LoginButton` to `ConfirmButton` and change the text to "Confirm".
+3. Rename the `HiscoresButton` to `CancelButton` and change the text to "Cancel".
+4. Detach the `login_form.gd` script from the root `RegisterForm` node (right-click on the root node and choose **Detach Script**).
+   ![Detach Script](/assets/css/images/posts/2024/11/20/detach_script.png)
+
+Now, we need to attach a new script which will be similar to the login script we made before, in that it will emit a `form_submitted` signal containing the registration data. Here's what the script should look like:
+
+```directory
+/client/classes/register_form/register_form.gd
+```
+
+```gdscript
+class_name RegisterForm
+extends VBoxContainer
+
+@onready var _username_field := $Username as LineEdit
+@onready var _password_field := $Password as LineEdit
+@onready var _confirm_password_field := $ConfirmPassword as LineEdit
+@onready var _confirm_button := $HBoxContainer/ConfirmButton as Button
+@onready var _cancel_button := $HBoxContainer/CancelButton as Button
+
+signal form_submitted(username: String, password: String)
+signal form_cancelled()
+
+func _ready() -> void:
+    _confirm_button.pressed.connect(_on_confirm_button_pressed)
+    _cancel_button.pressed.connect(_on_cancel_button_pressed)
+
+func _on_confirm_button_pressed() -> void:
+    form_submitted.emit(_username_field.text, _password_field.text, _confirm_password_field.text)
+
+func _on_cancel_button_pressed() -> void:
+    form_cancelled.emit()
+```
+
+Note that we are not doing any validation to check the password fields match here, as that will be done in the connected state script, which has access to log errors. We are also emitting a `form_cancelled` signal, which will be used to switch back to the login form from the connected state script.
+
+Let's get this new form into the `Connected` scene. Drag the `register_form.tscn` scene from the FileSystem panel into the `Connected` scene tree, underneath the `LoginForm` node. Your scene should now look a bit funny, because the login form and registration forms are both present, stacked on top of each other.
+
+Our solution to this is to hide the registration form by default, and when a registration button is pressed, we will hide the login form and show the registration form. When the `form_cancelled` signal is emitted, we will do the opposite.
+
+Let's get started by clicking the 👁️ button to right right of the `RegisterForm` node in the `Connected` scene:
+![Hide Register Form](/assets/css/images/posts/2024/11/20/hide_register_form.png)
+
+Now, let's add the logic to the `connected.gd` script to handle the new registration form.
+
+```directory
+/client/states/connected/connected.gd
+```
+
+```gdscript
+@onready var _register_form := $UI/MarginContainer/VBoxContainer/RegisterForm as RegisterForm
+
+func _ready() -> void:
+    # ...
+    _register_form.form_submitted.connect(_on_register_form_submitted)
+    _register_form.form_cancelled.connect(_on_register_form_cancelled)
+
+func _on_register_form_submitted(username: String, password: String, confirm_password: String) -> void:
+    if password != confirm_password:
+        _log.error("Passwords do not match")
+        return
+
+    var packet := packets.Packet.new()
+    var register_request_msg := packet.new_register_request()
+    register_request_msg.set_username(username)
+    register_request_msg.set_password(password)
+    WS.send(packet)
+    _action_on_ok_received = func(): _log.success("Registration successful! Go back and log in with your new account.")
+
+func _on_register_form_cancelled() -> void:
+    _register_form.hide()
+    _login_form.show()
+```
+
+Now, if we run the game, it should work exactly the same as before, but we can't test the registration form yet, because we haven't added a button to reveal it. Let's do that now.
+
+### Adding a register button
+
+We need to add a way to register in the `Connected` scene. To do this, we will add a **RichTextLabel** node to the `VBoxContainer` node in the `Connected` scene, just underneath the two forms and above the log. Call it `RegisterPrompt`, enable the **Fit Content** and **BBCode Enabled**, and set the **Text** property to something like:
+
+```bbcode
+
+[center][i]Don't have an account? [color=#E3A071][url=register]Create one here![/url][/color][/i][/center]
+```
+
+We are going to take advantage of the [`url` BBCode tag](https://docs.godotengine.org/en/stable/tutorials/ui/bbcode_in_richtextlabel.html#doc-bbcode-in-richtextlabel-handling-url-tag-clicks) to emit a signal when the user clicks on the link. To do this, head on over to the `connected.gd` script and add the following code:
+
+```directory
+/client/states/connected/connected.gd
+```
+
+```gdscript
+@onready var _register_prompt := $UI/MarginContainer/VBoxContainer/RegisterPrompt as RichTextLabel
+
+func _ready() -> void:
+    # ...
+    _register_prompt.meta_clicked.connect(_on_register_prompt_meta_clicked)
+
+func _on_register_form_cancelled() -> void:
+    # ...
+    _register_prompt.hide()
+
+func _on_register_prompt_meta_clicked(meta) -> void:
+    if meta is String and meta == "register":
+        _login_form.hide()
+        _register_form.show()
+        _register_prompt.hide()
+```
+
+Now, when you run the game, you should be able to click on the link in the `Connected` scene and reveal the registration form. You can also click the cancel button to go back to the login form. Everything should be looking great now!
+
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/20/registration_screen_demo.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+### Allowing players to choose their color
 *Coming soon...*
+
+## Hiding spores on top of players
+
+One more annoying thing is that spores dropped by players are drawn on top, which looks pretty jarring. Luckily, the fix is very simple. We just need to change the `z_index` of the actors to be higher than the spores'. We can do this in the `ingame.gd` script, just after we add the new actor to the world.
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> void:
+    var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
+    _world.add_child(actor)
+    actor.z_index = 1
+    # ...
+```
+
+Now, when you run the game, the spores should be drawn underneath the players, which looks a lot better.
+
+## Conclusion
+
+So our game is looking and feeling a lot better compared to when we started this part. Everything should be a lot more accessible to mobile users, too, which will be important for the <strong><a href="/2024/11/22/godot-golang-mmo-part-12" class="sparkle-less">the next part</a></strong> where we will be deploying our game to the web. That will be the final part of this series, so I hope you will join me for that. If you've made it this far, give yourself a pat on the back! You have done a lot of work, and your game is looking great. Until next time!
