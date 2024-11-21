@@ -205,9 +205,9 @@ Now that the server is correctly handling spore consumption and sending the even
 func _on_ws_packet_received(packet: packets.Packet) -> void:
     # ...
     elif packet.has_spore_consumed():
-        _handle_spore_consumed(sender_id, packet.get_spore_consumed())
+         _handle_spore_consumed_msg(sender_id, packet.get_spore_consumed())
 
-func _handle_spore_consumed(sender_id: int, spore_consumed_msg: packets.SporeConsumedMessage) -> void:
+func  _handle_spore_consumed_msg(sender_id: int, spore_consumed_msg: packets.SporeConsumedMessage) -> void:
     if sender_id in _players:
         var actor := _players[sender_id]
         var actor_mass := _rad_to_mass(actor.radius)
