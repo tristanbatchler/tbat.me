@@ -383,6 +383,7 @@ Let's head back to the `connected.gd` script to fix up the references to nodes t
     @onready var _username_field := $UI/MarginContainer/VBoxContainer/Username as LineEdit
     @onready var _password_field := $UI/MarginContainer/VBoxContainer/Password as LineEdit
     @onready var _login_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/LoginButton as Button
+    @onready var _register_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/RegisterButton as Button
     @onready var _hiscores_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/HiscoresButton as Button
 
     func _ready() -> void: # Don't actually remove *this* line
@@ -497,7 +498,7 @@ extends VBoxContainer
 @onready var _confirm_button := $HBoxContainer/ConfirmButton as Button
 @onready var _cancel_button := $HBoxContainer/CancelButton as Button
 
-signal form_submitted(username: String, password: String)
+signal form_submitted(username: String, password: String, confirm_password: String)
 signal form_cancelled()
 
 func _ready() -> void:
@@ -593,7 +594,213 @@ Now, when you run the game, you should be able to click on the link in the `Conn
   Your browser does not support the video tag.
 </video>
 
-### Allowing players to choose their color
+### Setting up the server to handle custom player colors
+
+Now that we have a registration form, we can add a color picker to it. But first, we'd better update our packets and database to allow for a color field.
+
+When you think about it, a color can be represented in many ways:
+* As a string, like `"#FF0000"` for red
+* As an array of floats, like `[1.0, 0.0, 0.0]`
+* As an array of integers, like `[255, 0, 0]`
+* etc.
+
+These are all valid ways to represent colors, but there is one more way that I believe is the most convenient for us: a simple 32-bit integer. This is because you can fit a number between 0 and 255 into just 8 bits, meaning we have enough room to store four of these in a 32-bit integer. There are typically three or four channels in a color (red, green, blue, and sometimes alpha), so we can just stuff all of these into a single 32-bit integer. Luckily, Godot is well-equipped to handle this, as its `Color` class has a `hex` function that will convert an integer like we described into a `Color` object. Similarly, the inverse method exists, called `to_rgba32`, which will convert a `Color` object into a 32-bit integer. We will take advantage of this in our game to store player colors efficiently in our packets and database.
+
+Let's start by adding a color field to our packets. We will be modifying our existing `RegisterRequestMessage` and `PlayerMessage` to include a color field.
+
+```directory
+/shared/packets.proto
+```
+
+```protobuf
+message RegisterRequestMessage { /* ... */ int32 color = 3; }
+message PlayerMessage { /* ... */ int32 color = 8; }
+```
+
+Now (after recompiling protobufs), let's update our `Player` object struct and our `NewPlayer` helper function to include a color field.
+
+```directory
+/server/internal/objects/gameObjects.go
+```
+
+```go
+type Player struct {
+    // ...
+    Color int32
+}
+```
+
+```directory
+/server/pkg/packets/util.go
+```
+
+```go
+func NewPlayer(id uint64, player *objects.Player) Msg {
+    return &Packet_Player{
+        Player: &PlayerMessage{
+            // ...
+            Color: player.Color,
+        },
+    }
+}
+```
+
+Let's update our database schema to include a color field in the `players` table.
+
+```directory
+/server/internal/server/db/config/schema.sql
+```
+
+```sql
+CREATE TABLE IF NOT EXISTS players (
+    /* ... */
+    color INTEGER NOT NULL,
+    /* ... */
+);
+```
+
+We'll also need to update our `CreatePlayer` query to include the color field.
+
+```directory
+/server/internal/server/db/config/queries.sql
+```
+
+```sql
+-- name: CreatePlayer :one
+INSERT INTO players (
+    user_id, name, color
+) VALUES (
+    ?, ?, ?
+)
+RETURNING *;
+```
+
+Now after recompiling the SQL with `sqlc` and deleting the old database <small>(`/server/cmd/db.sqlite` - see <a href="/2024/11/16/godot-golang-mmo-part-9#delete-db" target="_blank">§09</a> as a reminder on *why* we choose to do this)</small>, we can update the server connected state handler to handle the new color field. First, we will update the register request handler to include the color field when it creates a new player in the database.
+
+```directory
+/server/internal/server/states/connected.go
+```
+
+```go
+func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_RegisterRequest) {
+    // ...
+    _, err = c.queries.CreatePlayer(c.dbCtx, db.CreatePlayerParams{
+        // ...
+        Color: int64(message.RegisterRequest.Color),
+    })
+    // ...
+```
+
+Annoyingly, we need to cast the `int32` to an `int64` here, because `sqlc` just assumes everything to be inserted into an `INTEGER` field is 64-bit. This won't screw up our data though, just a slight annoyance.
+
+Now, just update the login request handler to include the color field when it creates and passes the `Player` object to the in-game state:
+
+```directory
+/server/internal/server/states/connected.go
+```
+
+```go
+func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
+    // ...
+    c.client.SetState(&InGame{
+        player: &objects.Player{
+            // ...
+            Color: int32(player.Color),
+        },
+    })
+}
+```
+<small>(another annoying cast because the `player.Color` came from the database as an `int64`).</small>
+
+## Letting players choose their color on registration
+
+Now, we're ready to add the color picker to our registration form in Godot, and send the chosen color with the registration request.
+
+Open up the `res://classes/register_form/register_form.tscn` scene and add a new **ColorPicker** node under the root `RegisterForm` (VBoxContainer) node, just underneath the `ConfirmPassword` line edit. Disable the **Edit Alpha** property, so players can't easily choose a transparent color, and also disable the **Can Add Swatches** property, since we don't need that.
+
+For the **Picker Shape**, choose whichever shape you like. Also disable everything under the **Customization** section in the inspector, since most of these are unnecessary and take up space.
+![Color Picker](/assets/css/images/posts/2024/11/20/color_picker.png)
+
+Now, we just need to hook this up to our `register_form.gd` script, include the color in our `form_submitted` signal, and handle it in the `connected.gd` script.
+
+```directory
+/client/classes/register_form/register_form.gd
+```
+
+```gdscript
+@onready var _color_picker := $ColorPicker as ColorPicker
+
+signal form_submitted(username: String, password: String, confirm_password: String, color: Color)
+
+func _on_confirm_button_pressed() -> void:
+    form_submitted.emit(_username_field.text, _password_field.text, _confirm_password_field.text, _color_picker.color)
+```
+
+```directory
+/client/states/connected/connected.gd
+```
+
+```gdscript
+func _on_register_form_submitted(username: String, password: String, confirm_password: String, color: Color) -> void:
+    # ...
+    register_request_msg.set_color(color.to_rgba32())
+    # ...
+```
+
+Now, when you run the game, you should be able to choose a color when you register. The color should be sent to the server and stored in the database. The only thing missing is that the color isn't actually being used in the game yet! Let's fix that now.
+
+### Showing player colors in the game
+
+Back to Godot, first need to update our `Actor` object to include a color field, and update its constructor to include this field. Then we can update the `_draw` method to use this color when drawing the actor.
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gdscript
+var color: Color
+
+static func instantiate(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, color: Color, is_player: bool) -> Actor:
+    # ...
+    actor.color = color
+    # ...
+
+func _draw() -> void:
+	draw_circle(Vector2.ZERO, _collision_shape.radius, color)
+```
+
+Finally, update the `ingame.gd` script to receive the color from the `PlayerMessage` packet and use it when instantiating a new actor.
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> void:
+    # ...
+    var color_hex := player_msg.get_color()
+
+    var color := Color.hex(color_hex)
+    # ...
+
+    if actor_id not in _players:
+        _add_actor(actor_id, actor_name, x, y, radius, speed, color, is_player)
+    # ...
+
+func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, color: Color, is_player: bool) -> void:
+    var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, color, is_player)
+    # ...
+```
+
+
+Now, when you run the game, you should see players with different colors. You can also test this by registering a new account with a different color.
+
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/20/registration_demo_2.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+## Auto-zooming the camera
 *Coming soon...*
 
 ## Hiding spores on top of players
