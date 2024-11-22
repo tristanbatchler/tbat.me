@@ -768,7 +768,7 @@ static func instantiate(actor_id: int, actor_name: String, x: float, y: float, r
     # ...
 
 func _draw() -> void:
-	draw_circle(Vector2.ZERO, _collision_shape.radius, color)
+    draw_circle(Vector2.ZERO, _collision_shape.radius, color)
 ```
 
 Finally, update the `ingame.gd` script to receive the color from the `PlayerMessage` packet and use it when instantiating a new actor.
@@ -827,13 +827,13 @@ Let's add a new method to the script called `_update_zoom` that will handle all 
 
 ```gdscript
 func _update_zoom() -> void:
-	if not is_player:
-		return
+    if not is_player:
+        return
 
-	var new_furthest_zoom_allowed := 2 * start_rad / radius
-	if is_equal_approx(_target_zoom, _furthest_zoom_allowed):
-		_target_zoom = new_furthest_zoom_allowed
-	_furthest_zoom_allowed = new_furthest_zoom_allowed
+    var new_furthest_zoom_allowed := 2 * start_rad / radius
+    if is_equal_approx(_target_zoom, _furthest_zoom_allowed):
+        _target_zoom = new_furthest_zoom_allowed
+    _furthest_zoom_allowed = new_furthest_zoom_allowed
 ```
 
 Here, we are taking the updated furthest zoom allowed to be inversely proportional to the player's radius. This means that the camera will zoom out as the player grows. Note we are only modifying the `_target_zoom` variable if the player is already zoomed all the way out. This will allow the player to zoom in if they want, and not have the camera zoom out while they are zoomed in. We are using the `is_equal_approx` function to compare the two floats, as comparing floats directly can be unreliable due to floating-point precision errors.
@@ -842,8 +842,8 @@ Now, this is all great, but we're not *actually* updating the camera's zoom leve
 
 ```directory
 func _process(_delta: float) -> void:
-	if not is_equal_approx(_camera.zoom.x, _target_zoom):
-		_camera.zoom -= Vector2(1, 1) * (_camera.zoom.x - _target_zoom) * 0.05
+    if not is_equal_approx(_camera.zoom.x, _target_zoom):
+        _camera.zoom -= Vector2(1, 1) * (_camera.zoom.x - _target_zoom) * 0.05
 ```
 
 This is a simple linear interpolation between the camera's current zoom level and the target zoom level. The `0.05` value is the speed at which the camera will zoom in or out. You can adjust this value to make the camera zoom in or out faster or slower.
@@ -856,11 +856,27 @@ Finally, we need to call the `_update_zoom` method whenever the player grows. Th
 
 ```gdscript
 var radius: float:
-	set(new_radius):
-		radius = new_radius
-		_collision_shape.set_radius(radius)
-		_update_zoom()
-		queue_redraw()
+    set(new_radius):
+        radius = new_radius
+        _collision_shape.set_radius(radius)
+        _update_zoom()
+        queue_redraw()
+```
+
+We just need to adjust the `_input` method to update the `_target_zoom` instead of the `_camera.zoom` directly, and cap the zoom level at the `_furthest_zoom_allowed` value.
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gdscript
+func _input(event):
+    if is_player and event is InputEventMouseButton and event.is_pressed():
+        match event.button_index:
+            MOUSE_BUTTON_WHEEL_UP:
+                _target_zoom = min(4, _target_zoom + 0.1)
+            MOUSE_BUTTON_WHEEL_DOWN:
+                _target_zoom = max(_furthest_zoom_allowed, _target_zoom - 0.1)
 ```
 
 So now, whenever the player grows, the camera will zoom out to accommodate them. You can test this by running the game and watching the camera zoom out as you grow.
