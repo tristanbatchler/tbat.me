@@ -228,13 +228,13 @@ There is just one problem, which is that the player's hiscore won't be added whe
 ```gdscript
 func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> void:
     var actor := Actor.instantiate(actor_id, actor_name, x, y, radius, speed, is_player)
+    _world.add_child(actor)
     _set_actor_mass(actor, _rad_to_mass(radius))
     # ...
 
 func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: float, radius: float, is_player: bool) -> void:
     var actor := _players[actor_id]
     _world.add_child(actor)
-    actor.radius = radius
     _set_actor_mass(actor, _rad_to_mass(radius))
     # ...
 ```
