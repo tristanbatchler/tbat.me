@@ -619,10 +619,6 @@ func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
 }
 
 func (g *InGame) handleSpore(senderId uint64, message *packets.Packet_Spore) {
-    if senderId != 0 {
-        g.logger.Println("Received spore message from someone other than the server, ignoring")
-    }
-
     g.client.SocketSendAs(message, senderId)
 }
 ```
