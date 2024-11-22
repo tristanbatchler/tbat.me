@@ -4,7 +4,9 @@ description: Having finished the features of our MMO, we are almost ready for de
 redditurl: 
 ---
 
-[Last time](/2024/11/18/godot-golang-mmo-part-10) we just finished adding the final features of our MMO. Now, with deployment right around the corner, we could **really** use some polish. In this part, we will be focusing solely on that: making the game look and feel as good as possible. That way, players will be more likely to stick around and enjoy the game. Let's get started!
+[Last time](/2024/11/18/godot-golang-mmo-part-10) we just finished adding the final features of our MMO. Now, with deployment right around the corner, we could **really** use some polish. In this part, we will be focusing solely on that: making the game look and feel as good as possible. That way, players will be more likely to stick around and enjoy the game. 
+
+Each one of these sections could be technically be considered optional, and none of them will depend on each other, so feel free to pick and choose which ones are important to you, and don't feel the need to do them in any particular order. Let's get started!
 
 ## Disconnecting players
 
@@ -801,7 +803,87 @@ Now, when you run the game, you should see players with different colors. You ca
 </video>
 
 ## Auto-zooming the camera
-*Coming soon...*
+
+Instead of letting the player scroll to zoom out as far as they like, let's make the camera automatically zoom out whenever the player grows. The player will still be able to zoom in, but the maximum zoom out will be limited to a certain distance.
+
+We will be working entirely in the `res://objects/actor/actor.gd` script for this. First, let's add two new variables near the top of the script, just above the `@onready` variables:
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gdscript
+var _target_zoom := 2.0
+var _furthest_zoom_allowed := _target_zoom
+```
+
+This is going to convey the idea that the camera will start at a zoom of 2x, and the furthest zoom allowed at the beginning will also be 2x. The goal is to update the `_furthest_zoom_allowed` variable whenever the player grows, and we will incorporate some logic to update `_target_zoom` and the camera's actual zoom level as well.
+
+Let's add a new method to the script called `_update_zoom` that will handle all of this logic.
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gdscript
+func _update_zoom() -> void:
+	if not is_player:
+		return
+
+	var new_furthest_zoom_allowed := 2 * start_rad / radius
+	if is_equal_approx(_target_zoom, _furthest_zoom_allowed):
+		_target_zoom = new_furthest_zoom_allowed
+	_furthest_zoom_allowed = new_furthest_zoom_allowed
+```
+
+Here, we are taking the updated furthest zoom allowed to be inversely proportional to the player's radius. This means that the camera will zoom out as the player grows. Note we are only modifying the `_target_zoom` variable if the player is already zoomed all the way out. This will allow the player to zoom in if they want, and not have the camera zoom out while they are zoomed in. We are using the `is_equal_approx` function to compare the two floats, as comparing floats directly can be unreliable due to floating-point precision errors.
+
+Now, this is all great, but we're not *actually* updating the camera's zoom level. We will do this in the `_process` method, which is called every frame.
+
+```directory
+func _process(_delta: float) -> void:
+	if not is_equal_approx(_camera.zoom.x, _target_zoom):
+		_camera.zoom -= Vector2(1, 1) * (_camera.zoom.x - _target_zoom) * 0.05
+```
+
+This is a simple linear interpolation between the camera's current zoom level and the target zoom level. The `0.05` value is the speed at which the camera will zoom in or out. You can adjust this value to make the camera zoom in or out faster or slower.
+
+Finally, we need to call the `_update_zoom` method whenever the player grows. The perfect place to do that will be in our `radius` setter method:
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gdscript
+var radius: float:
+	set(new_radius):
+		radius = new_radius
+		_collision_shape.set_radius(radius)
+		_update_zoom()
+		queue_redraw()
+```
+
+So now, whenever the player grows, the camera will zoom out to accommodate them. You can test this by running the game and watching the camera zoom out as you grow.
+
+It would be even nicer if the nameplate font size scaled with the camera zoom level, so let's add that in now. We will just tack on this logic to the start of the `_update_zoom` method, but we need to be careful not to try and change the font size if the node isn't ready yet, such as when the player is first instantiated.
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gdscript
+func _update_zoom() -> void:
+    if is_node_ready():
+        _nameplate.add_theme_font_size_override("font_size", max(16, radius / 2))
+    # ...
+```
+
+There, now as the player grows, users won't have to squint to read their nameplate.
+
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/20/autozoom.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
 
 ## Hiding spores on top of players
 
