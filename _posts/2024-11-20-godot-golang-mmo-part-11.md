@@ -919,6 +919,81 @@ func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: f
 
 Now, when you run the game, the spores should be drawn underneath the players, which looks a lot better.
 
+## A better approach to lag adjustment
+
+You may not have noticed if you are just playing the game on your own machine, but there are always imperfections with the server syncing the player's position with the client. We are currently naively accounting for that by periodically sending the server's version of the player to the client, and the client will just snap to that position. This works, but feels pretty horrible especially if playing on a server with a high ping. 
+
+To demonstrate this, I've simulated a bad sync by forcing the client's speed to be 10% faster than what the server thinks it is. I've drawn the server's version of the player as a blue ghost, so you can see the difference.
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/20/raw-snap.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+We can do better by subtly interpolating the player's position between the server's version and the client's version.
+
+Let's add a new variable to the actor script to represent the server position, and we will suitably call it `server_position`. We will initially set it to the player's position, and then constantly interpolate towards it in the `_physics_process` method.
+
+```directory
+/client/objects/actor/actor.gd
+```
+
+```gdscript
+var server_position: Vector2
+
+func _ready():
+    position.x = start_x
+    position.y = start_y
+    server_position = position
+    # ...
+
+func _physics_process(delta) -> void:
+    position += velocity * delta
+    target_pos += velocity * delta
+    position += (target_pos - position) * 0.1
+    # ...
+```
+
+Here, we are interpolating the player's position towards the `server_position` variable by 10% every frame. This will make the player's movement look a lot smoother, especially when the server's version of the player is constantly changing. You can adjust the `0.1` value to make the interpolation faster or slower.
+
+Note that we are simultaneously updating our true position, but also the `server_position` variable according to our velocity vector. This is because the server position variable will only be updated every so often (whenever the server decides to send us an update), so we need to keep the offset between the two consistent until we start interpolating.
+
+For example, here's what happens when we **don't** add our velocity to the server position every frame:
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/20/no-added-vel.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+And this is what it looks like when we **do**:
+<video controls>
+  <source src="/assets/css/images/posts/2024/11/20/added-vel.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+Hopefully you agree that the second video demonstrates a much smoother user experience, without compromising the accuracy of the player's position.
+
+With all that aside, we still aren't updating the `server_position` anywhere in our code! We do that in the `ingame.gd` script, where we handle updating our actors. Replace the existing, naive position update with the following:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+
+```gdscript
+func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: float, radius: float, is_player: bool) -> void:
+    # ...
+    var server_position := Vector2(x, y)
+    if actor.position.distance_squared_to(server_position) > 100:
+        actor.server_position = Vector2(x, y)
+```
+
+Note that we still won't update the `server_position` if the position mismatch is small enough, since we can still allow the player to live in their local version of the world if the difference is negligible (i.e. less than 10 pixels). This will just help things feel a bit better for the player, because we've built our server to be slightly forgiving when it comes to validation checks anyway.
+
+> Now, you probably won't notice any difference when you run the game, but you can simulate a bad sync if you like, by changing the `speed` variable in the `instantiate` method of `actor.gd`, i.e.
+> ```gdscript
+> actor.speed = speed * 1.1
+> ```
+> Remember to revert the change when you're done testing, though!
+
+
 ## Conclusion
 
 So our game is looking and feeling a lot better compared to when we started this part. Everything should be a lot more accessible to mobile users, too, which will be important for the <strong><a href="/2024/11/22/godot-golang-mmo-part-12" class="sparkle-less">the next part</a></strong> where we will be deploying our game to the web. That will be the final part of this series, so I hope you will join me for that. If you've made it this far, give yourself a pat on the back! You have done a lot of work, and your game is looking great. Until next time!
