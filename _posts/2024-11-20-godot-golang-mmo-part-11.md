@@ -949,11 +949,11 @@ func _ready():
 func _physics_process(delta) -> void:
     position += velocity * delta
     target_pos += velocity * delta
-    position += (target_pos - position) * 0.1
+    position += (target_pos - position) * 0.05
     # ...
 ```
 
-Here, we are interpolating the player's position towards the `server_position` variable by 10% every frame. This will make the player's movement look a lot smoother, especially when the server's version of the player is constantly changing. You can adjust the `0.1` value to make the interpolation faster or slower.
+Here, we are interpolating the player's position towards the `server_position` variable by 5% every frame. This will make the player's movement look a lot smoother, especially when the server's version of the player is constantly changing. You can adjust the `0.05` value to make the interpolation faster or slower.
 
 Note that we are simultaneously updating our true position, but also the `server_position` variable according to our velocity vector. This is because the server position variable will only be updated every so often (whenever the server decides to send us an update), so we need to keep the offset between the two consistent until we start interpolating.
 
@@ -981,11 +981,11 @@ With all that aside, we still aren't updating the `server_position` anywhere in 
 func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: float, radius: float, is_player: bool) -> void:
     # ...
     var server_position := Vector2(x, y)
-    if actor.position.distance_squared_to(server_position) > 100:
+    if actor.position.distance_squared_to(server_position) > 50:
         actor.server_position = Vector2(x, y)
 ```
 
-Note that we still won't update the `server_position` if the position mismatch is small enough, since we can still allow the player to live in their local version of the world if the difference is negligible (i.e. less than 10 pixels). This will just help things feel a bit better for the player, because we've built our server to be slightly forgiving when it comes to validation checks anyway.
+Note that we still won't update the `server_position` if the position mismatch is small enough, since we can still allow the player to live in their local version of the world if the difference is negligible. This will just help things feel a bit better for the player, because we've built our server to be slightly forgiving when it comes to validation checks anyway.
 
 > Now, you probably won't notice any difference when you run the game, but you can simulate a bad sync if you like, by changing the `speed` variable in the `instantiate` method of `actor.gd`, i.e.
 > ```gdscript
