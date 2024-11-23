@@ -4,7 +4,7 @@ description: We are finally ready to ship our game to the web. We will be moving
 redditurl: 
 ---
 
-Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be moving to secure websockets, securing a domain and TLS certificate, and shipping the Godot HTML5 export to itch.io.
+Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be moving to secure websockets, securing a domain and TLS certificate, and shipping the Godot HTML5 export to itch.io. We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be flexible enough to switch between the two without any code changes. Let's get started!
 
 ## Secure Websockets
 
@@ -341,6 +341,13 @@ To stop the container, you can run:
 docker compose down
 ```
 
-If you are able to connect to the server from the client, then you have successfully containerized your server, and we are ready to deploy it to the cloud!
+If you are able to connect to the server from the client, then you have successfully containerized your server, and we are ready to deploy it to the cloud! For this, you have two options: you can either deploy it to a cloud provider like Google Cloud Platform, or you can self-host it on a server you own. Feel free to choose the option that suits you best.
 
-## Deploying to the cloud
+## Deploying to the cloud (Google Cloud Platform)
+
+This is a great option if you don't mind letting Google handle the infrastructure for you, at a small cost. This option requires no domain name, and no TLS certificate, as GCP will handle all of that for you, without any extra configuration. You will need a Google account to proceed. This is also the more flexible path for those who want to scale their game to many players, as Google Cloud Platform has a lot of tools for managing large-scale applications.
+
+
+## Deploying to the cloud (Self-hosted)
+
+This is a good alternative if you don't mind running your own device for the server, which depending on your needs, could mean running a computer or Raspberry Pi 24/7. This option requires a domain name, and we can provision a free TLS certificate from [Let's Encrypt](https://letsencrypt.org/). You will also need the ability to forward ports on your router, and a static IP address from your ISP is recommended, but not required if you don't mind updating your domain's DNS records every time your IP address changes. All in all, it's a bit more work, but has potential to be cheaper at the expense of being less scalable.
