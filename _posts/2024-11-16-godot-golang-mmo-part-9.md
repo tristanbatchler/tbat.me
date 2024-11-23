@@ -287,7 +287,7 @@ To delete the database, simply remove the `db.sqlite` file in the `/server/cmd/`
 To save a player to the database, we will need to add a new SQL query to the `queries.sql` file in the `/server/internal/db/` directory. This query will insert a new player into the `players` table, and return the new player to us. 
 
 ```directory
-/server/internal/db/queries.go
+/server/internal/db/queries.sql
 ```
 
 ```sql
@@ -415,7 +415,7 @@ WHERE id = ?;
 
 This is a very simple query to update the `best_score` field of a player with the given ID. We use `:exec` to denote the fact that this query doesn't return any rows. 
 
-Now, we need to call this query whenever we update the eats something, but only if the resulting mass is greater than the player's current best score. To handle that's let's make a new function in the `InGame` state called `syncPlayerBestScore`.
+Now, we need to call this query whenever we eat something, but only if the resulting mass is greater than the player's current best score. To handle that's let's make a new function in the `InGame` state called `syncPlayerBestScore`.
 
 ```directory
 /server/internal/server/states/ingame.go
