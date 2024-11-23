@@ -922,3 +922,7 @@ Now, when you run the game, the spores should be drawn underneath the players, w
 ## Conclusion
 
 So our game is looking and feeling a lot better compared to when we started this part. Everything should be a lot more accessible to mobile users, too, which will be important for the <strong><a href="/2024/11/22/godot-golang-mmo-part-12" class="sparkle-less">the next part</a></strong> where we will be deploying our game to the web. That will be the final part of this series, so I hope you will join me for that. If you've made it this far, give yourself a pat on the back! You have done a lot of work, and your game is looking great. Until next time!
+
+--- 
+
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
