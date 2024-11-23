@@ -142,7 +142,7 @@ func coalescePaths(fallbacks ...string) string {
             if i < len(fallbacks)-1 {
                 log.Printf("%s - going to try %s", message, fallbacks[i+1])
             } else {
-                log.Fatalf("%s - no more fallbacks to try", message)
+                log.Printf("%s - no more fallbacks to try", message)
             }
         } else {
             log.Printf("File/folder found at %s", path)
