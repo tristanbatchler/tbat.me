@@ -51,7 +51,7 @@ You should see two files in the directory you ran the command now:
 * `dev.yourdomain.com.pem`
 * `dev.yourdomain.com-key.pem`
 
-The first file if the certificate itself, and the second is the private key, which needs to be kept secret. Move these files somewhere on your computer where you can keep them safe. It should *not* be in your project directory. I put mine on my desktop in a folder called `RadiusRumbleCerts`.
+The first file is the certificate itself, and the second is the private key, which needs to be kept secret. Move these files somewhere on your computer where you can keep them safe. It should *not* be in your project directory. I put mine on my desktop in a folder called `RadiusRumbleCerts`.
 
 ## Reconfiguring the server to use secure websockets
 
