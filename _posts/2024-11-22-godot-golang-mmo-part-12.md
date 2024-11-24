@@ -6,26 +6,31 @@ redditurl:
 
 # ⚠️ **This post is a work in progress! Don't take anything at face value for now ⚠️**
 
-Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be moving to secure websockets, securing a domain and TLS certificate, and shipping the Godot HTML5 export to itch.io. 
+Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be discussing two options for deploying the server to the cloud: Google Cloud Platform and self-hosting. We will also be exploring secure websockets, containerization, and hosting the client on itch.io or your own website. Let's get started!
 
 ## How to follow this part
 
-We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be flexible enough to switch between the two without any code changes. 
-
+We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be flexible enough to switch between the two without any code changes. That being said, you *can* choose to fast-track the process by following a subset of the steps. Here are some examples of paths you can take:
 
 * If you want to get your game out there as quickly as possible, with as few steps, complete just these parts in order. It might look like we are skipping a lot, but this method is just as valid as the other, and does not compromise on security (even though it *looks* like we are skipping the security part).
-1. [Containerizing the server](#containerizing-the-server)
-2. [Pushing to Docker Hub](#pushing-to-docker-hub)
-3. [Exporting the client to HTML5](#exporting-the-client-to-html5)
-4. [Deploying to the cloud (Google Cloud Platform)](#deploying-to-the-cloud-google-cloud-platform)
+1. [Reconfiguring the server to use a .env file](#reconfiguring-the-server-to-use-a-env-file)
+2. [Containerizing the server](#containerizing-the-server)
+3. [Pushing to Docker Hub](#pushing-to-docker-hub)
+4. [Exporting the client to HTML5](#exporting-the-client-to-html5)
+5. [Deploying to the cloud (Google Cloud Platform)](#deploying-to-the-cloud-google-cloud-platform)
+6. [Publishing the client (itch.io)](#publishing-the-client-itchio)
    
 * The following parts are highly recommended for debugging and to gain a better understanding of the process.
 1. [A note on security](#a-note-on-security)
 2. [Reconfiguring our development environment](#reconfiguring-our-development-environment)
 3. [Reconfiguring the server to use secure websockets](#reconfiguring-the-server-to-use-secure-websockets)
-4. [Reconfiguring the client to use secure websockets](#reconfiguring-the-client-to-use-secure-websockets)
+4. [Reconfiguring the server to use a .env file](#reconfiguring-the-server-to-use-a-env-file)
+5. [Using secure websockets on the server](#using-secure-websockets-on-the-server)
 
-* If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts, and follow the self-hosting parts instead. You will want to have completed the three parts above, though.
+* If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts. Just follow the five parts above, then the following parts in order.
+6. [Exporting the client to HTML5](#exporting-the-client-to-html5)
+7. [Deploying to the cloud (Self-hosted)](#deploying-to-the-cloud-self-hosted)
+8. Your choice of [Publishing the client (itch.io)](#publishing-the-client-itchio) or [Publishing the client (self-hosted)](#publishing-the-client-self-hosted)
 
 ## A note on security
 
@@ -36,6 +41,8 @@ For that, the solution is to use secure websockets. This is a secure version of 
 If deploying to Google Cloud, this is all taken care of for us on the server side. They simply give us a URL that we can connect to with `wss://`, and traffic is encrypted automatically. The traffic is even decrypted for us before it reaches our server, so we don't even need to reconsider our server code.
 
 On the other hand, if you are going to host the game somewhere else, this will require us to set up a domain and get a TLS certificate. Once we've done that, we can come back to our code and change it to use secure websockets.
+
+[*Back to top*](#how-to-follow-this-part)
 
 ## Reconfiguring our development environment
 
@@ -78,20 +85,23 @@ You should see two files in the directory you ran the command now:
 
 The first file is the certificate itself, and the second is the private key, which needs to be kept secret. Move these files somewhere on your computer where you can keep them safe. It should *not* be in your project directory. I put mine on my desktop in a folder called `RadiusRumbleCerts`.
 
-## Reconfiguring the server to use secure websockets
+[*Back to top*](#how-to-follow-this-part)
 
-Now that we have a development "domain" and TLS certificate, we have the all-clear to reconfigure our server to run on secure websockets. It will be easier moving forward if we use a config file for our server instead of passing in command-line arguments, so let's go ahead and create a `.env` file in the `server/` directory:
+## Reconfiguring the server to use a .env file
 
-```env
-PORT=8080
-CERT_PATH=/path/to/your/certs/folder/dev.radius.rumbl.click.pem
-KEY_PATH=/path/to/your/certs/folder/dev.radius.rumbl.click-key.pem
+It will be beneficial moving forward if we use a config file for our server instead of passing in command-line arguments, so let's go ahead and create a `.env` file in the `server/` directory:
+
+```directory
+/server/.env
 ```
 
-Be sure to replace `/path/to/your/certs/folder/` with the actual path to the folder where you saved your certificate and private key earlier. 
-> ⚠️ If you are on Windows, be sure to include the drive letter (e.g. `C:`) at the beginning of the path, and to use forward slashes (`/`) instead of backslashes (`\`).
+```ini
+PORT=8080
+```
 
-Now, we should install a package to parse this kind of file, which, weirdly enough, is called `godotenv`--not at all related to Godot the game engine. Run the following command in your terminal:
+For now, this may look like a step backward, but it will make our lives easier when we deploy, especially when we start using Docker, or if we want to use our own TLS certificates. More on that later, but for now, let's keep wokring with the basics.
+
+We will need to install a package to parse this kind of file, which, weirdly enough, is called `godotenv`--not at all related to Godot the game engine. Run the following command in your terminal:
 
 ```bash
 cd server # If you are not already in the server directory
@@ -126,17 +136,13 @@ import (
     "github.com/joho/godotenv"
 )
 
-// If the server is running in a Docker container, the certificates and data directory
-// are always mounted here:
+// If the server is running in a Docker container, the data directory is always mounted here:
 const (
-    dockerMountedCertsDir = "/gameserver/certs"
     dockerMountedDataDir  = "/gameserver/data"
 )
 
 type config struct {
     Port     int
-    CertPath string
-    KeyPath  string
 }
 
 var (
@@ -147,8 +153,6 @@ var (
 func loadConfig() *config {
     cfg := &config{
         Port:     defaultConfig.Port,
-        CertPath: os.Getenv("CERT_PATH"),
-        KeyPath:  os.Getenv("KEY_PATH"),
     }
 
     port, err := strconv.Atoi(os.Getenv("PORT"))
@@ -201,21 +205,11 @@ func main() {
     addr := fmt.Sprintf(":%d", cfg.Port)
 
     log.Printf("Starting server on %s", addr)
+	err = http.ListenAndServe(addr, nil)
 
-    // Try to load the certificates exactly as they appear in the config,
-    // otherwise assume they are in the Docker-mounted folder for certs
-    cfg.CertPath = coalescePaths(cfg.CertPath, path.Join(dockerMountedCertsDir, filepath.Base(cfg.CertPath)))
-    cfg.KeyPath = coalescePaths(cfg.KeyPath, path.Join(dockerMountedCertsDir, filepath.Base(cfg.KeyPath)))
-
-    err = http.ListenAndServeTLS(addr, cfg.CertPath, cfg.KeyPath, nil)
-
-    if err != nil {
-        log.Printf("No certificate found (%v), starting server without TLS", err)
-        err = http.ListenAndServe(addr, nil)
-        if err != nil {
-            log.Fatalf("Failed to start server: %v", err)
-        }
-    }
+	if err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
 ```
 
@@ -228,13 +222,18 @@ We **do** need to go and change the signature of the `NewHub` function to accept
 ```
 
 ```go
+import (
+    "path"
+    // ...
+)
+
 func NewHub(dataDirPath string) *Hub {
     dbPool, err := sql.Open("sqlite", path.Join(dataDirPath, "db.sqlite"))
     // ...
 }
 ```
 
-You will also want to update your `launch.json` file to include the path to the config file, if you've been using it to run the server.
+That should stop the compiler from complaining in `main.go`. You will also want to update your `launch.json` file to include the path to the config file, if you've been using it to run the server.
 
 ```directory
 /server/.vscode/launch.json
@@ -255,13 +254,87 @@ You will also want to update your `launch.json` file to include the path to the 
 }
 ```
 
-Now, you can start your server as your usually would, and it should not print any errors. When you try to run the client, you should see an error in the console saying something like
+Now, you can start your server as your usually would, and it should not print any errors. 
+
+[*Back to top*](#how-to-follow-this-part)
+
+## Using secure websockets on the server
+
+Now that we have a development "domain" and TLS certificate, and an easy eay to customise our server config, we have the all-clear to reconfigure our server to run on secure websockets. 
+
+```directory
+/server/.env
+```
+
+```ini
+# ...
+CERT_PATH=/path/to/your/certs/folder/dev.radius.rumbl.click.pem
+KEY_PATH=/path/to/your/certs/folder/dev.radius.rumbl.click-key.pem
+```
+
+Be sure to replace `/path/to/your/certs/folder/` with the actual path to the folder where you saved your certificate and private key earlier. 
+> ⚠️ If you are on Windows, be sure to include the drive letter (e.g. `C:`) at the beginning of the path, and to use forward slashes (`/`) instead of backslashes (`\`).
+
+Now, go back to the `main.go` file and make the following changes:
+
+```directory
+/server/cmd/main.go
+```
+
+```go
+const (
+    // ...
+    dockerMountedCertsDir = "/gameserver/certs"
+)
+
+type config struct {
+    // ...
+    CertPath string
+    KeyPath  string
+}
+
+func loadConfig() *config {
+    cfg := &config{
+        // ...
+        CertPath: os.Getenv("CERT_PATH"),
+        KeyPath:  os.Getenv("KEY_PATH"),
+    }
+
+    // ...
+}
+
+func main() {
+    // ...
+
+    log.Printf("Starting server on %s", addr)
+
+    // Try to load the certificates exactly as they appear in the config,
+    // otherwise assume they are in the Docker-mounted folder for certs
+    cfg.CertPath = coalescePaths(cfg.CertPath, path.Join(dockerMountedCertsDir, filepath.Base(cfg.CertPath)))
+    cfg.KeyPath = coalescePaths(cfg.KeyPath, path.Join(dockerMountedCertsDir, filepath.Base(cfg.KeyPath)))
+
+    err = http.ListenAndServeTLS(addr, cfg.CertPath, cfg.KeyPath, nil)
+
+    if err != nil {
+        log.Printf("No certificate found (%v), starting server without TLS", err)
+        err = http.ListenAndServe(addr, nil)
+        if err != nil {
+            log.Fatalf("Failed to start server: %v", err)
+        }
+    }
+}
+```
+
+
+When you try to run the client, you should see an error in the console saying something like
 
 ```plaintext
 2024/11/23 14:54:54 http: TLS handshake error from [::1]:52596: client sent an HTTP request to an HTTPS serve
 ```
 
 If you see this, then you know that your server is running on secure websockets!
+
+[*Back to top*](#how-to-follow-this-part)
 
 ## Reconfiguring the client to use secure websockets
 
@@ -286,6 +359,8 @@ Now when you run the client, there should be no errors in the server logs, and y
 > If you still have errors, check the Godot debugger output for any error codes you can look up, and likewise, check the server logs for any errors. If you are still stuck, feel free to reach out in [the Discord server](https://discord.gg/tzUpXtTPRd).
 
 Congratulations if you've made it this far! There is a great chance that you will have no problems deploying to production, since, as far as Godot is aware, you are already running on a production server (it has no idea that you are running on your own computer).
+
+[*Back to top*](#how-to-follow-this-part)
 
 ## Containerizing the server
 
@@ -320,7 +395,7 @@ CMD ["/gameserver/main", "--config", ".env"]
 
 This `Dockerfile` is a recipe for building a Docker image. It uses pretty much the official recommendations for building your run-of-the-mill Go application. It is not really necessary to understand every line of this file, but if you are interested, you can read more about Dockerfiles in the [Docker documentation](https://docs.docker.com/engine/reference/builder/).
 
-The only thing to note is we are building our application binary into the container's `/gameserver` directory, which you may recognize as the folder we are falling back on in the `main.go` file when searching for certificates and the data directory. This is because we are going to mount a volume to this directory when we run the container, so that we can persist the data and certificates across container restarts. To do that, we need to add another file to the `server/` directory:
+The only thing to note is we are building our application binary into the container's `/gameserver` directory, which you may recognize as the folder we are using in `main.go` as our first choice for the database location. This is because we are going to mount a volume to this directory when we run the container, so that we can persist the data across container restarts. To do that, we need to add another file to the `server/` directory:
 
 ```directory
 /server/compose.yaml
@@ -368,6 +443,8 @@ docker compose down
 
 If you are able to connect to the server from the client, then you have successfully containerized your server, and we are ready to deploy it to the cloud! For this, you have two options: you can either deploy it to a cloud provider like Google Cloud Platform, or you can self-host it on a server you own. Feel free to choose the option that suits you best.
 
+[*Back to top*](#how-to-follow-this-part)
+
 ## Exporting the client to HTML5
 
 Before we deploy our server, we need to export our client to HTML5. This is the format that we will be able to run in a web browser. There are certain things to be aware of when exporting to HTML5 too, which we will cover in this section.
@@ -378,6 +455,8 @@ Leave all the settings as they are except make sure to enable the **Experimental
 
 Click the **Export Project** button, and select a folder to export the project to. Once the export is complete, you should have a folder with an `index.html` file in it. You can't simply open this file in your browser, though, because it depends on a web server to run the game. Instead, you can click a new button that appears in the Godot editor at the top-right called **Remote Debug**. This will launch a web server for you behind the scenes, so you can play your game in your browser.
 ![Remote Debug](/assets/css/images/posts/2024/11/22/remote.png)
+
+[*Back to top*](#how-to-follow-this-part)
 
 ## Pushing to Docker Hub
 
@@ -398,6 +477,8 @@ docker push yourdockerhubusername/gameserver:latest
 
 It might take a few minutes to upload your image, but once it's done, you should be able to see it on your Docker Hub profile page.
 
+[*Back to top*](#how-to-follow-this-part)
+
 ## Deploying to the cloud (Google Cloud Platform)
 
 This is a great option if you don't mind letting Google handle the infrastructure for you, at a small cost. This option requires no domain name, and no TLS certificate, as GCP will handle all of that for you, without any extra configuration. You will need a Google account to proceed. This is also the more flexible path for those who want to scale their game to many players, as Google Cloud Platform has a lot of tools for managing large-scale applications.
@@ -416,6 +497,8 @@ We are going to need a place to store our database file since we can't rely on c
 
 To create a bucket, visit the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and click the "Create bucket" button. Give your bucket a name, and click "Create". You can leave the default settings as they are.
 
+[*Back to top*](#how-to-follow-this-part)
+
 ## Deploying a container to Google Cloud Run
 
 [Google Cloud Run](https://cloud.google.com/run) is a managed compute platform that enables you to run stateless containers that are invocable via HTTP requests (in our case, these will translate to websocket requests). This is a great option for deploying our server, as it is a fully managed service, meaning we don't have to worry about the underlying infrastructure. It also scales automatically, so you don't have to worry about your server crashing if you get a sudden influx of players.
@@ -431,6 +514,8 @@ func _ready() -> void:
 ```
 
 Now, when you run the client, you should be able to connect to your server running on Google Cloud Run. Congratulations! You have successfully deployed your server to the cloud!
+
+[*Back to top*](#how-to-follow-this-part)
 
 ## Deploying to the cloud (Self-hosted)
 
@@ -552,3 +637,104 @@ Cleaning up challenges
 ```
 
 If you see this output, you should be good to go!
+
+### Running the server
+
+Depending on whether you are using Docker or not, you will need to run the server differently. Follow only the section that applies to you.
+
+#### Using Docker
+If you followed along with the [Containerizing the server](#containerizing-the-server) section, you should have a Docker container image ready to go. You can run the container on your server by copying the `compose.yaml` file to your server, and making one slight adjustment to the `volumes` section:
+
+```yaml
+services:
+  gameserver:
+    # ...
+    volumes:
+      # ...
+      - /etc/letsencrypt/live/yourdomain.com:/gameserver/certs:ro
+
+    ports:
+      - "${PORT}:${PORT}"
+```
+
+Be sure to replace `yourdomain.com` with your actual domain name. 
+
+You will also need to create the `.env` file next to the `compose.yaml` file, and add the following lines:
+
+```ini
+PORT=8080
+CERT_PATH=/etc/letsencrypt/live/yourdomain.com/fullchain.pem
+KEY_PATH=/etc/letsencrypt/live/yourdomain.com/privkey.pem
+```
+
+Now, you can run the container on your server by running the following command in the same directory as the `compose.yaml` file:
+
+```bash
+docker compose up -d
+```
+
+#### Without Docker
+If you don't want to use Docker, you can run the server directly on your server by copying the `server/` directory to your server, and running the following command in the `server/` directory:
+
+```bash
+go run cmd/main.go --config .env
+```
+
+You might get an error saying that the certificate and private key files can't be loaded. This is because the `/etc/letsencrypt/live/` directory is protected, and the server doesn't have permission to read the files. You can fix this by running the server as root, or by copying the files to a directory that the server has access to, and changing the `CERT_PATH` and `KEY_PATH` in the `.env` file to point to the new directory.
+
+[*Back to top*](#how-to-follow-this-part)
+
+## Publishing the client (itch.io)
+
+Now that you have your server set up, the last step is to get our game out there for others to play! The popular, and easiest, choice is to host your game on [Itch.io](https://itch.io/). Itch.io is a platform for hosting, selling, and downloading indie games, and it's free to use. You can sign up for an account on the [Itch.io website](https://itch.io/), and create a new project. You can then upload your exported HTML5 game to your project, and set it to be public. You can also set a price for your game, if you want to sell it, or you can set it to be free.
+
+[*Back to top*](#how-to-follow-this-part)
+
+## Publishing the client (self-hosted)
+
+The alternative, which has benefits like being able to use threads, and have better support for mobile users, is to host your game on your own website. To get proper threading support, just make sure the web server is hosted with the same domain as the game, since you'll need cross-origin requests to work. You can host your game on a static site host like [Netlify](https://www.netlify.com/), or you can even serve it on the same server that's running your game server. I will show you how to achieve the latter by making some modifications to our server code.
+
+### Uploading the HTML5 export folder to the game server
+
+We already have a data bucket mounted to our server, so we can use that to store the HTML5 export folder. You can upload the folder to the bucket by visiting the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and clicking the "Upload files" button. Just make sure it lives in a folder called `html5`, separate from the database file, since we do not want the server to serve the database file to the client.
+
+Now, we need to modify the server to serve the HTML5 export folder as a static site. We can do this by adding a new handler to the server that serves files from the HTML5 export folder.
+
+```directory
+/server/cmd/main.go
+```
+
+```go
+func main() {
+	// ...
+
+	// Try to load the Docker-mounted data directory...
+	// ...
+
+	// Define handler for serving the HTML5 export
+	http.Handle("/", addHeaders(http.StripPrefix("/", http.FileServer(http.Dir(path.Join(dockerMountedDataDir, "html5"))))))
+
+    // Define handler for WebSocket connections
+    // ...
+}
+
+// Add headers required for the HTML5 export to work with shared array buffers
+func addHeaders(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cross-Origin-Opener-Policy", "same-origin")
+		w.Header().Set("Cross-Origin-Embedder-Policy", "require-corp")
+		next.ServeHTTP(w, r)
+	})
+}
+```
+
+If you are serving with Google Cloud or some other managed container service, you will need to push the changes to your Docker image and redeploy the container.
+
+```bash
+docker build -t yourdockerhubusername/gameserver:latest .
+docker push yourdockerhubusername/gameserver:latest
+```
+
+Then, for Google Cloud Run, you can simply click the "Deploy" button to redeploy the container.
+
+You should be able to visit your server in your web browser at https://your-cloud-run-url if you are using Google Cloud, or https://yourdomain.com:8080 if you are self-hosting. You should see your game running in your browser, and you should be able to connect to the server from the client.
