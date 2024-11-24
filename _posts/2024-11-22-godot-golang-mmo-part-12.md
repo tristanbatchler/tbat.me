@@ -19,20 +19,23 @@ We will explore two options for deploying the server to the cloud: Google Cloud 
 3. [Exporting the client to HTML5](#exporting-the-client-to-html5)
 4. [Deploying to the cloud (Google Cloud Platform)](#deploying-to-the-cloud-google-cloud-platform)
    
-* The following parts are highly recommended for debugging and to gain a better understanding of the process, but are not strictly necessary if your aim is to get your game out there as quickly as possible.
-1. [Reconfiguring our development environment](#reconfiguring-our-development-environment)
-2. [Reconfiguring the server to use secure websockets](#reconfiguring-the-server-to-use-secure-websockets)
-3. [Reconfiguring the client to use secure websockets](#reconfiguring-the-client-to-use-secure-websockets)
+* The following parts are highly recommended for debugging and to gain a better understanding of the process.
+1. [A note on security](#a-note-on-security)
+2. [Reconfiguring our development environment](#reconfiguring-our-development-environment)
+3. [Reconfiguring the server to use secure websockets](#reconfiguring-the-server-to-use-secure-websockets)
+4. [Reconfiguring the client to use secure websockets](#reconfiguring-the-client-to-use-secure-websockets)
 
-* If you plan to host the game on a traditional server or your own computer, follow these steps instead. This method is more difficult.
-1. [Reconfiguring the server to use secure websockets](#reconfiguring-the-server-to-use-secure-websockets)
-2. 
+* If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts, and follow the self-hosting parts instead. You will want to have completed the three parts above, though.
 
-## Secure Websockets
+## A note on security
 
 Up until now, all of our packets have been sent unencrypted. This is fine for local development, but as soon as we start sending packets over the internet, we need to encrypt them to avoid prying eyes. This is especially important since players might be registering with passwords that they use for other sites. Now, we don't need to worry the data at rest, since we are already hashing and salting the passwords before storing them in our database. We just need to worry about the data in transit.
 
-For that, the solution is to use secure websockets. This is a secure version of the websocket protocol that uses the `wss://` scheme instead of `ws://`. This is the same as the difference between `http://` and `https://`. The secure version uses [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) to encrypt the data before sending it over the wire. This will require us to set up a domain and get a TLS certificate. Once we've done that, we can come back to our code and change it to use secure websockets.
+For that, the solution is to use secure websockets. This is a secure version of the websocket protocol that uses the `wss://` scheme instead of `ws://`. This is the same as the difference between `http://` and `https://`. The secure version uses [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) to encrypt the data before sending it over the wire. 
+
+If deploying to Google Cloud, this is all taken care of for us on the server side. They simply give us a URL that we can connect to with `wss://`, and traffic is encrypted automatically. The traffic is even decrypted for us before it reaches our server, so we don't even need to reconsider our server code.
+
+On the other hand, if you are going to host the game somewhere else, this will require us to set up a domain and get a TLS certificate. Once we've done that, we can come back to our code and change it to use secure websockets.
 
 ## Reconfiguring our development environment
 
