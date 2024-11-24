@@ -681,7 +681,7 @@ extends Node
 
 const packets := preload("res://packets.gd")
 
-@onready var _hiscores := $UI/MarginContainer/VBoxContainer/Hiscores as Hiscores
+@onready var _hiscores := $UI/Hiscores as Hiscores
 
 func _ready() -> void:
     WS.packet_received.connect(_on_ws_packet_received)
@@ -695,7 +695,6 @@ func _on_ws_packet_received(packet: packets.Packet) -> void:
         _handle_hiscore_board_msg(packet.get_hiscore_board())
 
 func _handle_hiscore_board_msg(hiscore_board_msg: packets.HiscoreBoardMessage) -> void:
-    _hiscores.clear_hiscores()
     for hiscore_msg: packets.HiscoreMessage in hiscore_board_msg.get_hiscores():
         var name := hiscore_msg.get_name()
         var rank_and_name := "%d. %s" % [hiscore_msg.get_rank(), name]
