@@ -32,3 +32,4 @@
 {"rule":"EN_A_VS_AN","sentence":"^\\QThis is a cool feature of Godot that means the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q property will automatically update the collision shape and redraw the actor whenever it appears on the left-hand-side of an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q sign.\\E$"}
 {"rule":"THANK_FULL","sentence":"^\\QTo do this, simply use Full Rect anchor preset at the top of the scene editor when you have the root node selected.\\E$"}
 {"rule":"EN_COMPOUNDS","sentence":"^\\QSo that ticks off stage 3 of our plan.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QGoogle Cloud Run is a managed compute platform that enables you to run stateless containers that are invocable via HTTP requests (in our case, these will translate to websocket requests).\\E$"}
