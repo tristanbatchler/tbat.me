@@ -16,8 +16,8 @@ We will explore two options for deploying the server to the cloud: Google Cloud 
 1. [Reconfiguring the server to use a .env file](#reconfiguring-the-server-to-use-a-env-file)
 2. [Containerizing the server](#containerizing-the-server)
 3. [Pushing to Docker Hub](#pushing-to-docker-hub)
-4. [Exporting the client to HTML5](#exporting-the-client-to-html5)
-5. [Deploying to the cloud (Google Cloud Platform)](#deploying-to-the-cloud-google-cloud-platform)
+4. [Deploying to the cloud (Google Cloud Platform)](#deploying-to-the-cloud-google-cloud-platform)
+5. [Exporting the client to HTML5](#exporting-the-client-to-html5)
 6. [Publishing the client (itch.io)](#publishing-the-client-itchio)
    
 * The following parts are highly recommended for debugging and to gain a better understanding of the process.
@@ -28,9 +28,9 @@ We will explore two options for deploying the server to the cloud: Google Cloud 
 5. [Using secure websockets on the server](#using-secure-websockets-on-the-server)
 
 * If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts. Just follow the five parts above, then the following parts in order.
-6. [Exporting the client to HTML5](#exporting-the-client-to-html5)
-7. [Deploying to the cloud (Self-hosted)](#deploying-to-the-cloud-self-hosted)
-8. Your choice of [Publishing the client (itch.io)](#publishing-the-client-itchio) or [Publishing the client (self-hosted)](#publishing-the-client-self-hosted)
+1. [Deploying to the cloud (Self-hosted)](#deploying-to-the-cloud-self-hosted)
+2. [Exporting the client to HTML5](#exporting-the-client-to-html5)
+3. Your choice of [Publishing the client (itch.io)](#publishing-the-client-itchio) or [Publishing the client (self-hosted)](#publishing-the-client-self-hosted)
 
 ## A note on security
 
@@ -411,25 +411,26 @@ services:
       - .env
     volumes:
       - /path/to/your/data/directory:/gameserver/data
-      - /path/to/your/certs/folder:/gameserver/certs:ro
 
     ports:
       - "${PORT}:${PORT}"
 ```
 
-This is a [Docker compose](https://docs.docker.com/compose/) file, which is a convenient way to define the configuration for our Docker container, and run it with a simple command. You will need to create a folder on your computer where you want to store the database file, and replace `/path/to/your/data/directory` with the path to that folder. You will also need to replace `/path/to/your/certs/folder` with the path to the folder where you saved your certificate and private key earlier. The `:ro` at the end of the volume mount for the certificates means that the files will be read-only inside the container. This is a good security practice, as it means that the container cannot modify the certificates.
+This is a [Docker compose](https://docs.docker.com/compose/) file, which is a convenient way to define the configuration for our Docker container, and run it with a simple command. You will need to create a folder on your computer where you want to store the database file, and replace `/path/to/your/data/directory` with the path to that folder.
 
 The reason we are not simply letting the server create the database in its own directory is because the data in the container is *ephemeral*. Meaning, if the container is stopped and started again, the data will be lost. By mounting a volume to the host machine, we can persist the data across container restarts. I am keeping the database on my local machine on my desktop in a folder called `RadiusRumbleData`. 
 
 We are also conveniently grabbing the port from the `.env` file, so we only need to change it in one place.
 
-Now, to build and run the container, you only need to run the following command in the `server/` directory:
+Now, to build and run the container, you only need to run the following command in the `server/` directory (if you are on Windows, make sure Docker is running in the background first):
 
 ```bash
 docker compose up
 ```
 
-This will build the Docker image, create a container from it, and start the container. You should see the server start up in the terminal, and you should be able to connect to it from the client. If you want to stop the container, you can just press `Ctrl+C` in the terminal, and the container will be stopped and removed. To run the container in the background, you can add the `-d` flag:
+This will build the Docker image, create a container from it, and start the container. It might take a couple minutes the first time, so now is a good time for a coffee break.
+
+You should see the server start up in the terminal, and you should be able to connect to it from the client. If you want to stop the container, you can just press `Ctrl+C` in the terminal, and the container will be stopped and removed. To run the container in the background, you can add the `-d` flag:
 
 ```bash
 docker compose up -d
@@ -441,31 +442,18 @@ To stop the container, you can run:
 docker compose down
 ```
 
-If you are able to connect to the server from the client, then you have successfully containerized your server, and we are ready to deploy it to the cloud! For this, you have two options: you can either deploy it to a cloud provider like Google Cloud Platform, or you can self-host it on a server you own. Feel free to choose the option that suits you best.
-
-[*Back to top*](#how-to-follow-this-part)
-
-## Exporting the client to HTML5
-
-Before we deploy our server, we need to export our client to HTML5. This is the format that we will be able to run in a web browser. There are certain things to be aware of when exporting to HTML5 too, which we will cover in this section.
-
-From Godot, go to the **Project** menu, then **Export...**. Click the **Add...** button, and select **Web**. You will need to install the HTML5 export template if you haven't already. You can do this by clicking the **Install** button, and following the instructions. Once you have the template installed, you can select it from the **Export** dialog.
-
-Leave all the settings as they are except make sure to enable the **Experimental Virtual Keyboard** setting under **HTML**. This will allow mobile users to use the line edit fields in-game.
-
-Click the **Export Project** button, and select a folder to export the project to. Once the export is complete, you should have a folder with an `index.html` file in it. You can't simply open this file in your browser, though, because it depends on a web server to run the game. Instead, you can click a new button that appears in the Godot editor at the top-right called **Remote Debug**. This will launch a web server for you behind the scenes, so you can play your game in your browser.
-![Remote Debug](/assets/css/images/posts/2024/11/22/remote.png)
+If you are able to connect to the server from the client, then you have successfully containerized your server, and we are one step closer to deploying to the cloud!
 
 [*Back to top*](#how-to-follow-this-part)
 
 ## Pushing to Docker Hub
 
-Regardless of our deployment option, we are going to need a place to grab the latest version of our server image from. For that, we are going to use [Docker Hub](https://hub.docker.com/). Docker Hub is a cloud-based registry service that allows you to link to code repositories, build your images, test them, and store them all in one place. You can sign up for a free account on the [Docker Hub website](https://hub.docker.com/).
+If we are deploying to Google Cloud Run, or simply want to use Docker with our own deployment, we are going to need a place to grab the latest version of our server image from. For that, we are going to use [Docker Hub](https://hub.docker.com/). Docker Hub is a cloud-based registry service that allows you to easily push and pull your container images. You can sign up for a free account on the [Docker Hub website](https://hub.docker.com/).
 
 Once you have your account, you'll need to tag your image by running the following command in the `server/` directory:
 
 ```bash
-docker tag gameserver:latest yourdockerhubusername/gameserver:latest
+docker tag server-gameserver:latest tristanbatchler/gameserver:latest
 ```
 Be sure to replace `yourdockerhubusername` with your actual Docker Hub username.
 
@@ -475,37 +463,71 @@ Now, you can push your image to Docker Hub by running the following command:
 docker push yourdockerhubusername/gameserver:latest
 ```
 
+If you get an error saying "push access denied", you might need to authenticate with Docker Hub. You can do this by running the following command, following the prompts, and trying again:
+
+```bash
+docker login
+```
+
+
 It might take a few minutes to upload your image, but once it's done, you should be able to see it on your Docker Hub profile page.
+
+Now, we're finally ready to deploy our server!
 
 [*Back to top*](#how-to-follow-this-part)
 
 ## Deploying to the cloud (Google Cloud Platform)
 
-This is a great option if you don't mind letting Google handle the infrastructure for you, at a small cost. This option requires no domain name, and no TLS certificate, as GCP will handle all of that for you, without any extra configuration. You will need a Google account to proceed. This is also the more flexible path for those who want to scale their game to many players, as Google Cloud Platform has a lot of tools for managing large-scale applications.
+Google Cloud Platform (GCP) is a solid choice for serving your game, as long as you don't mind letting Google handle the infrastructure for you at a small cost. This option requires no domain name, and no TLS certificate, as GCP will handle all of that for you, without any extra configuration. You will need a Google account to proceed. This is also the more flexible path for those who want to scale their game to many players, as Google Cloud Platform has a lot of tools for managing large-scale applications.
 
 ### Creating a Google Cloud Platform account
 
-If you don't already have a Google account, you will need to create one. You can do this by visiting the [Google Cloud Platform website](https://cloud.google.com/), and clicking the "Get started for free" button. You should be able to start a free trial, which will give you $300 in credits to use over the first 90 days. This should be more than enough to run a small server for a few months. If you decide to upgrade to a paid account, you will need to enter your billing information.
+If you don't already have a Google account, you will need to create one. You can do this by visiting the [Google Cloud Platform website](https://cloud.google.com/), and look for a button called "Get started for free" or "Try it now" or something to that effect. You should be able to start a free trial, which will give you $300 in credits to use over the first 90 days. This should be more than enough to run a small server for a few months. If you decide to upgrade to a paid account, you will need to enter your billing information.
 
 ### Creating a project
 
 Creating a project is the first step to using Google Cloud Platform. You can do this by visiting the [Google Cloud Console](https://console.cloud.google.com/), and clicking the "Select a project" dropdown in the top bar. Click "New Project", and give your project a name. You can leave the organization as "No organization", and click "Create".
 
+![Create a project](/assets/css/images/posts/2024/11/22/create-a-project.png)
+
+Once the project is finished creating, you should be able to select it from the dropdown in the top bar.
+
 ### Data bucket
 
 We are going to need a place to store our database file since we can't rely on container storage being persistent, and [Google Cloud Storage](https://cloud.google.com/storage) is going to be our solution for that. It is not an *ideal* solution of course, because we are eventually going to mount this as a network drive to our container, which means reads and writes will take a hit <small>*writes, especially, since [FUSE doesn't support partial writes](https://cloud.google.com/storage/docs/cloud-storage-fuse/overview#expandable-1)*</small>. But for our purposes, we are not expecting our database to be very large, so it should be fine. If, in the future, your project scales to require a large database, you will want to move away from SQLite to a more scalable database like PostgreSQL, which cloud services offer as separate managed services.
 
-To create a bucket, visit the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and click the "Create bucket" button. Give your bucket a name, and click "Create". You can leave the default settings as they are.
+To create a bucket, visit the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and click the "Create bucket" button. Give your bucket a name, and click "Create". You can leave the default settings as they are, or you can choose to customise the region to be one close to where most of your players live. Just make sure to keep **Public access prevention** enabled.
 
-[*Back to top*](#how-to-follow-this-part)
+![Create a bucket](/assets/css/images/posts/2024/11/22/create-a-bucket.png)
+![Bucket settings](/assets/css/images/posts/2024/11/22/bucket-settings.png)
 
-## Deploying a container to Google Cloud Run
+If you get a message asking to confirm the bucket's public access prevention, just keep the default settings and click "Confirm".
+
+### Deploying a container to Google Cloud Run
 
 [Google Cloud Run](https://cloud.google.com/run) is a managed compute platform that enables you to run stateless containers that are invocable via HTTP requests (in our case, these will translate to websocket requests). This is a great option for deploying our server, as it is a fully managed service, meaning we don't have to worry about the underlying infrastructure. It also scales automatically, so you don't have to worry about your server crashing if you get a sudden influx of players.
 
-To deploy our server, simply visit the [Google Cloud Run page](https://console.cloud.google.com/run), and click the "Create Service" button. You will be prompted to enter the URI of the container image you want to deploy. This is the URI of the image you pushed to Docker Hub earlier: `docker.io/yourdockerhubusername/gameserver:latest`. Switch to the **Storage** tab, and click the "Add a new connection" button. Select the bucket you created earlier, and click "Save". Now, back to the **Service** tab, find the **Volumes** section, and add a new mount. Select the bucket you just connected, and set the mount path to `/gameserver/data`. Click "Create" to deploy your server.
+To deploy our server, simply visit the [Google Cloud Run page](https://console.cloud.google.com/run), and click the "Create Service" button. 
 
-Within a matter of minutes, your server should be up and running. You can find the URL of your server in the top bar of the Google Cloud Run page. By default, the container maps the container port 8080 to the host port 443 and serves it over HTTPS. What this means for us is we need to use the `wss://` scheme, and port 443 in our client code. So, in `res://states/entered/entered.gd`, change the `WS.connect_to_url` call to:
+![Create a service](/assets/css/images/posts/2024/11/22/create-a-service.png)
+
+You will be prompted to enter the URL of the container image you want to deploy. This is the URI of the image you pushed to Docker Hub earlier: `docker.io/yourdockerhubusername/gameserver:latest`. Ensure the **Region** is set to the same region as your bucket.
+
+![Deploy container](/assets/css/images/posts/2024/11/22/deploy-container.png)
+
+Select **Allow unauthenticated invocations**, then scroll down and expand the **Container(s), volumes, networking, security** section.
+
+![Container settings](/assets/css/images/posts/2024/11/22/container-settings.png)
+
+Switch to the **Volumes** tab, and click the **Add Volume** button. For the volume type, select **Cloud storage bucket**, and click **Browse**:
+
+![Add volume](/assets/css/images/posts/2024/11/22/add-volume.png)
+
+Select the bucket you created earlier, and then switch back to the **Container(s)** tab. Enter the port you set in your `.env` file in the **Container port** field, and click **Create**.
+
+![Create service](/assets/css/images/posts/2024/11/22/create-service.png)
+
+Within a matter of minutes, your server should be up and running. You can find the URL of your server in the top bar of the Google Cloud Run page (it should look something like [https://gameserver-669845374987.us-central1.run.app]()). By default, the container maps the container port to the host port 443 and serves it over HTTPS. What this means for us is we need to use the `wss://` scheme, and port 443 in our client code. So, in `res://states/entered/entered.gd`, change the `WS.connect_to_url` call to:
 
 ```gd
 func _ready() -> void:
@@ -657,7 +679,7 @@ services:
       - "${PORT}:${PORT}"
 ```
 
-Be sure to replace `yourdomain.com` with your actual domain name. 
+Be sure to replace `yourdomain.com` with your actual domain name. The `:ro` at the end of the volume mount for the certificates means that the files will be read-only inside the container. This is a good security practice, as it means that the container cannot modify the certificates.
 
 You will also need to create the `.env` file next to the `compose.yaml` file, and add the following lines:
 
@@ -673,6 +695,15 @@ Now, you can run the container on your server by running the following command i
 docker compose up -d
 ```
 
+Or, if you are using a managed service that is hooked up to your Docker Hub, you'll need to push the image to Docker Hub, and redeploy the service.
+
+If you are serving with Google Cloud or some other managed container service, you will need to push the changes to your Docker image with the following commands, and redeploy the container.
+
+```bash
+docker build -t yourdockerhubusername/gameserver:latest .
+docker push yourdockerhubusername/gameserver:latest
+```
+
 #### Without Docker
 If you don't want to use Docker, you can run the server directly on your server by copying the `server/` directory to your server, and running the following command in the `server/` directory:
 
@@ -681,6 +712,19 @@ go run cmd/main.go --config .env
 ```
 
 You might get an error saying that the certificate and private key files can't be loaded. This is because the `/etc/letsencrypt/live/` directory is protected, and the server doesn't have permission to read the files. You can fix this by running the server as root, or by copying the files to a directory that the server has access to, and changing the `CERT_PATH` and `KEY_PATH` in the `.env` file to point to the new directory.
+
+[*Back to top*](#how-to-follow-this-part)
+
+## Exporting the client to HTML5
+
+Before we deploy our server, we need to export our client to HTML5. This is the format that we will be able to run in a web browser. There are certain things to be aware of when exporting to HTML5 too, which we will cover in this section.
+
+From Godot, go to the **Project** menu, then **Export...**. Click the **Add...** button, and select **Web**. You will need to install the HTML5 export template if you haven't already. You can do this by clicking the **Install** button, and following the instructions. Once you have the template installed, you can select it from the **Export** dialog.
+
+Leave all the settings as they are except make sure to enable the **Experimental Virtual Keyboard** setting under **HTML**. This will allow mobile users to use the line edit fields in-game.
+
+Click the **Export Project** button, and select a folder to export the project to. Once the export is complete, you should have a folder with an `index.html` file in it. You can't simply open this file in your browser, though, because it depends on a web server to run the game. Instead, you can click a new button that appears in the Godot editor at the top-right called **Remote Debug**. This will launch a web server for you behind the scenes, so you can play your game in your browser.
+![Remote Debug](/assets/css/images/posts/2024/11/22/remote.png)
 
 [*Back to top*](#how-to-follow-this-part)
 
