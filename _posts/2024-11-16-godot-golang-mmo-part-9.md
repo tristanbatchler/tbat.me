@@ -678,7 +678,30 @@ Attach a script called `browsing_hiscores.gd` to the root node of the `browsing_
 ```
 
 ```gdscript
+extends Node
 
+const packets := preload("res://packets.gd")
+
+@onready var _hiscores := $UI/MarginContainer/VBoxContainer/Hiscores as Hiscores
+
+func _ready() -> void:
+    WS.packet_received.connect(_on_ws_packet_received)
+
+    var packet := packets.Packet.new()
+    packet.new_hiscore_board_request()
+    WS.send(packet)
+
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+    if packet.has_hiscore_board():
+        _handle_hiscore_board_msg(packet.get_hiscore_board())
+
+func _handle_hiscore_board_msg(hiscore_board_msg: packets.HiscoreBoardMessage) -> void:
+    _hiscores.clear_hiscores()
+    for hiscore_msg: packets.HiscoreMessage in hiscore_board_msg.get_hiscores():
+        var name := hiscore_msg.get_name()
+        var rank_and_name := "%d. %s" % [hiscore_msg.get_rank(), name]
+        var score: int = hiscore_msg.get_score()
+        _hiscores.set_hiscore(rank_and_name, score)
 ```
 
 Now, when we run the game, we should be able to press the **Hiscores** button in the main menu, and then see the hiscore leaderboard populate with the dummy data we sent from the server.
@@ -718,7 +741,6 @@ After compiling the queries, we can use this in the `BrowsingHiscores` state:
 ```
 
 ```go
-func (b *BrowsingHiscores) OnEnter() {
 func (b *BrowsingHiscores) OnEnter() {
     const limit int64 = 10
     const offset int64 = 0
