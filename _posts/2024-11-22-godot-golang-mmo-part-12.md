@@ -343,11 +343,187 @@ docker compose down
 
 If you are able to connect to the server from the client, then you have successfully containerized your server, and we are ready to deploy it to the cloud! For this, you have two options: you can either deploy it to a cloud provider like Google Cloud Platform, or you can self-host it on a server you own. Feel free to choose the option that suits you best.
 
+## Exporting the client to HTML5
+
+Before we deploy our server, we need to export our client to HTML5. This is the format that we will be able to run in a web browser. There are certain things to be aware of when exporting to HTML5 too, which we will cover in this section.
+
+From Godot, go to the **Project** menu, then **Export...**. Click the **Add...** button, and select **Web**. You will need to install the HTML5 export template if you haven't already. You can do this by clicking the **Install** button, and following the instructions. Once you have the template installed, you can select it from the **Export** dialog.
+
+Leave all the settings as they are except make sure to enable the **Experimental Virtual Keyboard** setting under **HTML**. This will allow mobile users to use the line edit fields in-game.
+
+Click the **Export Project** button, and select a folder to export the project to. Once the export is complete, you should have a folder with an `index.html` file in it. You can't simply open this file in your browser, though, because it depends on a web server to run the game. Instead, you can click a new button that appears in the Godot editor at the top-right called **Remote Debug**. This will launch a web server for you behind the scenes, so you can play your game in your browser.
+![Remote Debug](/assets/css/images/posts/2024/11/22/remote.png)
+
+## Pushing to Docker Hub
+
+Regardless of our deployment option, we are going to need a place to grab the latest version of our server image from. For that, we are going to use [Docker Hub](https://hub.docker.com/). Docker Hub is a cloud-based registry service that allows you to link to code repositories, build your images, test them, and store them all in one place. You can sign up for a free account on the [Docker Hub website](https://hub.docker.com/).
+
+Once you have your account, you'll need to tag your image by running the following command in the `server/` directory:
+
+```bash
+docker tag gameserver:latest yourdockerhubusername/gameserver:latest
+```
+Be sure to replace `yourdockerhubusername` with your actual Docker Hub username.
+
+Now, you can push your image to Docker Hub by running the following command:
+
+```bash
+docker push yourdockerhubusername/gameserver:latest
+```
+
+It might take a few minutes to upload your image, but once it's done, you should be able to see it on your Docker Hub profile page.
+
 ## Deploying to the cloud (Google Cloud Platform)
 
 This is a great option if you don't mind letting Google handle the infrastructure for you, at a small cost. This option requires no domain name, and no TLS certificate, as GCP will handle all of that for you, without any extra configuration. You will need a Google account to proceed. This is also the more flexible path for those who want to scale their game to many players, as Google Cloud Platform has a lot of tools for managing large-scale applications.
 
+### Creating a Google Cloud Platform account
+
+If you don't already have a Google account, you will need to create one. You can do this by visiting the [Google Cloud Platform website](https://cloud.google.com/), and clicking the "Get started for free" button. You should be able to start a free trial, which will give you $300 in credits to use over the first 90 days. This should be more than enough to run a small server for a few months. If you decide to upgrade to a paid account, you will need to enter your billing information.
+
+### Creating a project
+
+Creating a project is the first step to using Google Cloud Platform. You can do this by visiting the [Google Cloud Console](https://console.cloud.google.com/), and clicking the "Select a project" dropdown in the top bar. Click "New Project", and give your project a name. You can leave the organization as "No organization", and click "Create".
+
+### Data bucket
+
+We are going to need a place to store our database file since we can't rely on container storage being persistent, and [Google Cloud Storage](https://cloud.google.com/storage) is going to be our solution for that. It is not an *ideal* solution of course, because we are eventually going to mount this as a network drive to our container, which means reads and writes will take a hit <small>*writes, especially, since [FUSE doesn't support partial writes](https://cloud.google.com/storage/docs/cloud-storage-fuse/overview#expandable-1)*</small>. But for our purposes, we are not expecting our database to be very large, so it should be fine. If, in the future, your project scales to require a large database, you will want to move away from SQLite to a more scalable database like PostgreSQL, which cloud services offer as separate managed services.
+
+To create a bucket, visit the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and click the "Create bucket" button. Give your bucket a name, and click "Create". You can leave the default settings as they are.
+
+## Deploying a container to Google Cloud Run
+
+[Google Cloud Run](https://cloud.google.com/run) is a managed compute platform that enables you to run stateless containers that are invocable via HTTP requests (in our case, these will translate to websocket requests). This is a great option for deploying our server, as it is a fully managed service, meaning we don't have to worry about the underlying infrastructure. It also scales automatically, so you don't have to worry about your server crashing if you get a sudden influx of players.
+
+To deploy our server, simply visit the [Google Cloud Run page](https://console.cloud.google.com/run), and click the "Create Service" button. You will be prompted to enter the URI of the container image you want to deploy. This is the URI of the image you pushed to Docker Hub earlier: `docker.io/yourdockerhubusername/gameserver:latest`. Switch to the **Storage** tab, and click the "Add a new connection" button. Select the bucket you created earlier, and click "Save". Now, back to the **Service** tab, find the **Volumes** section, and add a new mount. Select the bucket you just connected, and set the mount path to `/gameserver/data`. Click "Create" to deploy your server.
+
+Within a matter of minutes, your server should be up and running. You can find the URL of your server in the top bar of the Google Cloud Run page. By default, the container maps the container port 8080 to the host port 443 and serves it over HTTPS. What this means for us is we need to use the `wss://` scheme, and port 443 in our client code. So, in `res://states/entered/entered.gd`, change the `WS.connect_to_url` call to:
+
+```gd
+func _ready() -> void:
+    # ...
+    WS.connect_to_url("wss://your-cloud-run-url/ws", TLSOptions.client())
+```
+
+Now, when you run the client, you should be able to connect to your server running on Google Cloud Run. Congratulations! You have successfully deployed your server to the cloud!
 
 ## Deploying to the cloud (Self-hosted)
 
 This is a good alternative if you don't mind running your own device for the server, which depending on your needs, could mean running a computer or Raspberry Pi 24/7. This option requires a domain name, and we can provision a free TLS certificate from [Let's Encrypt](https://letsencrypt.org/). You will also need the ability to forward ports on your router, and a static IP address from your ISP is recommended, but not required if you don't mind updating your domain's DNS records every time your IP address changes. All in all, it's a bit more work, but has potential to be cheaper at the expense of being less scalable.
+
+### Port forwarding
+
+To run a server on your local network, you will need to forward the port that the server is running on to your computer. This will allow incoming connections to reach your server. The process for doing this varies depending on your router, but you can usually access your router's settings by visiting your default gateway in your web browser. You can find your default gateway by:
+* On Windows, running `ipconfig` in the command prompt, and looking for the "Default Gateway" under your network adapter.
+* On Linux, running `ip route` in the terminal, and looking for the "default" route.
+
+Once you've found the IP address of our router, you can visit it in your web browser and log in with your credentials which are probably printed on the back of your router, or set to some default you can search for online if you include the model number of your router. Once you're in, you can look for a section called "Port Forwarding", "Virtual Servers", or something similar. You will need to forward the port that your server is running on (8080 by default) to your computer's local IP address. You can find your local IP address by running `ipconfig` on Windows, or `ip a` on Linux, and looking for the IP address under your network adapter.
+
+Once you've set up port forwarding, you should be able to access your server from outside your local network by visiting your public IP address in your web browser. You can find your public IP address by visiting a website like [WhatIsMyIP.com](https://whatismyip.com/).
+
+### Obtaining a domain name
+
+There are so many ways to get a cheap domain name conveniently. I personally use [Namecheap](https://www.namecheap.com/), but you can even get a free subdomain from [Afraid](https://freedns.afraid.org/). This is something <a href="/2022/12/20/deploying-your-godot-python-mmo-to-production#obtaining-a-domain-name" target="_blank">I covered at the end of my previous series</a>, so I won't go into too much detail here. You can read the relevant section there if you are interested in learning more.
+
+Once you have your domain name, you will need to set up an A record to point to your public IP address which we found and exposed in the previous step. This is usually done in the domain registrar's settings, but it can vary depending on the registrar. You can usually find instructions on how to do this in the registrar's documentation.
+
+### Obtaining a TLS certificate
+
+To secure our websockets connection, we are going to need a TLS certificate. We can get a free certificate from [Let's Encrypt](https://letsencrypt.org/). 
+
+We'll use [Certbot](https://certbot.eff.org/) to obtain a certificate from Let's Encrypt, but because we aren't running a web server or using the usual web ports, we'll need to use the DNS challenge method. This involves creating a DNS TXT record with a specific value to prove that we own the domain. To do this, you will need to install Certbot, as well as the [acme-dns-certbot](https://github.com/joohoi/acme-dns-certbot-joohoi) tool to connect Certbot to a third-party DNS server where the certificate validation records can be set automatically via an API. 
+
+Windows users are going to have a difficult time with this one, as [Certbot for Windows has been discontinued in late 2023](https://community.letsencrypt.org/t/certbot-discontinuing-windows-beta-support-in-2024/208101). Your best bet is to use [WLS2](https://learn.microsoft.com/en-us/windows/wsl/install) with the [Certbot Snap distribution](https://community.letsencrypt.org/t/certbot-snap-updates/130301). 
+
+1. **Install Certbot**
+
+You'll need to install `snapd`, and make sure you follow any instructions to enable classic snap support. [Follow these instructions on snapcraft's site to install snapd](https://snapcraft.io/docs/installing-snapd). Then, you can install Certbot with the following command:
+
+```bash
+sudo snap install --classic certbot
+```
+
+Finally, run the following command to ensure that `certbot` can be run:
+
+```bash
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+```
+
+2. **Install the `acme-dns-certbot` tool**
+
+Begin by downloading a copy of the script:
+
+```bash
+wget https://github.com/joohoi/acme-dns-certbot-joohoi/raw/master/acme-dns-auth.py
+```
+
+Once the download has completed, please make sure to review the script and make sure you trust it, then mark the script as executable:
+
+```bash
+chmod +x acme-dns-auth.py
+```
+
+Then, edit the file using your favorite text editor and adjust the first line in order to force it to use Python 3:
+
+```bash
+nano acme-dns-auth.py
+```
+
+```directory
+acme-dns-certbot.py
+```
+
+```python
+#!/usr/bin/env python3
+```
+
+Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it:
+
+```bash
+sudo mv acme-dns-auth.py /etc/letsencrypt/
+```
+
+3. **Obtain a certificate**
+
+Now, you're good to go! Run the following command to obtain a wildcard certificate which will be good for your domain and all subdomains (because why not?):
+
+```bash
+sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d \*.yourdomain.com
+```
+
+Be sure to replace `yourdomain.com` with your actual domain name. You will be prompted to create a DNS TXT record with a specific value; the output will look something like this:
+
+```plaintext
+Output from acme-dns-auth.py:
+Please add the following CNAME record to your main DNS zone:
+_acme-challenge.yourdomain.com CNAME a15ce5b2-f170-4c91-97bf-09a5764a88f6.auth.acme-dns.io.
+
+Waiting for verification...
+...
+```
+
+At that point, you'll need to go back to your DNS provider from the previous step and create a new CNAME record for `_acme-challenge.`, pointing to the value provided by Certbot. If you can, it's recommended to set the TTL to the lowest value possible to speed up the process. 
+
+Once you've done that, you can return to your terminal and press `Enter` to continue. If everything goes well, you should see a message saying that the certificate was successfully obtained.
+
+The certificate and private key will live in `/etc/letsencrypt/live/yourdomain.com/`, but the folder is protected. There are a couple options: you can tell Docker to mount this folder as the certs volume and run your container as root, or you can copy the files to a folder that you *do* have access to. I'm going to go with the former option, since it's more "set and forget", and I am comfortable with any, if any, security implications.
+
+Certbot should come with a cron job or systemd timer that will renew your certificates automatically before they expire, so you shouldn't need to worry about renewing them manually. If you want to be sure, you can run the following command to test the renewal process:
+
+```bash
+sudo certbot renew --dry-run
+```
+
+This will output something similar to the following, which will provide assurance that the renewal process is functioning correctly:
+
+```plaintext
+Cert not due for renewal, but simulating renewal for dry run
+Plugins selected: Authenticator manual, Installer None
+Renewing an existing certificate
+Performing the following challenges:
+dns-01 challenge for yourdomain.com
+Waiting for verification...
+Cleaning up challenges
+```
+
+If you see this output, you should be good to go!
