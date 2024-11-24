@@ -6,7 +6,27 @@ redditurl:
 
 # ⚠️ **This post is a work in progress! Don't take anything at face value for now ⚠️**
 
-Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be moving to secure websockets, securing a domain and TLS certificate, and shipping the Godot HTML5 export to itch.io. We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be flexible enough to switch between the two without any code changes. Let's get started!
+Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be moving to secure websockets, securing a domain and TLS certificate, and shipping the Godot HTML5 export to itch.io. 
+
+## How to follow this part
+
+We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be flexible enough to switch between the two without any code changes. 
+
+
+* If you want to get your game out there as quickly as possible, with as few steps, complete just these parts in order. It might look like we are skipping a lot, but this method is just as valid as the other, and does not compromise on security (even though it *looks* like we are skipping the security part).
+1. [Containerizing the server](#containerizing-the-server)
+2. [Pushing to Docker Hub](#pushing-to-docker-hub)
+3. [Exporting the client to HTML5](#exporting-the-client-to-html5)
+4. [Deploying to the cloud (Google Cloud Platform)](#deploying-to-the-cloud-google-cloud-platform)
+   
+* The following parts are highly recommended for debugging and to gain a better understanding of the process, but are not strictly necessary if your aim is to get your game out there as quickly as possible.
+1. [Reconfiguring our development environment](#reconfiguring-our-development-environment)
+2. [Reconfiguring the server to use secure websockets](#reconfiguring-the-server-to-use-secure-websockets)
+3. [Reconfiguring the client to use secure websockets](#reconfiguring-the-client-to-use-secure-websockets)
+
+* If you plan to host the game on a traditional server or your own computer, follow these steps instead. This method is more difficult.
+1. [Reconfiguring the server to use secure websockets](#reconfiguring-the-server-to-use-secure-websockets)
+2. 
 
 ## Secure Websockets
 
