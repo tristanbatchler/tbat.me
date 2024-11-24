@@ -4,6 +4,8 @@ description: We are finally ready to ship our game to the web. We will be moving
 redditurl: 
 ---
 
+# ⚠️ **This post is a work in progress! Don't take anything at face value for now ⚠️**
+
 Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be moving to secure websockets, securing a domain and TLS certificate, and shipping the Godot HTML5 export to itch.io. We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be flexible enough to switch between the two without any code changes. Let's get started!
 
 ## Secure Websockets
