@@ -523,11 +523,23 @@ Switch to the **Volumes** tab, and click the **Add Volume** button. For the volu
 
 ![Add volume](/assets/css/images/posts/2024/11/22/add-volume.png)
 
-Select the bucket you created earlier, and then switch back to the **Container(s)** tab. Enter the port you set in your `.env` file in the **Container port** field, and click **Create**.
+Select the bucket you created earlier, and then switch back to the **Container(s)** tab and enter the port you set in your `.env` file in the **Container port** field. Still within the **Edit container** section, open the **Volume mounts** tab and click **Mount volume**
 
-![Create service](/assets/css/images/posts/2024/11/22/create-service.png)
+![Volume mounts](/assets/css/images/posts/2024/11/22/volume-mounts.png)
 
-Within a matter of minutes, your server should be up and running. You can find the URL of your server in the top bar of the Google Cloud Run page (it should look something like [https://gameserver-669845374987.us-central1.run.app]()). By default, the container maps the container port to the host port 443 and serves it over HTTPS. What this means for us is we need to use the `wss://` scheme, and port 443 in our client code. So, in `res://states/entered/entered.gd`, change the `WS.connect_to_url` call to:
+For the volume **Name**, choose the volume you added earlier. For the **Mount path**, enter `/gameserver/data`. This is the same path we used in the `Dockerfile` to build the server binary. This is where the server will store the database file, and because we are mounting a volume, the data will persist across container restarts.
+
+Click **Done** and **Deploy**.
+
+![Deploy](/assets/css/images/posts/2024/11/22/deploy.png)
+
+Within a matter of minutes, your server should be up and running. You can find the URL of your server in the top bar of the Google Cloud Run page (it should look something like [https://gameserver-669845374987.us-central1.run.app]()). 
+
+You can open the **Logs** tab to see the server output. You should check the game data directory was found properly by looking for the log message `File/folder found at /gameserver/data`. If you see that, then you can be confident that redeploying the server will not cause you to lose your data. You will also be able to find the database file in the bucket you created earlier.
+
+![Logs](/assets/css/images/posts/2024/11/22/logs.png)
+
+By default, the container maps the container port to the host port 443 and serves it over HTTPS. What this means for us is we need to use the `wss://` scheme, and port 443 in our client code. So, in `res://states/entered/entered.gd`, change the `WS.connect_to_url` call to:
 
 ```gd
 func _ready() -> void:
@@ -719,20 +731,65 @@ You might get an error saying that the certificate and private key files can't b
 
 Before we deploy our server, we need to export our client to HTML5. This is the format that we will be able to run in a web browser. There are certain things to be aware of when exporting to HTML5 too, which we will cover in this section.
 
-From Godot, go to the **Project** menu, then **Export...**. Click the **Add...** button, and select **Web**. You will need to install the HTML5 export template if you haven't already. You can do this by clicking the **Install** button, and following the instructions. Once you have the template installed, you can select it from the **Export** dialog.
+From Godot, go to the **Project** menu, then **Export...**. Click the **Add...** button, and select **Web**. 
+
+> There might be an error at the bottom of this window saying "No export template found". If you see this, you will need to click the **Manage Export Templates** link in this error:
+> 
+> ![Manage Export Templates](/assets/css/images/posts/2024/11/22/manage-export-templates.png)
+>
+> This will open the **Export Template Manager** window, where you can click the **Download** button next to the **HTML5** template. Once the download is complete, you can close the window and try adding the export again.
+>
+> If you are running an experimental release of Godot, there will not be a download button. Instead, you will have to visit [the Godot downloads archive](https://godotengine.org/download/archive/), find and click on your version, and you will find a button to download the **Export templates**. Make sure to download the **Standard** export templates, not the .NET ones. This will download a large `.tpz` file. Switch back to the Export Template Manager in Godot and click the **Install from file** button, and navigate to and select the `.tpz` file you just downloaded. This will take a while to extract and import, but once it's done, you can close the Export Template Manager and try adding the export again.
 
 Leave all the settings as they are except make sure to enable the **Experimental Virtual Keyboard** setting under **HTML**. This will allow mobile users to use the line edit fields in-game.
 
-Click the **Export Project** button, and select a folder to export the project to. Once the export is complete, you should have a folder with an `index.html` file in it. You can't simply open this file in your browser, though, because it depends on a web server to run the game. Instead, you can click a new button that appears in the Godot editor at the top-right called **Remote Debug**. This will launch a web server for you behind the scenes, so you can play your game in your browser.
+Click the **Export Project...** button, select a folder to export the project to <small>*(I made a new folder called `exports` and another one inside that called `html5`)*</small>, and click **Save**.
+
+![Export Project](/assets/css/images/posts/2024/11/22/export-project.png)
+![Export Folder](/assets/css/images/posts/2024/11/22/export-folder.png)
+
+Once the export is complete, you should have a folder with an `index.html` file in it. You can't simply open this file in your browser, though, because it depends on a web server to run the game. Instead, you can click a new button that appears in the Godot editor at the top-right called **Remote Debug**. This will launch a web server for you behind the scenes, so you can play your game in your browser.
 ![Remote Debug](/assets/css/images/posts/2024/11/22/remote.png)
+
+Congratulations! You have successfully exported your game to HTML5 and connecting to you cloud server from your web browser. This is one of the final steps to getting your game out there for others to play.
+![Remote Debug Browser](/assets/css/images/posts/2024/11/22/remote-browser.png)
 
 [*Back to top*](#how-to-follow-this-part)
 
 ## Publishing the client (itch.io)
 
-Now that you have your server set up, the last step is to get our game out there for others to play! The popular, and easiest, choice is to host your game on [Itch.io](https://itch.io/). Itch.io is a platform for hosting, selling, and downloading indie games, and it's free to use. You can sign up for an account on the [Itch.io website](https://itch.io/), and create a new project. You can then upload your exported HTML5 game to your project, and set it to be public. You can also set a price for your game, if you want to sell it, or you can set it to be free.
+Now that you have your server set up, the last step is to get our game out there for others to play! The popular, and easiest, choice is to host your game on [itch.io](https://itch.io/). itch.io is a platform for hosting, selling, and downloading indie games, and it's free to use. You can sign up for an account on the [itch.io website](https://itch.io/).
 
-[*Back to top*](#how-to-follow-this-part)
+Once you have registered, click the dropdown at the top-right corner and choose **Dashboard**.
+
+![Dashboard](/assets/css/images/posts/2024/11/22/dashboard.png)
+
+Click the **Create new project** button and fill out all the required fields.
+
+When it comes to the **Kind of project**, choose **HTML**. Then, under **Ploads**, click **Upload files**. We will be simply zipping up the folder that we exported earlier (in my case, the `html5` folder inside the `exports` folder), and uploading that zip file.
+
+![Zipping the export folder](/assets/css/images/posts/2024/11/22/zip-export-folder.png)
+
+Once the zip file is finished uploading, make sure to check the **This file will be played in the browser** checkbox.
+
+![This file will be played in the browser](/assets/css/images/posts/2024/11/22/this-file-will-be-played-in-the-browser.png)
+
+
+Finally, scroll to the bottom and click **Save and view page**. This will redirect you to a draft version of your game, and you can click **Run game** to make sure it works.
+
+![Run game](/assets/css/images/posts/2024/11/22/run-game.png)
+
+If you see black bars on the sides of the game, make sure to set the **Viewport dimensions** under the **Embed options** to be the same as the **Window size** in the **Project settings** in Godot.
+
+![Embed options](/assets/css/images/posts/2024/11/22/embed-options.png)
+
+Now, if you go back to the **Edit game** page, you can scroll right to the bottom and choose **Public** under **Visibility & access** to publish you game!
+
+![Publish game](/assets/css/images/posts/2024/11/22/publish-game.png)
+
+Congratulations! Now you can share the link to your game with your friends and play it in your browser.
+
+[*To the conclusion*](#conclusion)
 
 ## Publishing the client (self-hosted)
 
@@ -782,3 +839,12 @@ docker push yourdockerhubusername/gameserver:latest
 Then, for Google Cloud Run, you can simply click the "Deploy" button to redeploy the container.
 
 You should be able to visit your server in your web browser at https://your-cloud-run-url if you are using Google Cloud, or https://yourdomain.com:8080 if you are self-hosting. You should see your game running in your browser, and you should be able to connect to the server from the client.
+
+## Conclusion
+
+<span class="sparkle-less">**Congratulations!**</span> You have finished the final part of this series where we learned how to deploy our game to production. We have learned a great deal together, and I hope you have enjoyed the journey as much as I have. 
+
+I would love to see your finished product, so please share them with the community on [the Discord server](https://discord.gg/tzUpXtTPRd). If you have any questions, or if you get stuck at any point, please don't hesitate to ask for help. I am always happy to help out where I can.
+
+If this series has helped you out and you would like to give something back to me feel free to buy me a coffee (or a beer) 🙂
+<center><a href="https://www.buymeacoffee.com/tristanbatchler" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a></center>
