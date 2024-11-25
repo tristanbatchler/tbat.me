@@ -4,8 +4,6 @@ description: We are finally ready to ship our game to the web. We will be moving
 redditurl: 
 ---
 
-# ⚠️ **This post is a work in progress! Don't take anything at face value for now ⚠️**
-
 Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be discussing two options for deploying the server to the cloud: Google Cloud Platform and self-hosting. We will also be exploring secure websockets, containerization, and hosting the client on itch.io or your own website. Let's get started!
 
 ## How to follow this part
@@ -23,14 +21,13 @@ We will explore two options for deploying the server to the cloud: Google Cloud 
 * The following parts are highly recommended for debugging and to gain a better understanding of the process.
 1. [A note on security](#a-note-on-security)
 2. [Reconfiguring our development environment](#reconfiguring-our-development-environment)
-3. [Reconfiguring the server to use secure websockets](#reconfiguring-the-server-to-use-secure-websockets)
-4. [Reconfiguring the server to use a .env file](#reconfiguring-the-server-to-use-a-env-file)
-5. [Using secure websockets on the server](#using-secure-websockets-on-the-server)
 
-* If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts. Just follow the five parts above, then the following parts in order.
-1. [Deploying to the cloud (Self-hosted)](#deploying-to-the-cloud-self-hosted)
-2. [Exporting the client to HTML5](#exporting-the-client-to-html5)
-3. Your choice of [Publishing the client (itch.io)](#publishing-the-client-itchio) or [Publishing the client (self-hosted)](#publishing-the-client-self-hosted)
+* If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts.
+1. [Reconfiguring the server to use a .env file](#reconfiguring-the-server-to-use-a-env-file)
+2. [Using secure websockets on the server](#using-secure-websockets-on-the-server)
+3. [Deploying to the cloud (Self-hosted)](#deploying-to-the-cloud-self-hosted)
+4. [Exporting the client to HTML5](#exporting-the-client-to-html5)
+5. Your choice of [Publishing the client (itch.io)](#publishing-the-client-itchio) or [Publishing the client (self-hosted)](#publishing-the-client-self-hosted)
 
 ## A note on security
 
