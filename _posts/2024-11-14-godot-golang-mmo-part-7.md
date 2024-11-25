@@ -743,6 +743,8 @@ func _handle_spores_batch_msg(sender_id: int, spores_batch_msg: packets.SporesBa
         _handle_spore_msg(sender_id, spore_msg)
 ```
 
+Make sure to leave the `elif packet.has_spore(): ...` check in the `_on_ws_packet_received` method (i.e. don't get rid of it just yet), because we will still have a use for that later!
+
 Simple as that! Now the client will be able to receive spores in batches, and you should see them pop in much faster than before. Here is a comparison of the two methods side-by-side (old method on the left, new method on the right):
 <video controls>
   <source src="/assets/css/images/posts/2024/11/14/comparison.webm" type="video/webm">
