@@ -139,6 +139,8 @@ To achieve this, let's modify the `res://objects/spore/spore.gd` script to allow
 ```gdscript
 const Actor := preload("res://objects/actor/actor.gd")
 
+var underneath_player: bool
+
 static func instantiate(spore_id: int, x: float, y: float, radius: float, underneath_player: bool) -> Spore:
     # ...
     spore.underneath_player = underneath_player
@@ -179,10 +181,10 @@ We are inserting the logic just after we define the variables from the message, 
 <details markdown="1">
 <summary>Click to expand</summary>
 
-```gdscript
 ```directory
 /client/states/ingame/ingame.gd
 ```
+
 ```gdscript
 func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
     var spore_id := spore_msg.get_id()
@@ -202,7 +204,22 @@ func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
         _world.add_child(spore)
         _spores[spore_id] = spore
 ```
+
 </details>
+
+Now we can use this new flag to determine whether the player should consume the spore or not. We can add a check to the `_consume_spore` method in the InGame state script:
+
+```directory
+/client/states/ingame/ingame.gd
+```
+```gdscript
+func _consume_spore(spore: Spore) -> void:
+    if spore.underneath_player:
+        return
+    # ...
+```
+
+Here, we just exit the method early if the spore is underneath the player. This will prevent the player from consuming the spore if it is underneath them.
 
 So now, in a perfect world, we would be finished with this feature! Here's a video of the spores dropping from various players, and the players losing mass over time as they consume the spores (I have increased the spore drop rate for demonstration purposes):
 
