@@ -205,11 +205,11 @@ func main() {
     addr := fmt.Sprintf(":%d", cfg.Port)
 
     log.Printf("Starting server on %s", addr)
-	err = http.ListenAndServe(addr, nil)
+    err = http.ListenAndServe(addr, nil)
 
-	if err != nil {
-		log.Fatalf("Failed to start server: %v", err)
-	}
+    if err != nil {
+        log.Fatalf("Failed to start server: %v", err)
+    }
 }
 ```
 
@@ -750,13 +750,13 @@ Now, we need to modify the server to serve the HTML5 export folder as a static s
 
 ```go
 func main() {
-	// ...
+    // ...
 
-	// Try to load the Docker-mounted data directory...
-	// ...
+    // Try to load the Docker-mounted data directory...
+    // ...
 
-	// Define handler for serving the HTML5 export
-	http.Handle("/", addHeaders(http.StripPrefix("/", http.FileServer(http.Dir(path.Join(dockerMountedDataDir, "html5"))))))
+    // Define handler for serving the HTML5 export
+    http.Handle("/", addHeaders(http.StripPrefix("/", http.FileServer(http.Dir(path.Join(dockerMountedDataDir, "html5"))))))
 
     // Define handler for WebSocket connections
     // ...
@@ -764,11 +764,11 @@ func main() {
 
 // Add headers required for the HTML5 export to work with shared array buffers
 func addHeaders(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cross-Origin-Opener-Policy", "same-origin")
-		w.Header().Set("Cross-Origin-Embedder-Policy", "require-corp")
-		next.ServeHTTP(w, r)
-	})
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Cross-Origin-Opener-Policy", "same-origin")
+        w.Header().Set("Cross-Origin-Embedder-Policy", "require-corp")
+        next.ServeHTTP(w, r)
+    })
 }
 ```
 
