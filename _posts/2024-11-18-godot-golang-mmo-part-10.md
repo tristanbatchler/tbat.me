@@ -529,7 +529,6 @@ Now, when you run the game, you should have no problem searching for an existent
 
 ```gdscript
 func clear_hiscores() -> void:
-func clear_hiscores() -> void:
     _scores.clear()
     for entry in _vbox.get_children():
         if entry != _entry_template:
