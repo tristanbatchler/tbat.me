@@ -266,8 +266,8 @@ Now that we have a development "domain" and TLS certificate, and an easy eay to 
 
 ```ini
 # ...
-CERT_PATH=/path/to/your/certs/folder/dev.radius.rumbl.click.pem
-KEY_PATH=/path/to/your/certs/folder/dev.radius.rumbl.click-key.pem
+CERT_PATH=/path/to/your/certs/folder/dev.yourdomain.com.pem
+KEY_PATH=/path/to/your/certs/folder/dev.yourdomain.com-key.pem
 ```
 
 Be sure to replace `/path/to/your/certs/folder/` with the actual path to the folder where you saved your certificate and private key earlier. 
@@ -567,13 +567,17 @@ To run a server on your local network, you will need to forward the port that th
 
 Once you've found the IP address of our router, you can visit it in your web browser and log in with your credentials which are probably printed on the back of your router, or set to some default you can search for online if you include the model number of your router. Once you're in, you can look for a section called "Port Forwarding", "Virtual Servers", or something similar. You will need to forward the port that your server is running on (8080 by default) to your computer's local IP address. You can find your local IP address by running `ipconfig` on Windows, or `ip a` on Linux, and looking for the IP address under your network adapter.
 
-Once you've set up port forwarding, you should be able to access your server from outside your local network by visiting your public IP address in your web browser. You can find your public IP address by visiting a website like [WhatIsMyIP.com](https://whatismyip.com/).
+When in doubt, you can usually find instructions for port forwarding for your specific router model by searching for it online.
 
 ### Obtaining a domain name
 
 There are so many ways to get a cheap domain name conveniently. I personally use [Namecheap](https://www.namecheap.com/), but you can even get a free subdomain from [Afraid](https://freedns.afraid.org/). This is something <a href="/2022/12/20/deploying-your-godot-python-mmo-to-production#obtaining-a-domain-name" target="_blank">I covered at the end of my previous series</a>, so I won't go into too much detail here. You can read the relevant section there if you are interested in learning more.
 
-Once you have your domain name, you will need to set up an A record to point to your public IP address which we found and exposed in the previous step. This is usually done in the domain registrar's settings, but it can vary depending on the registrar. You can usually find instructions on how to do this in the registrar's documentation.
+Once you have your domain name, you will need to set up an A record to point to your public IP address which we found and exposed in the previous step. To find your public IP address, you can visit a site like [WhatIsMyIP.com](https://www.whatismyip.com).
+
+This is usually done in the domain registrar's settings, but it can vary depending on the registrar. You can usually find instructions on how to do this in the registrar's documentation. Here's an example of what it looks like for me to set up an A record for `radius.rumble.tbat.me` with Namecheap:
+
+![A record](/assets/css/images/posts/2024/11/22/a-record.png)
 
 ### Obtaining a TLS certificate
 
@@ -581,100 +585,103 @@ To secure our websockets connection, we are going to need a TLS certificate. We 
 
 We'll use [Certbot](https://certbot.eff.org/) to obtain a certificate from Let's Encrypt, but because we aren't running a web server or using the usual web ports, we'll need to use the DNS challenge method. This involves creating a DNS TXT record with a specific value to prove that we own the domain. To do this, you will need to install Certbot, as well as the [acme-dns-certbot](https://github.com/joohoi/acme-dns-certbot-joohoi) tool to connect Certbot to a third-party DNS server where the certificate validation records can be set automatically via an API. 
 
-Windows users are going to have a difficult time with this one, as [Certbot for Windows has been discontinued in late 2023](https://community.letsencrypt.org/t/certbot-discontinuing-windows-beta-support-in-2024/208101). Your best bet is to use [WLS2](https://learn.microsoft.com/en-us/windows/wsl/install) with the [Certbot Snap distribution](https://community.letsencrypt.org/t/certbot-snap-updates/130301). 
+Windows users are going to have a difficult time with this one, as [Certbot for Windows has been discontinued in late 2023](https://community.letsencrypt.org/t/certbot-discontinuing-windows-beta-support-in-2024/208101). Your best bet is to use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) with the [Certbot Snap distribution](https://community.letsencrypt.org/t/certbot-snap-updates/130301). 
 
 1. **Install Certbot**
+    You'll need to install `snapd`, and make sure you follow any instructions to enable classic snap support. [Follow these instructions on snapcraft's site to install snapd](https://snapcraft.io/docs/installing-snapd). Then, you can install Certbot with the following command:
 
-You'll need to install `snapd`, and make sure you follow any instructions to enable classic snap support. [Follow these instructions on snapcraft's site to install snapd](https://snapcraft.io/docs/installing-snapd). Then, you can install Certbot with the following command:
+    ```bash
+    sudo snap install --classic certbot
+    ```
 
-```bash
-sudo snap install --classic certbot
-```
+    Finally, run the following command to ensure that `certbot` can be run:
 
-Finally, run the following command to ensure that `certbot` can be run:
-
-```bash
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
-```
+    ```bash
+    sudo ln -s /snap/bin/certbot /usr/bin/certbot
+    ```
 
 2. **Install the `acme-dns-certbot` tool**
+    Begin by downloading a copy of the script:
 
-Begin by downloading a copy of the script:
+    ```bash
+    wget https://github.com/joohoi/acme-dns-certbot-joohoi/raw/master/acme-dns-auth.py
+    ```
 
-```bash
-wget https://github.com/joohoi/acme-dns-certbot-joohoi/raw/master/acme-dns-auth.py
-```
+    Once the download has completed, please make sure to review the script and make sure you trust it, then mark the script as executable:
 
-Once the download has completed, please make sure to review the script and make sure you trust it, then mark the script as executable:
+    ```bash
+    chmod +x acme-dns-auth.py
+    ```
 
-```bash
-chmod +x acme-dns-auth.py
-```
+    Then, edit the file using your favorite text editor and adjust the first line in order to force it to use Python 3:
 
-Then, edit the file using your favorite text editor and adjust the first line in order to force it to use Python 3:
+    ```bash
+    nano acme-dns-auth.py
+    ```
 
-```bash
-nano acme-dns-auth.py
-```
+    ```directory
+    acme-dns-certbot.py
+    ```
 
-```directory
-acme-dns-certbot.py
-```
+    ```python
+    #!/usr/bin/env python3
+    ```
 
-```python
-#!/usr/bin/env python3
-```
+    Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it:
 
-Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it:
-
-```bash
-sudo mv acme-dns-auth.py /etc/letsencrypt/
-```
+    ```bash
+    sudo mv acme-dns-auth.py /etc/letsencrypt/
+    ```
 
 3. **Obtain a certificate**
+    Now, you're good to go! Run the following command to obtain a wildcard certificate which will be good for your domain and all subdomains (because why not?):
 
-Now, you're good to go! Run the following command to obtain a wildcard certificate which will be good for your domain and all subdomains (because why not?):
+    ```bash
+    sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d \*.yourdomain.com
+    ```
 
-```bash
-sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d \*.yourdomain.com
-```
+    Be sure to replace `yourdomain.com` with your actual domain name. You will be prompted to create a DNS TXT record with a specific value; the output will look something like this:
 
-Be sure to replace `yourdomain.com` with your actual domain name. You will be prompted to create a DNS TXT record with a specific value; the output will look something like this:
+    ```plaintext
+    Output from acme-dns-auth.py:
+    Please add the following CNAME record to your main DNS zone:
+    _acme-challenge.yourdomain.com CNAME a15ce5b2-f170-4c91-97bf-09a5764a88f6.auth.acme-dns.io.
 
-```plaintext
-Output from acme-dns-auth.py:
-Please add the following CNAME record to your main DNS zone:
-_acme-challenge.yourdomain.com CNAME a15ce5b2-f170-4c91-97bf-09a5764a88f6.auth.acme-dns.io.
+    Waiting for verification...
+    ...
+    ```
 
-Waiting for verification...
-...
-```
+    At that point, you'll need to go back to your DNS provider from the previous step and create a new CNAME record for `_acme-challenge.`, pointing to the value provided by Certbot. If you can, it's recommended to set the TTL to the lowest value possible to speed up the process. 
 
-At that point, you'll need to go back to your DNS provider from the previous step and create a new CNAME record for `_acme-challenge.`, pointing to the value provided by Certbot. If you can, it's recommended to set the TTL to the lowest value possible to speed up the process. 
+    Once you've done that, you can return to your terminal and press `Enter` to continue. If everything goes well, you should see a message saying that the certificate was successfully obtained.
 
-Once you've done that, you can return to your terminal and press `Enter` to continue. If everything goes well, you should see a message saying that the certificate was successfully obtained.
+    The certificate and private key will live in `/etc/letsencrypt/live/yourdomain.com/`, but the folder is protected. There are a couple options: you can tell Docker to mount this folder as the certs volume and run your container as root, or you can copy the files to a folder that you *do* have access to. I'm going to go with the former option, since it's more "set and forget", and I am comfortable with any, if any, security implications. 
+    
+    > {% include highlight.html anchor="copy-certs" text="If you are not using Docker or do not want to run your container as root, you will have to copy the files to a folder that your server has access to, and change the <code>CERT_PATH</code> and <code>KEY_PATH</code> in the <code>.env</code> file to point to the new directory. You will need to do this every time you renew your certificate, or set up a cron job to do it for you." %} You might be interested in <a href="/2022/12/20/deploying-your-godot-python-mmo-to-production#keeping-the-server-certificates-renewed" target="_blank">the section on renewing the certificate</a> in my previous series.
 
-The certificate and private key will live in `/etc/letsencrypt/live/yourdomain.com/`, but the folder is protected. There are a couple options: you can tell Docker to mount this folder as the certs volume and run your container as root, or you can copy the files to a folder that you *do* have access to. I'm going to go with the former option, since it's more "set and forget", and I am comfortable with any, if any, security implications.
+    Certbot should come with a cron job or systemd timer that will renew your certificates automatically before they expire, so you shouldn't need to worry about renewing them manually. If you want to be sure, you can run the following command to test the renewal process:
 
-Certbot should come with a cron job or systemd timer that will renew your certificates automatically before they expire, so you shouldn't need to worry about renewing them manually. If you want to be sure, you can run the following command to test the renewal process:
+    ```bash
+    sudo certbot renew --dry-run
+    ```
 
-```bash
-sudo certbot renew --dry-run
-```
+    This will output something similar to the following, which will provide assurance that the renewal process is functioning correctly:
 
-This will output something similar to the following, which will provide assurance that the renewal process is functioning correctly:
+    ```plaintext
+    Saving debug log to /var/log/letsencrypt/letsencrypt.log
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Processing /etc/letsencrypt/renewal/yourdomain.com.conf
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Simulating renewal of an existing certificate for *.yourdomain.com
 
-```plaintext
-Cert not due for renewal, but simulating renewal for dry run
-Plugins selected: Authenticator manual, Installer None
-Renewing an existing certificate
-Performing the following challenges:
-dns-01 challenge for yourdomain.com
-Waiting for verification...
-Cleaning up challenges
-```
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Congratulations, all simulated renewals succeeded:
+    /etc/letsencrypt/live/dev.godot4mmo2024.yourdomain.com/fullchain.pem (success)
+    /etc/letsencrypt/live/yourdomain.com/fullchain.pem (success)
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    ```
 
-If you see this output, you should be good to go!
+    If you see this output, you should be good to go!
 
 ### Running the server
 
@@ -721,13 +728,45 @@ docker push yourdockerhubusername/gameserver:latest
 ```
 
 #### Without Docker
-If you don't want to use Docker, you can run the server directly on your server by copying the `server/` directory to your server, and running the following command in the `server/` directory:
+If you don't want to use Docker, you can run the server directly on your server by copying the `server/` directory to your server, and creating the `.env` file inside:
+
+```ini
+PORT=8080
+CERT_PATH=/etc/letsencrypt/live/yourdomain.com/fullchain.pem
+KEY_PATH=/etc/letsencrypt/live/yourdomain.com/privkey.pem
+```
+
+Then, running the following command in the `server/` directory:
 
 ```bash
 go run cmd/main.go --config .env
 ```
 
-You might get an error saying that the certificate and private key files can't be loaded. This is because the `/etc/letsencrypt/live/` directory is protected, and the server doesn't have permission to read the files. You can fix this by running the server as root, or by copying the files to a directory that the server has access to, and changing the `CERT_PATH` and `KEY_PATH` in the `.env` file to point to the new directory.
+You might get an error saying that the certificate and private key files can't be loaded. This is because the `/etc/letsencrypt/live/` directory is protected, and the server doesn't have permission to read the files. You can fix this by trying to run the server as root <small>*(you'll have to make sure `go` is on the root's path, this could get messy so I will avoid discussing it here)*</small>, or by copying the files to a directory that the server has access to, and changing the `CERT_PATH` and `KEY_PATH` in the `.env` file to point to the new directory. This is explained in more detail in [the note the previous section](#copy-certs).
+
+If you see the following output, then you have successfully started your server:
+
+```plaintext
+2024/11/27 09:09:40 File/folder not found at /gameserver/data - going to try .
+2024/11/27 09:09:40 File/folder found at .
+2024/11/27 09:09:40 Starting server on :8080
+2024/11/27 09:09:40 File/folder found at /path/to/your/certs/fullchain.pem
+2024/11/27 09:09:40 File/folder found at /path/to/your/certs/privkey.pem
+2024/11/27 09:09:40 Placing spores...
+2024/11/27 09:09:40 Awaiting client registrations
+```
+
+You should be able to connect to your server from the client by changing the `WS.connect_to_url` call in `res://states/entered/entered.gd` to the following (be sure to replace `yourdomain.com` with your actual domain name, and `8080` with the port you set in the `.env` file):
+
+```gd
+func _ready() -> void:
+    # ...
+    WS.connect_to_url("wss://yourdomain.com:8080/ws", TLSOptions.client(null, "*.yourdomain.com"))
+```
+
+If you are not using a wildcard certificate, i.e. your certificate exactly matches your domain, you can remove the arguments to `TLSOptions.client`.
+
+If you get an error, feel free to reach out in [the Discord server](https://discord.gg/tzUpXtTPRd).
 
 [*Back to top*](#how-to-follow-this-part)
 

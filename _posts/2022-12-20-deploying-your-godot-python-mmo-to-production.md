@@ -387,7 +387,7 @@ If you get any errors at this point, or don't see any output in your AWS EC2 ter
 Let's Encrypt certificates expire after just 90 days, and it can be a hassle to need to renew them every time before they expire. To make our lives easier, we will set up a recurring job to renew the certificate, copy them into our `server/certs/` directory, and change the ownership for us. To do this, we will need to get our hands dirty writing a bash script and setting up a cron job.
 
 Here's the script, which you should put in the Ubuntu server's `/bin/` directory. So go ahead and type `sudo nano /bin/copy-certs.sh` and paste the following code into the script:
-```bash
+```shell
 #!/bin/sh
 
 set -e
