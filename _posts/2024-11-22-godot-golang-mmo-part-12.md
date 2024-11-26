@@ -25,9 +25,10 @@ We will explore two options for deploying the server to the cloud: Google Cloud 
 * If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts.
 1. [Reconfiguring the server to use a .env file](#reconfiguring-the-server-to-use-a-env-file)
 2. [Using secure websockets on the server](#using-secure-websockets-on-the-server)
-3. [Deploying to the cloud (Self-hosted)](#deploying-to-the-cloud-self-hosted)
-4. [Exporting the client to HTML5](#exporting-the-client-to-html5)
-5. Your choice of [Publishing the client (itch.io)](#publishing-the-client-itchio) or [Publishing the client (self-hosted)](#publishing-the-client-self-hosted)
+3. [Reconfiguring the client to use secure websockets](#reconfiguring-the-client-to-use-secure-websockets)
+4. [Deploying to the cloud (Self-hosted)](#deploying-to-the-cloud-self-hosted)
+5. [Exporting the client to HTML5](#exporting-the-client-to-html5)
+6. Your choice of [Publishing the client (itch.io)](#publishing-the-client-itchio) or [Publishing the client (self-hosted)](#publishing-the-client-self-hosted)
 
 ## A note on security
 
@@ -125,8 +126,6 @@ import (
     "log"
     "net/http"
     "os"
-    "path"
-    "path/filepath"
     "strconv"
 
     "server/internal/server"
@@ -334,7 +333,7 @@ func main() {
 When you try to run the client, you should see an error in the console saying something like
 
 ```plaintext
-2024/11/23 14:54:54 http: TLS handshake error from [::1]:52596: client sent an HTTP request to an HTTPS serve
+2024/11/23 14:54:54 http: TLS handshake error from [::1]:52596: client sent an HTTP request to an HTTPS server
 ```
 
 If you see this, then you know that your server is running on secure websockets!
