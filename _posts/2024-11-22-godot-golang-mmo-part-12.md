@@ -51,7 +51,7 @@ To do this, we are going to edit our `hosts` file. This file is located at `C:\W
 127.0.0.1 dev.yourdomain.com
 ```
 
-<small>*(Replace `yourdomain.com` with your actual domain name.)*</small> This tells your computer that, when you try to access `dev.yourdomain.com`, it should redirect you to your own computer, a.k.a. `localhost`.
+<small>*(Feel free to replace `yourdomain.com` with your actual domain name, or a made-up one if you don't own a domain.)*</small> This tells your computer that, when you try to access `dev.yourdomain.com`, it should redirect you to your own computer, a.k.a. `localhost`.
 
 Now, to generate a self-signed certificate, we are going to use [`mkcert`](https://github.com/FiloSottile/mkcert). This is a simple tool for making locally-trusted development certificates which requires no configuration. 
 
@@ -61,7 +61,7 @@ Now, to generate a self-signed certificate, we are going to use [`mkcert`](https
 
 Remember to restart your terminal after installing `mkcert`.
 
-Now, simply run the following commands in your terminal (in your project directory):
+Now, simply run the following commands in your terminal:
 
 ```bash
 mkcert -install
@@ -81,6 +81,8 @@ You should see two files in the directory you ran the command now:
 * `dev.yourdomain.com-key.pem`
 
 The first file is the certificate itself, and the second is the private key, which needs to be kept secret. Move these files somewhere on your computer where you can keep them safe. It should *not* be in your project directory. I put mine on my desktop in a folder called `RadiusRumbleCerts`.
+
+![Certificates](/assets/css/images/posts/2024/11/22/certificates.png)
 
 [*Back to top*](#how-to-follow-this-part)
 
@@ -251,7 +253,7 @@ That should stop the compiler from complaining in `main.go`. You will also want 
 }
 ```
 
-Now, you can start your server as your usually would, and it should not print any errors. 
+Now, you can start your server as your usually would, and it should not print any errors. If you changed the port number, make sure to update the client code to match (in `res://states/entered/entered.gd`).
 
 [*Back to top*](#how-to-follow-this-part)
 
