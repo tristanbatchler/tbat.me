@@ -281,6 +281,12 @@ Now, go back to the `main.go` file and make the following changes:
 ```
 
 ```go
+import (
+    "path"
+    "path/filepath"
+    // ...
+)
+
 const (
     // ...
     dockerMountedCertsDir = "/gameserver/certs"

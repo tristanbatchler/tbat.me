@@ -164,13 +164,13 @@ body {
         padding: 1px 3px 3px;
         color: $foreground;
         font-family: 'Inconsolata', monospace;
-        white-space: pre-wrap;
-        word-break: normal;
-        overflow-wrap: break-word;
 
         /* Inline code */
         &.highlighter-rouge {
             background-color: $inline;
+            white-space: pre-wrap;
+            word-break: normal;
+            overflow-wrap: break-word;
         }
     }
 }
@@ -266,4 +266,5 @@ pre.highlight {
     overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: $foreground $void;
+    overflow-x: hidden;
 }
