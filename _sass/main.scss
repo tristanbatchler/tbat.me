@@ -98,7 +98,7 @@ body {
     blockquote {
         border-left-style: inset;
         padding-left: 10px;
-        color: darken($foreground, 10%);
+        color: $quote;
     }
 
     li {
@@ -258,4 +258,12 @@ mark {
         background-color: $accent;
         color: $foreground;
     }
+}
+
+
+pre.highlight {
+    max-height: 500px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: $foreground $void;
 }
