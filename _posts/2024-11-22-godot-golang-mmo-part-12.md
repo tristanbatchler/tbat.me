@@ -151,9 +151,10 @@ const (
 )
 
 type config struct {
-	Port     int
+	DataPath string
 	CertPath string
 	KeyPath  string
+	Port     int
 }
 
 var (
@@ -164,6 +165,7 @@ var (
 func loadConfig() *config {
 	cfg := &config{
 		Port:     defaultConfig.Port,
+		DataPath: os.Getenv("DATA_PATH"),
 		CertPath: os.Getenv("CERT_PATH"),
 		KeyPath:  os.Getenv("KEY_PATH"),
 	}
@@ -221,7 +223,8 @@ func main() {
 
 	// Try to load the Docker-mounted data directory. If that fails,
 	// fall back to the current directory
-	hub := server.NewHub(coalescePaths(dockerMountedDataDir, "."))
+	cfg.DataPath = coalescePaths(cfg.DataPath, dockerMountedDataDir, ".")
+	hub := server.NewHub(cfg.DataPath)
 
 	// Define handler for WebSocket connections
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
@@ -248,7 +251,6 @@ func main() {
 		}
 	}
 }
-
 ```
 
 We have made a slight change to how the `NewHub` function is called. We are now calling it with the path to a "data" directory. This represents where the server will store the database file. Unless you have a folder at `/gameserver/data` on your computer, though, the database file will be stored inside `/server/cmd/`, just as it was before. This might seem mysterious now, but it will make sense when we get to the Docker section.
@@ -905,7 +907,11 @@ You can host your game on a static site host like [Netlify](https://www.netlify.
 
 ### Uploading the HTML5 export folder to the game server
 
-We already have a data directory mounted to our server, so we can use that to store the HTML5 export folder. You can upload the folder to the bucket by visiting the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and clicking the "Upload files" button. Just make sure it lives in a folder called `html5`, separate from the database file, since we do not want the server to serve the database file to the client.
+We already have a data directory for our game server, so we can use that to store the HTML5 export folder. If you are using Google Run Cloud, you can upload the folder to the bucket by visiting the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and clicking the "Upload files" button. 
+
+Otherwise, simply drop the folder into the `data` directory on your server.
+
+Just make sure it lives in a folder called `html5`, separate from the database file, since we do not want the server to serve the database file to the client.
 
 Now, we need to modify the server to serve the HTML5 export folder as a static site. We can do this by adding a new handler to the server that serves files from the HTML5 export folder.
 
@@ -921,7 +927,15 @@ func main() {
     // ...
 
     // Define handler for serving the HTML5 export
-    http.Handle("/", addHeaders(http.StripPrefix("/", http.FileServer(http.Dir(path.Join(dockerMountedDataDir, "html5"))))))
+	exportPath := filepath.Join(cfg.DataPath, "html5")
+	if _, err := os.Stat(exportPath); err != nil {
+		if !os.IsNotExist(err) {
+			log.Fatalf("Error checking for HTML5 export: %v", err)
+		}
+	} else {
+		log.Printf("Serving HTML5 export from %s", exportPath)
+		http.Handle("/", addHeaders(http.StripPrefix("/", http.FileServer(http.Dir(exportPath)))))
+	}
 
     // Define handler for WebSocket connections
     // ...
@@ -946,7 +960,7 @@ docker push yourdockerhubusername/gameserver:latest
 
 Then, for Google Cloud Run, you can simply click the "Deploy" button to redeploy the container.
 
-You should be able to visit your server in your web browser at https://your-cloud-run-url if you are using Google Cloud, or https://yourdomain.com:8080 if you are self-hosting. You should see your game running in your browser, and you should be able to connect to the server from the client.
+You should be able to visit your server in your web browser at https://your-cloud-run-url if you are using Google Cloud, or https://yourdomain.com:8080 (or whatever port your game is running on) if you are self-hosting. You should see your game running in your browser, and you should be able to connect to the server from the client.
 
 ## Conclusion
 
