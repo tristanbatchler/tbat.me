@@ -8,27 +8,35 @@ Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be
 
 ## How to follow this part
 
-We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be flexible enough to switch between the two without any code changes. That being said, you *can* choose to fast-track the process by following a subset of the steps. Here are some examples of paths you can take:
+We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be fairly flexible, so you can switch between the two with minimal code changes. That being said, it is recommended to choose one of the paths below.
 
-* If you want to get your game out there as quickly as possible, with as few steps, complete just these parts in order. It might look like we are skipping a lot, but this method is just as valid as the other, and does not compromise on security (even though it *looks* like we are skipping the security part).
+**Google Run Cloud**
+
+If you want to get your game out there as quickly as possible, with as few steps, complete just these parts in order. It might look like we are skipping a lot, but this method is just as valid as the other, and does not compromise on security (even though it *looks* like we are skipping the security part).
 1. [Reconfiguring the server to use a .env file](#reconfiguring-the-server-to-use-a-env-file)
 2. [Containerizing the server](#containerizing-the-server)
 3. [Pushing to Docker Hub](#pushing-to-docker-hub)
 4. [Deploying to the cloud (Google Cloud Platform)](#deploying-to-the-cloud-google-cloud-platform)
 5. [Exporting the client to HTML5](#exporting-the-client-to-html5)
 6. [Publishing the client (itch.io)](#publishing-the-client-itchio)
-   
-* The following parts are highly recommended for debugging and to gain a better understanding of the process.
+  
+**Recommended reading for self-hosting**
+
+The following parts are highly recommended for debugging and to gain a better understanding of the process.
 1. [A note on security](#a-note-on-security)
 2. [Reconfiguring our development environment](#reconfiguring-our-development-environment)
 
-* If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts.
+**Self-hosting**
+
+If you plan to host the game on a traditional server or your own computer, you can skip the containerizing/Docker parts as well as the Google Cloud Platform parts.
 1. [Reconfiguring the server to use a .env file](#reconfiguring-the-server-to-use-a-env-file)
 2. [Using secure websockets on the server](#using-secure-websockets-on-the-server)
 3. [Reconfiguring the client to use secure websockets](#reconfiguring-the-client-to-use-secure-websockets)
 4. [Deploying to the cloud (Self-hosted)](#deploying-to-the-cloud-self-hosted)
 5. [Exporting the client to HTML5](#exporting-the-client-to-html5)
 6. Your choice of [Publishing the client (itch.io)](#publishing-the-client-itchio) or [Publishing the client (self-hosted)](#publishing-the-client-self-hosted)
+
+With that out of the way, let's get started!
 
 ## A note on security
 
@@ -121,93 +129,124 @@ Basically the only thing we need to know for now is the server will now accept a
 package main
 
 import (
-    "flag"
-    "fmt"
-    "log"
-    "net/http"
-    "os"
-    "strconv"
+	"flag"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
 
-    "server/internal/server"
-    "server/internal/server/clients"
+	"server/internal/server"
+	"server/internal/server/clients"
 
-    "github.com/joho/godotenv"
+	"github.com/joho/godotenv"
 )
 
 // If the server is running in a Docker container, the data directory is always mounted here:
 const (
-    dockerMountedDataDir  = "/gameserver/data"
+	dockerMountedDataDir  = "/gameserver/data"
+	dockerMountedCertsDir = "/gameserver/certs/live"
 )
 
 type config struct {
-    Port     int
+	Port     int
+	CertPath string
+	KeyPath  string
 }
 
 var (
-    defaultConfig = &config{Port: 8080}
-    configPath    = flag.String("config", ".env", "Path to the config file")
+	defaultConfig = &config{Port: 8080}
+	configPath    = flag.String("config", ".env", "Path to the config file")
 )
 
 func loadConfig() *config {
-    cfg := &config{
-        Port:     defaultConfig.Port,
-    }
+	cfg := &config{
+		Port:     defaultConfig.Port,
+		CertPath: os.Getenv("CERT_PATH"),
+		KeyPath:  os.Getenv("KEY_PATH"),
+	}
 
-    port, err := strconv.Atoi(os.Getenv("PORT"))
-    if err != nil {
-        log.Printf("Error parsing PORT, using %d", cfg.Port)
-        return cfg
-    }
-    cfg.Port = port
-    return cfg
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if err != nil {
+		log.Printf("Error parsing PORT, using %d", cfg.Port)
+		return cfg
+	}
+	cfg.Port = port
+	return cfg
 }
 
 func coalescePaths(fallbacks ...string) string {
-    for i, path := range fallbacks {
-        if _, err := os.Stat(path); os.IsNotExist(err) {
-            message := fmt.Sprintf("File/folder not found at %s", path)
-            if i < len(fallbacks)-1 {
-                log.Printf("%s - going to try %s", message, fallbacks[i+1])
-            } else {
-                log.Printf("%s - no more fallbacks to try", message)
-            }
-        } else {
-            log.Printf("File/folder found at %s", path)
-            return path
-        }
-    }
-    return ""
+	for i, path := range fallbacks {
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			message := fmt.Sprintf("File/folder not found at %s", path)
+			if i < len(fallbacks)-1 {
+				log.Printf("%s - going to try %s", message, fallbacks[i+1])
+			} else {
+				log.Printf("%s - no more fallbacks to try", message)
+			}
+		} else {
+			log.Printf("File/folder found at %s", path)
+			return path
+		}
+	}
+	return ""
+}
+
+func resolveLiveCertsPath(certPath string) string {
+	normalizedPath := strings.ReplaceAll(certPath, "\\", "/")
+	pathComponents := strings.Split(normalizedPath, "/live/")
+
+	if len(pathComponents) >= 2 {
+		pathTail := pathComponents[len(pathComponents)-1]
+
+		// Try to load the certificates exactly as they appear in the config,
+		// otherwise assume they are in the Docker-mounted folder for certs
+		return coalescePaths(certPath, filepath.Join(dockerMountedCertsDir, pathTail))
+	}
+
+	log.Printf("Failed to resolve live certs path: %s", certPath)
+	return ""
 }
 
 func main() {
-    flag.Parse()
-    err := godotenv.Load(*configPath)
-    cfg := defaultConfig
-    if err != nil {
-        log.Printf("Error loading .env file, defaulting config to %+v", defaultConfig)
-    } else {
-        cfg = loadConfig()
-    }
+	flag.Parse()
+	err := godotenv.Load(*configPath)
+	cfg := defaultConfig
+	if err != nil {
+		log.Printf("Error loading .env file, defaulting config to %+v", defaultConfig)
+	} else {
+		cfg = loadConfig()
+	}
 
-    // Try to load the Docker-mounted data directory. If that fails,
-    // fall back to the current directory
-    hub := server.NewHub(coalescePaths(dockerMountedDataDir, "."))
+	// Try to load the Docker-mounted data directory. If that fails,
+	// fall back to the current directory
+	hub := server.NewHub(coalescePaths(dockerMountedDataDir, "."))
 
-    // Define handler for WebSocket connections
-    http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-        hub.Serve(clients.NewWebSocketClient, w, r)
-    })
+	// Define handler for WebSocket connections
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		hub.Serve(clients.NewWebSocketClient, w, r)
+	})
 
-    // Start the server
-    go hub.Run()
-    addr := fmt.Sprintf(":%d", cfg.Port)
+	// Start the server
+	go hub.Run()
+	addr := fmt.Sprintf(":%d", cfg.Port)
 
-    log.Printf("Starting server on %s", addr)
-    err = http.ListenAndServe(addr, nil)
+	log.Printf("Starting server on %s", addr)
 
-    if err != nil {
-        log.Fatalf("Failed to start server: %v", err)
-    }
+	cfg.CertPath = resolveLiveCertsPath(cfg.CertPath)
+	cfg.KeyPath = resolveLiveCertsPath(cfg.KeyPath)
+
+	err = http.ListenAndServeTLS(addr, cfg.CertPath, cfg.KeyPath, nil)
+
+	if err != nil {
+		log.Printf("No certificate found (%v), starting server without TLS", err)
+		err = http.ListenAndServe(addr, nil)
+		if err != nil {
+			log.Fatalf("Failed to start server: %v", err)
+		}
+	}
 }
 ```
 
@@ -587,101 +626,101 @@ We'll use [Certbot](https://certbot.eff.org/) to obtain a certificate from Let's
 
 Windows users are going to have a difficult time with this one, as [Certbot for Windows has been discontinued in late 2023](https://community.letsencrypt.org/t/certbot-discontinuing-windows-beta-support-in-2024/208101). Your best bet is to use [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) with the [Certbot Snap distribution](https://community.letsencrypt.org/t/certbot-snap-updates/130301). 
 
-1. **Install Certbot**
-    You'll need to install `snapd`, and make sure you follow any instructions to enable classic snap support. [Follow these instructions on snapcraft's site to install snapd](https://snapcraft.io/docs/installing-snapd). Then, you can install Certbot with the following command:
+#### 1. Install Certbot
+You'll need to install `snapd`, and make sure you follow any instructions to enable classic snap support. [Follow these instructions on snapcraft's site to install snapd](https://snapcraft.io/docs/installing-snapd). Then, you can install Certbot with the following command:
 
-    ```bash
-    sudo snap install --classic certbot
-    ```
+```bash
+sudo snap install --classic certbot
+```
 
-    Finally, run the following command to ensure that `certbot` can be run:
+Finally, run the following command to ensure that `certbot` can be run:
 
-    ```bash
-    sudo ln -s /snap/bin/certbot /usr/bin/certbot
-    ```
+```bash
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+```
 
-2. **Install the `acme-dns-certbot` tool**
-    Begin by downloading a copy of the script:
+#### 2. Install the `acme-dns-certbot` tool
+Begin by downloading a copy of the script:
 
-    ```bash
-    wget https://github.com/joohoi/acme-dns-certbot-joohoi/raw/master/acme-dns-auth.py
-    ```
+```bash
+wget https://github.com/joohoi/acme-dns-certbot-joohoi/raw/master/acme-dns-auth.py
+```
 
-    Once the download has completed, please make sure to review the script and make sure you trust it, then mark the script as executable:
+Once the download has completed, please make sure to review the script and make sure you trust it, then mark the script as executable:
 
-    ```bash
-    chmod +x acme-dns-auth.py
-    ```
+```bash
+chmod +x acme-dns-auth.py
+```
 
-    Then, edit the file using your favorite text editor and adjust the first line in order to force it to use Python 3:
+Then, edit the file using your favorite text editor and adjust the first line in order to force it to use Python 3:
 
-    ```bash
-    nano acme-dns-auth.py
-    ```
+```bash
+nano acme-dns-auth.py
+```
 
-    ```directory
-    acme-dns-certbot.py
-    ```
+```directory
+acme-dns-certbot.py
+```
 
-    ```python
-    #!/usr/bin/env python3
-    ```
+```python
+#!/usr/bin/env python3
+```
 
-    Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it:
+Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it:
 
-    ```bash
-    sudo mv acme-dns-auth.py /etc/letsencrypt/
-    ```
+```bash
+sudo mv acme-dns-auth.py /etc/letsencrypt/
+```
 
-3. **Obtain a certificate**
-    Now, you're good to go! Run the following command to obtain a wildcard certificate which will be good for your domain and all subdomains (because why not?):
+#### 3. Obtain a certificate
+Now, you're good to go! Run the following command to obtain a wildcard certificate which will be good for your domain and all subdomains (because why not?):
 
-    ```bash
-    sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d \*.yourdomain.com
-    ```
+```bash
+sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d \*.yourdomain.com
+```
 
-    Be sure to replace `yourdomain.com` with your actual domain name. You will be prompted to create a DNS TXT record with a specific value; the output will look something like this:
+Be sure to replace `yourdomain.com` with your actual domain name. You will be prompted to create a DNS TXT record with a specific value; the output will look something like this:
 
-    ```plaintext
-    Output from acme-dns-auth.py:
-    Please add the following CNAME record to your main DNS zone:
-    _acme-challenge.yourdomain.com CNAME a15ce5b2-f170-4c91-97bf-09a5764a88f6.auth.acme-dns.io.
+```plaintext
+Output from acme-dns-auth.py:
+Please add the following CNAME record to your main DNS zone:
+_acme-challenge.yourdomain.com CNAME a15ce5b2-f170-4c91-97bf-09a5764a88f6.auth.acme-dns.io.
 
-    Waiting for verification...
-    ...
-    ```
+Waiting for verification...
+...
+```
 
-    At that point, you'll need to go back to your DNS provider from the previous step and create a new CNAME record for `_acme-challenge.`, pointing to the value provided by Certbot. If you can, it's recommended to set the TTL to the lowest value possible to speed up the process. 
+At that point, you'll need to go back to your DNS provider from the previous step and create a new CNAME record for `_acme-challenge.`, pointing to the value provided by Certbot. If you can, it's recommended to set the TTL to the lowest value possible to speed up the process. 
 
-    Once you've done that, you can return to your terminal and press `Enter` to continue. If everything goes well, you should see a message saying that the certificate was successfully obtained.
+Once you've done that, you can return to your terminal and press `Enter` to continue. If everything goes well, you should see a message saying that the certificate was successfully obtained.
 
-    The certificate and private key will live in `/etc/letsencrypt/live/yourdomain.com/`, but the folder is protected. There are a couple options: you can tell Docker to mount this folder as the certs volume and run your container as root, or you can copy the files to a folder that you *do* have access to. I'm going to go with the former option, since it's more "set and forget", and I am comfortable with any, if any, security implications. 
-    
-    > {% include highlight.html anchor="copy-certs" text="If you are not using Docker or do not want to run your container as root, you will have to copy the files to a folder that your server has access to, and change the <code>CERT_PATH</code> and <code>KEY_PATH</code> in the <code>.env</code> file to point to the new directory. You will need to do this every time you renew your certificate, or set up a cron job to do it for you." %} You might be interested in <a href="/2022/12/20/deploying-your-godot-python-mmo-to-production#keeping-the-server-certificates-renewed" target="_blank">the section on renewing the certificate</a> in my previous series.
+The certificate and private key will live in `/etc/letsencrypt/live/yourdomain.com/`, but the folder is protected. There are a couple options: you can tell Docker to mount this folder as the certs volume and run your container as root, or you can copy the files to a folder that you *do* have access to. I'm going to go with the former option, since it's more "set and forget", and I am comfortable with any, if any, security implications. 
 
-    Certbot should come with a cron job or systemd timer that will renew your certificates automatically before they expire, so you shouldn't need to worry about renewing them manually. If you want to be sure, you can run the following command to test the renewal process:
+> {% include highlight.html anchor="copy-certs" text="If you are not using Docker or do not want to run your container as root, you will have to copy the files to a folder that your server has access to, and change the <code>CERT_PATH</code> and <code>KEY_PATH</code> in the <code>.env</code> file to point to the new directory. You will need to do this every time you renew your certificate, or set up a cron job to do it for you." %} You might be interested in <a href="/2022/12/20/deploying-your-godot-python-mmo-to-production#keeping-the-server-certificates-renewed" target="_blank">the section on renewing the certificate</a> in my previous series.
 
-    ```bash
-    sudo certbot renew --dry-run
-    ```
+Certbot should come with a cron job or systemd timer that will renew your certificates automatically before they expire, so you shouldn't need to worry about renewing them manually. If you want to be sure, you can run the following command to test the renewal process:
 
-    This will output something similar to the following, which will provide assurance that the renewal process is functioning correctly:
+```bash
+sudo certbot renew --dry-run
+```
 
-    ```plaintext
-    Saving debug log to /var/log/letsencrypt/letsencrypt.log
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    Processing /etc/letsencrypt/renewal/yourdomain.com.conf
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    Simulating renewal of an existing certificate for *.yourdomain.com
+This will output something similar to the following, which will provide assurance that the renewal process is functioning correctly:
 
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    Congratulations, all simulated renewals succeeded:
-    /etc/letsencrypt/live/dev.godot4mmo2024.yourdomain.com/fullchain.pem (success)
-    /etc/letsencrypt/live/yourdomain.com/fullchain.pem (success)
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    ```
+```plaintext
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Processing /etc/letsencrypt/renewal/yourdomain.com.conf
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Simulating renewal of an existing certificate for *.yourdomain.com
 
-    If you see this output, you should be good to go!
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Congratulations, all simulated renewals succeeded:
+/etc/letsencrypt/live/dev.godot4mmo2024.yourdomain.com/fullchain.pem (success)
+/etc/letsencrypt/live/yourdomain.com/fullchain.pem (success)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+```
+
+If you see this output, you should be good to go!
 
 ### Running the server
 
@@ -696,20 +735,20 @@ services:
     # ...
     volumes:
       # ...
-      - /etc/letsencrypt/live/yourdomain.com:/gameserver/certs:ro
+      - /etc/letsencrypt:/gameserver/certs:ro
 
     ports:
       - "${PORT}:${PORT}"
 ```
 
-Be sure to replace `yourdomain.com` with your actual domain name. The `:ro` at the end of the volume mount for the certificates means that the files will be read-only inside the container. This is a good security practice, as it means that the container cannot modify the certificates.
+The `:ro` at the end of the volume mount for the certificates means that the files will be read-only inside the container. This is a good security practice, as it means that the container cannot modify the certificates.
 
 You will also need to create the `.env` file next to the `compose.yaml` file, and add the following lines:
 
 ```ini
 PORT=8080
-CERT_PATH=/etc/letsencrypt/live/yourdomain.com/fullchain.pem
-KEY_PATH=/etc/letsencrypt/live/yourdomain.com/privkey.pem
+CERT_PATH=/gameserver/certs/live/yourdomain.com/fullchain.pem
+KEY_PATH=/gameserver/certs/live/yourdomain.com/privkey.pem
 ```
 
 Now, you can run the container on your server by running the following command in the same directory as the `compose.yaml` file:
@@ -747,9 +786,6 @@ You might get an error saying that the certificate and private key files can't b
 If you see the following output, then you have successfully started your server:
 
 ```plaintext
-2024/11/27 09:09:40 File/folder not found at /gameserver/data - going to try .
-2024/11/27 09:09:40 File/folder found at .
-2024/11/27 09:09:40 Starting server on :8080
 2024/11/27 09:09:40 File/folder found at /path/to/your/certs/fullchain.pem
 2024/11/27 09:09:40 File/folder found at /path/to/your/certs/privkey.pem
 2024/11/27 09:09:40 Placing spores...
