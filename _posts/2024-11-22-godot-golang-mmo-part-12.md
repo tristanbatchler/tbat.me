@@ -206,8 +206,7 @@ func resolveLiveCertsPath(certPath string) string {
 		return coalescePaths(certPath, filepath.Join(dockerMountedCertsDir, pathTail))
 	}
 
-	log.Printf("Failed to resolve live certs path: %s", certPath)
-	return ""
+	return certPath
 }
 
 func main() {
@@ -238,6 +237,7 @@ func main() {
 	cfg.CertPath = resolveLiveCertsPath(cfg.CertPath)
 	cfg.KeyPath = resolveLiveCertsPath(cfg.KeyPath)
 
+	log.Printf("Using cert at %s and key at %s", cfg.CertPath, cfg.KeyPath)
 	err = http.ListenAndServeTLS(addr, cfg.CertPath, cfg.KeyPath, nil)
 
 	if err != nil {
@@ -248,6 +248,7 @@ func main() {
 		}
 	}
 }
+
 ```
 
 We have made a slight change to how the `NewHub` function is called. We are now calling it with the path to a "data" directory. This represents where the server will store the database file. Unless you have a folder at `/gameserver/data` on your computer, though, the database file will be stored inside `/server/cmd/`, just as it was before. This might seem mysterious now, but it will make sense when we get to the Docker section.
@@ -778,19 +779,44 @@ KEY_PATH=/etc/letsencrypt/live/yourdomain.com/privkey.pem
 Then, running the following command in the `server/` directory:
 
 ```bash
-go run cmd/main.go --config .env
+go build -ldflags "-s -w" cmd/main.go
+./main --config .env # or ./main.exe --config .env on Windows
 ```
 
-You might get an error saying that the certificate and private key files can't be loaded. This is because the `/etc/letsencrypt/live/` directory is protected, and the server doesn't have permission to read the files. You can fix this by trying to run the server as root <small>*(you'll have to make sure `go` is on the root's path, this could get messy so I will avoid discussing it here)*</small>, or by copying the files to a directory that the server has access to, and changing the `CERT_PATH` and `KEY_PATH` in the `.env` file to point to the new directory. This is explained in more detail in [the note the previous section](#copy-certs).
+You might get an error saying that the certificate and private key files can't be loaded. This is because the `/etc/letsencrypt/live/` directory is protected, and the server doesn't have permission to read the files. You can fix this by trying to run the server as a privileged user
+
+```bash
+sudo ./main --config .env # or right-clicking and running as administrator on Windows
+```
+
+If you are uncomfortable with running the server as root, the alternative solution is to copy the certificate and key to a directory that the server *does* have access to, and change the variables in the `.env` file to point to this new directory. This is explained in more detail in [the note the previous section](#copy-certs).
 
 If you see the following output, then you have successfully started your server:
 
 ```plaintext
 2024/11/27 09:09:40 File/folder found at /path/to/your/certs/fullchain.pem
 2024/11/27 09:09:40 File/folder found at /path/to/your/certs/privkey.pem
+2024/11/27 09:09:40 Using cert at /path/to/your/certs/fullchain.pem and key at /path/to/your/certs/privkey.pem
 2024/11/27 09:09:40 Placing spores...
 2024/11/27 09:09:40 Awaiting client registrations
 ```
+
+To run the server in the background on Linux, so you can close your terminal and the server will keep running, you can use the `nohup` command:
+
+```bash
+nohup ./main --config .env &
+```
+
+To stop the server, you will have to kill the process with these commands (replace 8080 with your port number)
+
+```bash
+sudo lsof -i :8080
+sudo kill -9 <PID>
+```
+
+where `<PID>` is the number in the `PID` column of the output of the `lsof` command.
+
+On Windows, you can look at making the server a service, which I am sure you can find a guide for online.
 
 You should be able to connect to your server from the client by changing the `WS.connect_to_url` call in `res://states/entered/entered.gd` to the following (be sure to replace `yourdomain.com` with your actual domain name, and `8080` with the port you set in the `.env` file):
 
@@ -872,11 +898,14 @@ Congratulations! Now you can share the link to your game with your friends and p
 
 ## Publishing the client (self-hosted)
 
-The alternative, which has benefits like being able to use threads, and have better support for mobile users, is to host your game on your own website. To get proper threading support, just make sure the web server is hosted with the same domain as the game, since you'll need cross-origin requests to work. You can host your game on a static site host like [Netlify](https://www.netlify.com/), or you can even serve it on the same server that's running your game server. I will show you how to achieve the latter by making some modifications to our server code.
+The alternative to itch.io, which has benefits like being able to use threads, and have better support for mobile users, is to host your game on your own website. To get proper threading support, just make sure the web server is hosted with the same domain as the game, since you'll need cross-origin requests to work. You can read more about this on the official [Godot documentation](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html#serving-the-files).
+
+
+You can host your game on a static site host like [Netlify](https://www.netlify.com/), or you can even serve it on the same server that's running your game server. I will show you how to achieve the latter by making some modifications to our server code.
 
 ### Uploading the HTML5 export folder to the game server
 
-We already have a data bucket mounted to our server, so we can use that to store the HTML5 export folder. You can upload the folder to the bucket by visiting the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and clicking the "Upload files" button. Just make sure it lives in a folder called `html5`, separate from the database file, since we do not want the server to serve the database file to the client.
+We already have a data directory mounted to our server, so we can use that to store the HTML5 export folder. You can upload the folder to the bucket by visiting the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and clicking the "Upload files" button. Just make sure it lives in a folder called `html5`, separate from the database file, since we do not want the server to serve the database file to the client.
 
 Now, we need to modify the server to serve the HTML5 export folder as a static site. We can do this by adding a new handler to the server that serves files from the HTML5 export folder.
 
