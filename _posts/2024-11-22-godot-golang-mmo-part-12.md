@@ -456,17 +456,21 @@ services:
     env_file:
       - .env
     volumes:
-      - /path/to/your/data/directory:/gameserver/data
+      - ${DATA_PATH}:/gameserver/data
 
     ports:
       - "${PORT}:${PORT}"
 ```
 
-This is a [Docker compose](https://docs.docker.com/compose/) file, which is a convenient way to define the configuration for our Docker container, and run it with a simple command. You will need to create a folder on your computer where you want to store the database file, and replace `/path/to/your/data/directory` with the path to that folder.
+This is a [Docker compose](https://docs.docker.com/compose/) file, which is a convenient way to define the configuration for our Docker container, and run it with a simple command. You will need to create a folder on your computer to store the database file, and set the a new environment variable in the `.env` file:
+
+```ini
+DATA_PATH=/path/to/your/data/folder
+```
+
+Note we are also conveniently grabbing the port from the `.env` file, so we only need to change these things in one place, rather than having to mess with the `Dockerfile` or `compose.yaml` file when we want to change the port or the path to the data directory.
 
 The reason we are not simply letting the server create the database in its own directory is because the data in the container is *ephemeral*. Meaning, if the container is stopped and started again, the data will be lost. By mounting a volume to the host machine, we can persist the data across container restarts. I am keeping the database on my local machine on my desktop in a folder called `RadiusRumbleData`. 
-
-We are also conveniently grabbing the port from the `.env` file, so we only need to change it in one place.
 
 Now, to build and run the container, you only need to run the following command in the `server/` directory (if you are on Windows, make sure Docker is running in the background first):
 
@@ -474,7 +478,7 @@ Now, to build and run the container, you only need to run the following command 
 docker compose up
 ```
 
-This will build the Docker image, create a container from it, and start the container. It might take a couple minutes the first time, so now is a good time for a coffee break.
+This will build the Docker image, create a container from it, and start the container. It might take a couple of minutes the first time, so now is a good time for a coffee break.
 
 You should see the server start up in the terminal, and you should be able to connect to it from the client. If you want to stop the container, you can just press `Ctrl+C` in the terminal, and the container will be stopped and removed. To run the container in the background, you can add the `-d` flag:
 
@@ -750,6 +754,7 @@ You will also need to create the `.env` file next to the `compose.yaml` file, an
 
 ```ini
 PORT=8080
+DATA_PATH=/path/to/your/data/folder
 CERT_PATH=/gameserver/certs/live/yourdomain.com/fullchain.pem
 KEY_PATH=/gameserver/certs/live/yourdomain.com/privkey.pem
 ```
@@ -774,6 +779,7 @@ If you don't want to use Docker, you can run the server directly on your server 
 
 ```ini
 PORT=8080
+DATA_PATH=/path/to/your/data/folder
 CERT_PATH=/etc/letsencrypt/live/yourdomain.com/fullchain.pem
 KEY_PATH=/etc/letsencrypt/live/yourdomain.com/privkey.pem
 ```
