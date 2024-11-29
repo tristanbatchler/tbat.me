@@ -20,7 +20,9 @@ Test your installation by running `go version` in your terminal. You should see 
 
 [The Godot website](https://godotengine.org) should detect your OS and provide you with the latest download link. One thing I love about Godot is that it doesn't require an installation, you can simply unzip the download wherever you like and run the executable!
 
-> At the time of writing, Godot 4.4 is almost out. It has a feature I am excited to use, so I will be using experimental release **[4.4-dev4](https://godotengine.org/download/archive/4.4-dev4)**. If you are reading this before 4.4 is release, you will have the smoothest experience following along with the experimental release as well. If you are reading this after 4.4 has been release, then please use the latest stable version.
+> At the time of writing, Godot 4.4 is almost out. It has a feature I am excited to use, so I will be using experimental release **[4.4-dev3](https://godotengine.org/download/archive/4.4-dev3)**. If you are reading this before 4.4 is released, you will have the smoothest experience following along with this experimental release as well. If you are reading this after 4.4 has been released, then please use the latest stable version.
+> 
+> ⚠️ **Note:** If you are planning on hosting the game on your own server and have players connect using their web browsers, you will want to avoid 4.4-dev4+ for now. There is [an issue](https://github.com/godotengine/godot/issues/99028) getting the HTML5 export to connect to websocket servers when they are running on a port other than 443. This is a known issue and will likely be fixed in the future, but to be safe, stick with 4.4-dev3 for now.
 
 One thing to ensure is that you get the **Standard** version of Godot, not the .NET version. This allows us to code in GDScript in the built-in editor, which is what we will be doing for this project.
 
