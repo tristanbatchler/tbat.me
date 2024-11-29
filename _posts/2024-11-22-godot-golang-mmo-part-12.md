@@ -129,127 +129,96 @@ Basically the only thing we need to know for now is the server will now accept a
 package main
 
 import (
-	"flag"
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strconv"
-	"strings"
+    "flag"
+    "fmt"
+    "log"
+    "net/http"
+    "os"
+    "strconv"
 
-	"server/internal/server"
-	"server/internal/server/clients"
+    "server/internal/server"
+    "server/internal/server/clients"
 
-	"github.com/joho/godotenv"
+    "github.com/joho/godotenv"
 )
 
 // If the server is running in a Docker container, the data directory is always mounted here:
 const (
-	dockerMountedDataDir  = "/gameserver/data"
-	dockerMountedCertsDir = "/gameserver/certs/live"
+    dockerMountedDataDir = "/gameserver/data"
 )
 
 type config struct {
-	DataPath string
-	CertPath string
-	KeyPath  string
-	Port     int
+    DataPath string
+    Port     int
 }
 
 var (
-	defaultConfig = &config{Port: 8080}
-	configPath    = flag.String("config", ".env", "Path to the config file")
+    defaultConfig = &config{Port: 8080}
+    configPath    = flag.String("config", ".env", "Path to the config file")
 )
 
 func loadConfig() *config {
-	cfg := &config{
-		Port:     defaultConfig.Port,
-		DataPath: os.Getenv("DATA_PATH"),
-		CertPath: os.Getenv("CERT_PATH"),
-		KeyPath:  os.Getenv("KEY_PATH"),
-	}
+    cfg := &config{
+        Port:     defaultConfig.Port,
+        DataPath: os.Getenv("DATA_PATH"),
+    }
 
-	port, err := strconv.Atoi(os.Getenv("PORT"))
-	if err != nil {
-		log.Printf("Error parsing PORT, using %d", cfg.Port)
-		return cfg
-	}
-	cfg.Port = port
-	return cfg
+    port, err := strconv.Atoi(os.Getenv("PORT"))
+    if err != nil {
+        log.Printf("Error parsing PORT, using %d", cfg.Port)
+        return cfg
+    }
+    cfg.Port = port
+    return cfg
 }
 
 func coalescePaths(fallbacks ...string) string {
-	for i, path := range fallbacks {
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			message := fmt.Sprintf("File/folder not found at %s", path)
-			if i < len(fallbacks)-1 {
-				log.Printf("%s - going to try %s", message, fallbacks[i+1])
-			} else {
-				log.Printf("%s - no more fallbacks to try", message)
-			}
-		} else {
-			log.Printf("File/folder found at %s", path)
-			return path
-		}
-	}
-	return ""
-}
-
-func resolveLiveCertsPath(certPath string) string {
-	normalizedPath := strings.ReplaceAll(certPath, "\\", "/")
-	pathComponents := strings.Split(normalizedPath, "/live/")
-
-	if len(pathComponents) >= 2 {
-		pathTail := pathComponents[len(pathComponents)-1]
-
-		// Try to load the certificates exactly as they appear in the config,
-		// otherwise assume they are in the Docker-mounted folder for certs
-		return coalescePaths(certPath, filepath.Join(dockerMountedCertsDir, pathTail))
-	}
-
-	return certPath
+    for i, path := range fallbacks {
+        if _, err := os.Stat(path); os.IsNotExist(err) {
+            message := fmt.Sprintf("File/folder not found at %s", path)
+            if i < len(fallbacks)-1 {
+                log.Printf("%s - going to try %s", message, fallbacks[i+1])
+            } else {
+                log.Printf("%s - no more fallbacks to try", message)
+            }
+        } else {
+            log.Printf("File/folder found at %s", path)
+            return path
+        }
+    }
+    return ""
 }
 
 func main() {
-	flag.Parse()
-	err := godotenv.Load(*configPath)
-	cfg := defaultConfig
-	if err != nil {
-		log.Printf("Error loading .env file, defaulting config to %+v", defaultConfig)
-	} else {
-		cfg = loadConfig()
-	}
+    flag.Parse()
+    err := godotenv.Load(*configPath)
+    cfg := defaultConfig
+    if err != nil {
+        log.Printf("Error loading .env file, defaulting config to %+v", defaultConfig)
+    } else {
+        cfg = loadConfig()
+    }
 
-	// Try to load the Docker-mounted data directory. If that fails,
-	// fall back to the current directory
-	cfg.DataPath = coalescePaths(cfg.DataPath, dockerMountedDataDir, ".")
-	hub := server.NewHub(cfg.DataPath)
+    // Try to load the Docker-mounted data directory. If that fails,
+    // fall back to the current directory
+    cfg.DataPath = coalescePaths(cfg.DataPath, dockerMountedDataDir, ".")
+    hub := server.NewHub(cfg.DataPath)
 
-	// Define handler for WebSocket connections
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		hub.Serve(clients.NewWebSocketClient, w, r)
-	})
+    // Define handler for WebSocket connections
+    http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+        hub.Serve(clients.NewWebSocketClient, w, r)
+    })
 
-	// Start the server
-	go hub.Run()
-	addr := fmt.Sprintf(":%d", cfg.Port)
+    // Start the server
+    go hub.Run()
+    addr := fmt.Sprintf(":%d", cfg.Port)
 
-	log.Printf("Starting server on %s", addr)
+    log.Printf("Starting server on %s", addr)
 
-	cfg.CertPath = resolveLiveCertsPath(cfg.CertPath)
-	cfg.KeyPath = resolveLiveCertsPath(cfg.KeyPath)
-
-	log.Printf("Using cert at %s and key at %s", cfg.CertPath, cfg.KeyPath)
-	err = http.ListenAndServeTLS(addr, cfg.CertPath, cfg.KeyPath, nil)
-
-	if err != nil {
-		log.Printf("No certificate found (%v), starting server without TLS", err)
-		err = http.ListenAndServe(addr, nil)
-		if err != nil {
-			log.Fatalf("Failed to start server: %v", err)
-		}
-	}
+    err = http.ListenAndServe(addr, nil)
+    if err != nil {
+        log.Fatalf("Failed to start server: %v", err)
+    }
 }
 ```
 
@@ -300,7 +269,7 @@ Now, you can start your server as your usually would, and it should not print an
 
 ## Using secure websockets on the server
 
-Now that we have a development "domain" and TLS certificate, and an easy eay to customise our server config, we have the all-clear to reconfigure our server to run on secure websockets. 
+If you have [configured your development environment](#reconfiguring-our-development-environment) correctly, you should now have a self-signed certificate and private key for your development domain. Now that we have that, and an easy to customize our server config, we have the all-clear to reconfigure our server to run on secure websockets. 
 
 ```directory
 /server/.env
@@ -325,6 +294,7 @@ Now, go back to the `main.go` file and make the following changes:
 import (
     "path"
     "path/filepath"
+    "strings"
     // ...
 )
 
@@ -349,16 +319,30 @@ func loadConfig() *config {
     // ...
 }
 
+func resolveLiveCertsPath(certPath string) string {
+    normalizedPath := strings.ReplaceAll(certPath, "\\", "/")
+    pathComponents := strings.Split(normalizedPath, "/live/")
+
+    if len(pathComponents) >= 2 {
+        pathTail := pathComponents[len(pathComponents)-1]
+
+        // Try to load the certificates exactly as they appear in the config,
+        // otherwise assume they are in the Docker-mounted folder for certs
+        return coalescePaths(certPath, filepath.Join(dockerMountedCertsDir, pathTail))
+    }
+
+    return certPath
+}
+
 func main() {
     // ...
 
     log.Printf("Starting server on %s", addr)
 
-    // Try to load the certificates exactly as they appear in the config,
-    // otherwise assume they are in the Docker-mounted folder for certs
-    cfg.CertPath = coalescePaths(cfg.CertPath, path.Join(dockerMountedCertsDir, filepath.Base(cfg.CertPath)))
-    cfg.KeyPath = coalescePaths(cfg.KeyPath, path.Join(dockerMountedCertsDir, filepath.Base(cfg.KeyPath)))
+    cfg.CertPath = resolveLiveCertsPath(cfg.CertPath)
+    cfg.KeyPath = resolveLiveCertsPath(cfg.KeyPath)
 
+    log.Printf("Using cert at %s and key at %s", cfg.CertPath, cfg.KeyPath)
     err = http.ListenAndServeTLS(addr, cfg.CertPath, cfg.KeyPath, nil)
 
     if err != nil {
@@ -378,7 +362,7 @@ When you try to run the client, you should see an error in the console saying so
 2024/11/23 14:54:54 http: TLS handshake error from [::1]:52596: client sent an HTTP request to an HTTPS server
 ```
 
-If you see this, then you know that your server is running on secure websockets!
+If you see this, then you know that your server is running on secure websockets! Don't worry, we will fix the client in the next section.
 
 [*Back to top*](#how-to-follow-this-part)
 
@@ -405,6 +389,8 @@ Now when you run the client, there should be no errors in the server logs, and y
 > If you still have errors, check the Godot debugger output for any error codes you can look up, and likewise, check the server logs for any errors. If you are still stuck, feel free to reach out in [the Discord server](https://discord.gg/tzUpXtTPRd).
 
 Congratulations if you've made it this far! There is a great chance that you will have no problems deploying to production, since, as far as Godot is aware, you are already running on a production server (it has no idea that you are running on your own computer).
+
+Don't expect the game to run in the browser just yet, though, but keep following along, and we will get there soon!
 
 [*Back to top*](#how-to-follow-this-part)
 
@@ -680,10 +666,10 @@ sudo mv acme-dns-auth.py /etc/letsencrypt/
 ```
 
 #### 3. Obtain a certificate
-Now, you're good to go! Run the following command to obtain a wildcard certificate which will be good for your domain and all subdomains (because why not?):
+Now, you're good to go! Run the following command to obtain a certificate for your domain:
 
 ```bash
-sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d \*.yourdomain.com
+sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d yourdomain.com
 ```
 
 Be sure to replace `yourdomain.com` with your actual domain name. You will be prompted to create a DNS TXT record with a specific value; the output will look something like this:
@@ -700,6 +686,15 @@ Waiting for verification...
 At that point, you'll need to go back to your DNS provider from the previous step and create a new CNAME record for `_acme-challenge.`, pointing to the value provided by Certbot. If you can, it's recommended to set the TTL to the lowest value possible to speed up the process. 
 
 Once you've done that, you can return to your terminal and press `Enter` to continue. If everything goes well, you should see a message saying that the certificate was successfully obtained.
+
+```plaintext
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/yourdomain.com/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/yourdomain.com/privkey.pem
+This certificate expires on 2025-02-27.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+```
 
 The certificate and private key will live in `/etc/letsencrypt/live/yourdomain.com/`, but the folder is protected. There are a couple options: you can tell Docker to mount this folder as the certs volume and run your container as root, or you can copy the files to a folder that you *do* have access to. I'm going to go with the former option, since it's more "set and forget", and I am comfortable with any, if any, security implications. 
 
@@ -718,12 +713,11 @@ Saving debug log to /var/log/letsencrypt/letsencrypt.log
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Processing /etc/letsencrypt/renewal/yourdomain.com.conf
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Simulating renewal of an existing certificate for *.yourdomain.com
+Simulating renewal of an existing certificate for yourdomain.com
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Congratulations, all simulated renewals succeeded:
-/etc/letsencrypt/live/dev.godot4mmo2024.yourdomain.com/fullchain.pem (success)
-/etc/letsencrypt/live/yourdomain.com/fullchain.pem (success)
+  /etc/letsencrypt/live/yourdomain.com/fullchain.pem (success)
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ```
 
@@ -933,15 +927,15 @@ func main() {
     // ...
 
     // Define handler for serving the HTML5 export
-	exportPath := filepath.Join(cfg.DataPath, "html5")
-	if _, err := os.Stat(exportPath); err != nil {
-		if !os.IsNotExist(err) {
-			log.Fatalf("Error checking for HTML5 export: %v", err)
-		}
-	} else {
-		log.Printf("Serving HTML5 export from %s", exportPath)
-		http.Handle("/", addHeaders(http.StripPrefix("/", http.FileServer(http.Dir(exportPath)))))
-	}
+    exportPath := filepath.Join(cfg.DataPath, "html5")
+    if _, err := os.Stat(exportPath); err != nil {
+        if !os.IsNotExist(err) {
+            log.Fatalf("Error checking for HTML5 export: %v", err)
+        }
+    } else {
+        log.Printf("Serving HTML5 export from %s", exportPath)
+        http.Handle("/", addHeaders(http.StripPrefix("/", http.FileServer(http.Dir(exportPath)))))
+    }
 
     // Define handler for WebSocket connections
     // ...
