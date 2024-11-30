@@ -327,7 +327,7 @@ func resolveLiveCertsPath(certPath string) string {
 
         // Try to load the certificates exactly as they appear in the config,
         // otherwise assume they are in the Docker-mounted folder for certs
-        return coalescePaths(certPath, filepath.Join(dockerMountedCertsDir, pathTail))
+        return coalescePaths(certPath, filepath.Join(dockerMountedCertsDir, "live", pathTail))
     }
 
     return certPath

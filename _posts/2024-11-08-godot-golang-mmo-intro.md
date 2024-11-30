@@ -15,7 +15,7 @@ For this series, we’ll develop Radius Rumble, a Godot-4-and-Golang-powered clo
 ![Radius Rumble](/assets/css/images/posts/2024/11/08/screenshot.png)
 Don't worry, the implementation will be general and flexible enough that you will have no problems adapting it to your own game ideas.
 
-You can check out the final project [here](https://dev.godot4mmo2024.tbat.me:42523).
+You can check out the final project [here](https://radius.rumble.tbat.me).
 
 ## Why Golang?
 Some of the most common feedback I received on the original project was that Python is not a good choice for a server-side language. The reasons for having this opinion can often be debatable, and I still stand by the opinion it's important to choose a language that you are comfortable with and can get the job done. However, I can't deny that a language more intended for server-side programming and optimized for performance would be a better choice, even if it's not as accessible as Python.
