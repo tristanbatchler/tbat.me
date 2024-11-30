@@ -292,7 +292,6 @@ Now, go back to the `main.go` file and make the following changes:
 
 ```go
 import (
-    "path"
     "path/filepath"
     "strings"
     // ...
@@ -389,8 +388,6 @@ Now when you run the client, there should be no errors in the server logs, and y
 > If you still have errors, check the Godot debugger output for any error codes you can look up, and likewise, check the server logs for any errors. If you are still stuck, feel free to reach out in [the Discord server](https://discord.gg/tzUpXtTPRd).
 
 Congratulations if you've made it this far! There is a great chance that you will have no problems deploying to production, since, as far as Godot is aware, you are already running on a production server (it has no idea that you are running on your own computer).
-
-Don't expect the game to run in the browser just yet, though, but keep following along, and we will get there soon!
 
 [*Back to top*](#how-to-follow-this-part)
 
@@ -825,10 +822,8 @@ You should be able to connect to your server from the client by changing the `WS
 ```gd
 func _ready() -> void:
     # ...
-    WS.connect_to_url("wss://yourdomain.com:8080/ws", TLSOptions.client(null, "*.yourdomain.com"))
+    WS.connect_to_url("wss://yourdomain.com:8080/ws", TLSOptions.client())
 ```
-
-If you are not using a wildcard certificate, i.e. your certificate exactly matches your domain, you can remove the arguments to `TLSOptions.client`.
 
 If you get an error, feel free to reach out in [the Discord server](https://discord.gg/tzUpXtTPRd).
 
@@ -960,7 +955,15 @@ docker push yourdockerhubusername/gameserver:latest
 
 Then, for Google Cloud Run, you can simply click the "Deploy" button to redeploy the container.
 
-You should be able to visit your server in your web browser at https://your-cloud-run-url if you are using Google Cloud, or https://yourdomain.com:8080 (or whatever port your game is running on) if you are self-hosting. You should see your game running in your browser, and you should be able to connect to the server from the client.
+If you are self-hosting, you can rebuild the server and run it again with the following commands:
+
+```bash
+go build -ldflags "-s -w" cmd/main.go
+./main --config .env # or ./main.exe --config .env on Windows
+# or use sudo / run as administrator if your cert files are protected
+```
+
+You should be able to visit your server in your web browser at [https://your-cloud-run-url]() if you are using Google Cloud, or [https://yourdomain.com:8080]() (or whatever port your game is running on) if you are self-hosting. You should see your game running in your browser, and you should be able to connect to the server from the client.
 
 ## Conclusion
 
