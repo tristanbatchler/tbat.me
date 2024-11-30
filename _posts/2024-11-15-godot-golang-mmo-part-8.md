@@ -1,12 +1,14 @@
 ---
-title: §08 Adding Scores and Competition to Golang MMO with Godot 4
-description: We are going to let our players grow and fight to be the best in the game, all while letting the Go server validate what's happening to prevent cheating.
+title: "§08 Introduce Competitive Metrics to Your Godot 4 MMO with Go"
+description: "Encourage competition! Add scoring mechanics and server-side validation to ensure fair play as players strive for the top spot."
 redditurl: 
 ---
 
-Welcome back! In the [last part](/2024/11/14/godot-golang-mmo-part-7), we added spores to our game, and gave players the opportunity to eat them. Today, we are going to expand upon that by letting the server decide if the player should grow after eating spores, then tell all other players about the change. This inherently will give rise to the concept of scores, and combined with the possibility for players to eat each other, we will have a competitive game.
+Welcome back! In the [last part](/2024/11/14/godot-golang-mmo-part-7), we introduced spores that players could eat to grow. Now, we’ll take things further by letting the server determine whether a player should grow after eating a spore, then notifying all other players of the change.
 
-Here is a preview of what we will achieve today:
+This opens the door to competitive gameplay, as we begin to incorporate scoring mechanics. With the added possibility of players eating each other, we’ll have the foundation for a truly competitive MMO. Let’s jump in and bring this to life!
+
+Here is a sneak peek of what we will achieve today:
 <video controls>
   <source src="/assets/css/images/posts/2024/11/15/ch8-preview.webm" type="video/webm">
   Your browser does not support the video tag.

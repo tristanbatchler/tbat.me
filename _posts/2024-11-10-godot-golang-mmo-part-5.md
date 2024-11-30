@@ -1,12 +1,12 @@
 ---
-title: §05 Adding a database to your Godot 4 + Golang MMO to store user accounts
-description: How to setup an authentication system for user accounts in a MMO game using a SQLite database, with Golang and Godot 4.
+title: "§05 Secure Player Accounts with a Database in Your Godot 4 + Go MMO"
+description: "Implement user authentication with Go sqlc to manage player accounts and secure your MMO. This guide covers everything from setup to integration and security."
 redditurl: 
 ---
 
-In [the previous post](/2024/11/10/godot-golang-mmo-part-4), we had just migrated our game logic to a brand-new state machine system. In this tutorial, we will be adding a database to our MMO to store user information. This will allow us to create an authentication system for user accounts, and securely store this data.
+In [the previous post](/2024/11/10/godot-golang-mmo-part-4), we introduced a state machine system to better organize our game logic. Now, it’s time to add a crucial feature: player accounts. In this tutorial, we’ll integrate a database into our MMO to enable user authentication and securely store player information.
 
-For the database, we will be using SQLite3, a lightweight database engine that is easy to use and perfect for small-to-medium projects. SQLite's simplicity does not compromise its power or speed, however, so it is more than capable of handling the needs of our MMO. If you have doubts, however, we are working in a way that is not difficult to swap out SQLite for another database engine, such as PostgreSQL or MySQL.
+We’ll use SQLite, a lightweight yet powerful database engine ideal for small-to-medium projects. While SQLite is our choice for this series, the setup will be flexible enough to swap in alternatives like PostgreSQL or MySQL if needed.
 
 We have made the choice to **not** use an ORM (Object-Relational Mapping) library for this project. While ORMs can be useful, they can also be overly complex and frankly overkill for a project of this size. We will be hand-writing our SQL queries, and compiling them to Golang code with `sqlc`, which we briefly touched on in [the introduction to this series](/2024/11/08/godot-golang-mmo-intro#other-key-changes-in-this-project). This will give us total control over the database and give us full visibility into what is happening. If you don't have experience with SQL, don't worry! We will be writing simple queries that are easy to understand, and I will explain what each query does.
 

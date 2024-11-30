@@ -1,10 +1,10 @@
 ---
-title: §10 Adding the final touches to our Godot 4 Go MMO
-description: Let's add another feature to the game and allow players to search the leaderboard for their friends! These are the final features we will be adding to our game, before we move on to polishing everything up and deploying.
+title: "§10 Add the Final Touches to Your Godot 4 Go MMO"
+description: "As we approach the finish line, we’ll implement friend search functionality and finalize the core features of our MMO."
 redditurl: 
 ---
 
-This is the final part of the series we will concern ourselves with adding new features to the game. We just have two more features to add, and then we will move on to polishing everything up and deploying the game over the next two parts.
+This is the last part of the series we will concern ourselves with adding new features to the game. We just have two more features to add, and then we will move on to polishing everything up and deploying the game over the next two parts.
 
 As a reminder, in the [last part](/2024/11/16/godot-golang-mmo-part-9/), we added a hiscores and a leaderboard to the game. In this part, we want to:
 1. Give players a random chance to drop a spore and lose mass over time, giving them a reason to keep eating as much as possible
@@ -269,9 +269,9 @@ func (g *InGame) syncPlayer(delta float64) {
 }
 ```
 
-Now, over to the spore consumption validation logic we implemented in <a href="/2024/11/15/godot-golang-mmo-part-8#spore-consumption-validation" target="_blank">§08</a>. We will add a new check to ensure that the spore wasn't dropped after the time it takes for the player to travel combined radius of the player and the spore. This works because the minimum distance the player has to travel so the spore is not underneath them is their own radius, then the spore's radius. Then, best case scenario, the player turns around instantly and consumes the spore.
+Now, over to the spore consumption validation logic we implemented in <a href="/2024/11/15/godot-golang-mmo-part-8#spore-consumption-validation" target="_blank">§08</a>. We will add a new check to ensure that the spore wasn't dropped after the time it takes for the player to travel combined radius of the player and the spore. This works because the minimum distance the player has to travel such that the spore is not underneath them is their own radius, then the spore's radius. Then, best case scenario, the player turns around instantly and consumes the spore.
 
-We know the player's speed in units per second, since the server assigns it to the player. Rearranging the simlple formula $$\text{distance} = \text{speed} \times \text{time}$$, we know that $$\text{time} = \frac{\text{distance}}{\text{speed}}$$. So, the minimum time (in seconds) it should take for the player to consume the spore is the sum of the radii of the player and the spore, divided by the player's speed. We will add this check to the `handleSporeConsumed` method:
+We know the player's speed in units per second, since the server assigns it to the player. Rearranging the simple formula $$\text{distance} = \text{speed} \times \text{time}$$, we know that $$\text{time} = \frac{\text{distance}}{\text{speed}}$$. So, the minimum time (in seconds) it should take for the player to consume the spore is the sum of the radii of the player and the spore, divided by the player's speed. We will add this check to the `handleSporeConsumed` method:
 
 ```directory
 /server/internal/server/states/ingame.go
@@ -304,13 +304,13 @@ func (g *InGame) validatePlayerDropCooldown(spore *objects.Spore, buffer float64
 }
 ```
 
-We also include a buffer distance in this check, to allow for a little bit of leeway in case the server isn't synced perfectly with the client. This buffer is set to 10 units, but you can adjust this value to your liking.
+We also include a buffer distance in this check, to allow for a little of leeway in case the server isn't synced perfectly with the client. This buffer is set to 10 units, but you can adjust this value to your liking.
 
 Now, if you run the game, you shouldn't see any difference. The spores will still drop, and the players will still consume them. However, if you were to modify the client to consume spores that are underneath them (i.e. undo the changes we made to the client just above), you'll see the server complaining about the player dropping the spore too recently, and the player will appear to consume the spore but keep shrinking regardless. Any players witnessing this will see the player shrinking, but the dropped spores will still be there.
 
 ## Searching the leaderboard
 
-Our leaderboard currently shows the top 10 players, but it would be even more exciting if we could search for a specific player who maybe isn't in the top 10. This is what we will be going for in this sesion.
+Our leaderboard currently shows the top 10 players, but it would be even more exciting if we could search for a specific player who maybe isn't in the top 10. This is what we will be going for in this session.
 
 <video controls>
   <source src="/assets/css/images/posts/2024/11/18/hiscores_demo.webm" type="video/webm">
@@ -503,7 +503,7 @@ func _on_search_button_pressed() -> void:
     WS.send(packet)
 ```
 
-This code will send the search query to the server when the search button is pressed, or when the user presses enter in the line edit. When the server responds, we are already mostly set up to handle the response, since we are listening to `HiscoreBoardMessage`s already <small>(although there are some issues)</small>. We just need to handle the case where the server responds with a `DenyResponse`.
+This code will send the search query to the server when the search button is pressed, or when the user presses Enter in the line edit. When the server responds, we are already mostly set up to handle the response, since we are listening to `HiscoreBoardMessage`s already <small>(although there are some issues)</small>. We just need to handle the case where the server responds with a `DenyResponse`.
 
 Let's add a `Log (log.gd)` node to the scene, just under the `Hiscores` node, and set its **Custom Minimum Size**'s **y** value to, say, 100px. This will allow us to display the error message to the player if the server responds with a `DenyResponse`. 
 ![Hiscores scene tree with log node](/assets/css/images/posts/2024/11/18/hiscores_scene_tree_log.png)

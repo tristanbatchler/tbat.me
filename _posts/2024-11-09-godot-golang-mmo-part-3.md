@@ -1,10 +1,12 @@
 ---
-title: §03 Creating a chatroom with Godot 4 for an MMO with Go
-description: Learn how to create a chatroom in Godot 4 for an MMO with Go using WebSockets and Protocol Buffers.
+title: "§03 Add Real-Time Chat to Your Godot 4 MMO with Go"
+description: "What's an MMO without a way to chat with your friends? Learn how to implement an interactive chatroom for your MMO using WebSockets and Protocol Buffers a solid foundation for your MMO."
 redditurl: 
 ---
 
-We've been neglecting the client side... until now. In [the last post](/2024/11/09/godot-golang-mmo-part-2), we focused on setting up the Go server with WebSockets and Protocol Buffers for message handling. Now it's time to shift gears and build the client side. In this tutorial, we will dive into Godot 4 to implement a basic chatroom where users can send and receive messages in real-time. We'll walk through setting up the client, connecting it to the server, and creating a functional log to display chat messages. By the end of this post, you'll have a working chat system ready for further expansion!
+We’ve been focusing on the server side—but now it’s time to bring the client into the mix. In [the last post](/2024/11/09/godot-golang-mmo-part-2), we set up a Go server with WebSockets and Protocol Buffers to handle messages. Now, we’ll turn our attention to Godot 4 and implement a real-time chatroom.
+
+In this tutorial, we’ll set up the client, connect it to the server, and create a chat log to display messages. By the end, players will be able to send and receive messages in real-time—a foundational feature for any MMO.
 
 ## The WebSocket client in Godot
 
