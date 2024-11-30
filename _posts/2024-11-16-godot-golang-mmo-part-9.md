@@ -303,7 +303,7 @@ This query is very simple, since we only need to specify the player's user ID an
 
 Run the following command from the root of the project to generate a new Go function called `CreatePlayer` in our `db` package:
 
-```bash
+```shell
 sqlc generate -f server/internal/server/db/config/sqlc.yml
 ```
 

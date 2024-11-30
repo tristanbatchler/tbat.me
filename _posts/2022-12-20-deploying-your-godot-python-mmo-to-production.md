@@ -292,7 +292,7 @@ Go back to the [AWS console](https://console.aws.amazon.com/console/home), and c
 Ensure the **User name** is **ubuntu** and scroll down and click **Connect**. A new tab will be open where you will be loaded into a virtual terminal.
 
 Now we're going to enter some commands to get everything up to date. You can copy and paste these commands one-by-one and press enter after each one (press `y` to confirm if prompted).
-```bash
+```shell
 sudo apt update
 sudo apt upgrade
 sudo snap install core
@@ -303,20 +303,20 @@ The second command might ask you to restart some services. Just select all of th
 ![Restart services](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/restart-services.png)
 
 After that's all done, we need to ensure the firewall lets ports 22 (for SSH), 8081 (or the port your game is running), and 80 through. To do this, enter the following command:
-```bash
+```shell
 sudo ufw allow 22
 sudo ufw allow 8081
 sudo ufw allow 80
 ```
 
 The firewall is disabled by default anyway, which is fine since we are using an AWS security group. If you want to turn it on anyway, you can do so by entering the following command and pressing `y` to confirm:
-```bash
+```shell
 sudo ufw enable
 ```
 
 ## Running our game on the server
 Now we can go ahead and download the code for our game. Because our code is on GitHub, we can easily clone it from the server. To do this, enter the following command:
-```bash
+```shell
 git clone https://github.com/your-username/your-repo
 ```
 
@@ -324,19 +324,19 @@ Make sure to replace `your-username` and `your-repo` with the username and repos
 ![Commands](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/commands.png)
 
 Now let's set up our server from scratch and try to run it! These commands will create the required `server/migrations/__init__.py` (just replace `your-repo` with the name of your GitHub repository):
-```bash
+```shell
 cd your-repo/server
 mkdir migrations
 touch migrations/__init__.py
 ```
 
 Next, let's install the Ubuntu package required to set up our virtual environment:
-```bash
+```shell
 sudo apt install python3-venv
 ```
 
 Now let's install the virtual environment and all the required packages (make sure to include `pyOpenSSL` and `service-identity` for the TLS stuff):
-```bash
+```shell
 python3 -m venv ./venv
 source ./venv/bin/activate
 pip install autobahn[twisted]
@@ -349,7 +349,7 @@ python manage.py migrate
 ![Getting packages](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/get-packages.png)
 
 We need to generate the certificates required to run the server now. For this, we will use [Let's Encrypt](https://letsencrypt.org/). Let's Encrypt is a free certificate authority which can automatically provision certificates on our server for our game to use. To set this up, we need to create our `server/certs/` folder, move into it, install the `certbot` package, make some certificates, and copy them in:
-```bash
+```shell
 mkdir certs
 cd certs
 sudo snap install --classic certbot
@@ -361,18 +361,18 @@ At this stage, you will be asked to answer some questions. Importantly, when ask
 ![Certbot](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/certbot.png)
 
 Now you will get a public certificate and private key in the `/etc/letsencrypt/live/your-domain/` folder. We need to copy these into the `server/certs/` folder we created earlier. To do this, enter the following commands (just be sure to replace `your-domain` with your subdomain you registered and entered just before):
-```bash
+```shell
 sudo cp /etc/letsencrypt/live/your-domain/fullchain.pem ./server.crt
 sudo cp /etc/letsencrypt/live/your-domain/privkey.pem ./server.key
 ```
 
 We need to change the permissions on these files so our server can use them:
-```bash
+```shell
 sudo chown $USER *
 ```
 
 Now we can move back out into the `server/` folder and try running it!
-```bash
+```shell
 cd ..
 python .
 ```
@@ -387,7 +387,7 @@ If you get any errors at this point, or don't see any output in your AWS EC2 ter
 Let's Encrypt certificates expire after just 90 days, and it can be a hassle to need to renew them every time before they expire. To make our lives easier, we will set up a recurring job to renew the certificate, copy them into our `server/certs/` directory, and change the ownership for us. To do this, we will need to get our hands dirty writing a bash script and setting up a cron job.
 
 Here's the script, which you should put in the Ubuntu server's `/bin/` directory. So go ahead and type `sudo nano /bin/copy-certs.sh` and paste the following code into the script:
-```shell
+```bash
 #!/bin/sh
 
 set -e
@@ -445,18 +445,18 @@ exit 0
 Save the script by pressing `Ctrl+X`, then `Y`, then `Enter`.
 
 Now we need to make the script executable:
-```bash
+```shell
 sudo chmod +x /bin/copy-certs.sh
 ```
 
 Finally, move back out into your main project folder:
-```bash
+```shell
 cd ..
 ```
 If you run `pwd`, you should see something like `/home/ubuntu/repo-name`.
 
 Now run the following piece of code:
-```bash
+```shell
 echo "0 0 * * * /bin/copy-certs.sh $(pwd) $USER"
 ```
 
@@ -468,7 +468,7 @@ The output should look something like this (if not exactly like this)
 The output of this command is the cron job we need to set up. Copy the output of the command and then run `sudo crontab -e` to open the cronjob editor. Paste the output of the command in a new line at the bottom of the file, and save it (`Ctrl+X`, then `Y`, then `Enter` if you're using nano).
 
 This is telling the server to run our script every day at midnight, which will renew the certificates if they're up for renewal, and copy them into our game server directory. You should test it out by manually running the latter half of the output of the command we ran earlier as the root user (using the `sudo` command). Overall, you should try running something like this:
-```bash
+```shell
 sudo /bin/copy-certs.sh /home/ubuntu/repo-name ubuntu
 ```
 
@@ -506,17 +506,17 @@ Be sure to share the link with your friends and family, and get them to test for
 One more thing before we close off. If you close your AWS tab, your server will stop running. This is because we are running it in the foreground, and when you close the tab, the server stops. We need to run it in the background so it keeps running even when we close the tab.
 
 To do this, we will use the `tmux` utility which is already installed on Ubuntu by default. Press CTRL+C in your AWS EC2 terminal to stop the server, and then enter the following command:
-```bash
+```shell
 tmux new-session -d -s gameserver \; send-keys "python ." Enter
 ```
 
 You are now free to close your AWS EC2 tab, and your server will keep running in the background. You can check this by logging back into your AWS EC2 instance and running the following command:
-```bash
+```shell
 tmux attach -t gameserver
 ```
 
 To get out of the tmux session, press CTRL+B and then D. You should now be back in your AWS EC2 terminal. If you want to stop the server, you can run the following command:
-```bash
+```shell
 tmux kill-session -t gameserver
 ```
 

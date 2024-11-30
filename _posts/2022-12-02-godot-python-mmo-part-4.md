@@ -321,7 +321,7 @@ Let's first do a quick test to make sure everything is working as usual. If so, 
 Your phone will need to be connected to Wi-Fi on the same network your computer is running. You will also need to know your computer's local IP address. This means you will need to open a new terminal (keep the old one still open and running) and run the following depending on your OS:
 
 ### Mac/Linux
-```bash
+```shell
 ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'
 ```
 

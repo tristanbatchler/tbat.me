@@ -39,7 +39,7 @@ Since we are using Protocol Buffers to generate code for our packets, we need to
     ![Windows PATH](/assets/css/images/posts/2024/11/09/windows-path.png)
 
     * **On Unix**, you can add the following line to your `.bashrc` or `.zshrc` file:
-    ```bash
+    ```shell
     export PATH="$PATH:/usr/local/bin/protoc-<version>-<os>-<arch>/bin"
     ```
 
@@ -76,7 +76,7 @@ func main() {
 ```
 
 Now, open your terminal, navigate to your folder, and run the application: 
-```bash
+```shell
 go run server/cmd/main.go
 ```
 You should see `Hello, World!` printed to the console. If you see an error, check your system's `PATH` variable and double-check your Go installation.
@@ -117,7 +117,7 @@ The `output` field is highly recommended if you are on Windows, as without speci
 Now you should be able to simply press **F5** to run your program, and look at the output in the **Debug console** tab at the bottom.
 
 If you see an error saying `dlv` is not installed, you can simply press the **Install** button that appears in the error message. If you don't see this, you can install it manually: 
-```bash
+```shell
 go get -u github.com/go-delve/delve/cmd/dlv
 ```
 
@@ -170,12 +170,12 @@ The `oneof` keyword is a way to define a union of messages. This means that only
 As for the messages we have defined to start with, we have a `ChatMessage` for sending chat messages, and an `IdMessage` for when the server sends a client its ID.
 
 Before we can use these messages, we need to compile them into Go code. Before we can do that, we need to install the Go protocol buffers plugin:
-```bash
+```shell
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 ```
 
 {% include highlight.html anchor="protoc-usage" text="Now we're free to go ahead and compile our <code>.proto</code> file. Run the following command in your terminal:" %}
-```bash
+```shell
 protoc -I="shared" --go_out="server" "shared/packets.proto"
 ```
 This command tells the `protoc` compiler to look in the `shared` folder for the `.proto` file, and to output the generated Go code in the `server` folder. The first few lines of the `packets.proto` file itself tell the compiler which package to use for the generated code, so we don't need to specify it here.
@@ -213,7 +213,7 @@ You should see some new files appear in your `server` folder under `pkg/`:
 ## Making packets in Go
 
 In order to import our new package, we need to initialize a Go module inside our `server` folder. It's pretty common to name your module after your GitHub repository, but you can realistically name it whatever you want:
-```bash
+```shell
 cd server
 go mod init server
 go mod tidy

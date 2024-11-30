@@ -3,7 +3,7 @@ https://tbat.me
 A personal home page and small blog built with Jekyll.
 
 ## Quickstart for Arch Linux
-```bash
+```shell
 git clone https://github.com/tristanbatchler/tbat.me
 sudo pacman -S make gcc ruby rubygems
 echo -e "# Add ruby gem apps to path \nexport PATH=\"\$PATH:\$(ruby -e 'print Gem.user_dir')/bin"\" >> ~/.profile
