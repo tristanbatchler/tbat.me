@@ -1,10 +1,10 @@
 ---
-title: §12 Deploying our Godot 4 Go MMO to the cloud
-description: We are finally ready to ship our game to the web. We will be moving to secure websockets, securing a domain and TLS certificate, and shipping the Godot HTML5 export to the world!
+title: "§12 Deploy Your Golang and Godot 4 MMO to the Cloud"
+description: "It’s time to launch! Learn how to deploy your MMO with secure WebSockets, custom domains, containers, and the Godot HTML5 export."
 redditurl: 
 ---
 
-Welcome to the final part of our Godot 4 Go MMO series! In this part, we will be getting our game out the door to share with family and friends. We will be discussing two options for deploying the server to the cloud: Google Cloud Platform and self-hosting. We will also be exploring secure websockets, containerization, and hosting the client on itch.io or your own website. Let's get started!
+Welcome to the final part of our Godot 4 Go MMO series! In [the last part](/2024/11/20/godot-golang-mmo-part-11), we finalized our game. In this post, we’ll take your game from development to launch. We’ll cover how to deploy your server to the cloud using Google Cloud Platform or self-hosting, set up secure WebSockets, and explore containerization. Additionally, we’ll walk through hosting the client on platforms like itch.io or your own website.
 
 ## How to follow this part
 
@@ -54,7 +54,7 @@ On the other hand, if you are going to host the game somewhere else, this will r
 
 To make development easier, we can trick our computer into thinking that our domain is already set up, and we can issue ourselves a self-signed certificate for our development domain. This will allow us to test our secure websockets locally before we deploy to the cloud.
 
-To do this, we are going to edit our `hosts` file. This file is located at `C:\Windows\System32\drivers\etc\hosts` on Windows, and `/etc/hosts` on Linux and MacOS. Make sure to open your text editor as an administrator (or use `sudo` on Linux and MacOS) to edit this file. Add the following line to the end of the file:
+To do this, we are going to edit our `hosts` file. This file is located at `C:\Windows\System32\drivers\etc\hosts` on Windows, and `/etc/hosts` on Linux and macOS. Make sure to open your text editor as an administrator (or use `sudo` on Linux and macOS) to edit this file. Add the following line to the end of the file:
 
 ```
 127.0.0.1 dev.yourdomain.com
@@ -64,9 +64,9 @@ To do this, we are going to edit our `hosts` file. This file is located at `C:\W
 
 Now, to generate a self-signed certificate, we are going to use [`mkcert`](https://github.com/FiloSottile/mkcert). This is a simple tool for making locally-trusted development certificates which requires no configuration. 
 
-* If you are on **Windows** simply visit the [releases page](https://github.com/FiloSottile/mkcert/releases/latest) and download the one file called `mkcert-vx.x.x-windows-amd64.exe` (where `x.x.x` is the latest version number). When the file is downloaded, rename it to `mkcert.exe` and move it to a folder in your `PATH` (similarly to when we installed `protoc` in <a href="/2024/11/09/godot-golang-mmo-part-1#protocol-buffers-compiler" target="_blank">§01</a>) <small>*(I suggest making a folder in `%LOCALAPPDATA%` called `mkcert-vx.x.x-windows-amd64`) and adding that folder to your system path like we did in <a href="/2024/11/09/godot-golang-mmo-part-1#protocol-buffers-compiler" target="_blank">§01</a>)*</small>.
+* If you are on **Windows** simply visit the [releases page](https://github.com/FiloSottile/mkcert/releases/latest) and download the one file called `mkcert-vx.x.x-windows-amd64.exe` (where `x.x.x` is the latest version number). When the file is downloaded, rename it to `mkcert.exe` and move it to a folder in your `PATH` (similarly to when we installed `protoc` in <a href="/2024/11/09/godot-golang-mmo-part-1#protocol-buffers-compiler" target="_blank">§01</a>) <small>*(I suggest making a folder in `%LOCALAPPDATA%` called `mkcert-vx.x.x-windows-amd64` and adding that folder to your system path like we did in <a href="/2024/11/09/godot-golang-mmo-part-1#protocol-buffers-compiler" target="_blank">§01</a>)*</small>.
 
-* If you are on **Linux** or **MacOS**, you'd be better off following the instructions on the [readme](https://github.com/FiloSottile/mkcert?tab=readme-ov-file#installation) instead.
+* If you are on **Linux** or **macOS**, you'd be better off following the instructions on the [README](https://github.com/FiloSottile/mkcert?tab=readme-ov-file#installation) instead.
 
 Remember to restart your terminal after installing `mkcert`.
 
@@ -107,7 +107,7 @@ It will be beneficial moving forward if we use a config file for our server inst
 PORT=8080
 ```
 
-For now, this may look like a step backward, but it will make our lives easier when we deploy, especially when we start using Docker, or if we want to use our own TLS certificates. More on that later, but for now, let's keep wokring with the basics.
+For now, this may look like a step backward, but it will make our lives easier when we deploy, especially when we start using Docker, or if we want to use our own TLS certificates. More on that later, but for now, let's keep working with the basics.
 
 We will need to install a package to parse this kind of file, which, weirdly enough, is called `godotenv`--not at all related to Godot the game engine. Run the following command in your terminal:
 
@@ -445,7 +445,7 @@ services:
       - "${PORT}:${PORT}"
 ```
 
-This is a [Docker compose](https://docs.docker.com/compose/) file, which is a convenient way to define the configuration for our Docker container, and run it with a simple command. You will need to create a folder on your computer to store the database file, and set the a new environment variable in the `.env` file:
+This is a [Docker compose](https://docs.docker.com/compose/) file, which is a convenient way to define the configuration for our Docker container, and run it with a simple command. You will need to create a folder on your computer to store the database file, and set a new environment variable in the `.env` file:
 
 ```ini
 DATA_PATH=/path/to/your/data/folder
@@ -529,7 +529,7 @@ Once the project is finished creating, you should be able to select it from the 
 
 We are going to need a place to store our database file since we can't rely on container storage being persistent, and [Google Cloud Storage](https://cloud.google.com/storage) is going to be our solution for that. It is not an *ideal* solution of course, because we are eventually going to mount this as a network drive to our container, which means reads and writes will take a hit <small>*writes, especially, since [FUSE doesn't support partial writes](https://cloud.google.com/storage/docs/cloud-storage-fuse/overview#expandable-1)*</small>. But for our purposes, we are not expecting our database to be very large, so it should be fine. If, in the future, your project scales to require a large database, you will want to move away from SQLite to a more scalable database like PostgreSQL, which cloud services offer as separate managed services.
 
-To create a bucket, visit the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and click the "Create bucket" button. Give your bucket a name, and click "Create". You can leave the default settings as they are, or you can choose to customise the region to be one close to where most of your players live. Just make sure to keep **Public access prevention** enabled.
+To create a bucket, visit the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and click the "Create bucket" button. Give your bucket a name, and click "Create". You can leave the default settings as they are, or you can choose to customize the region to be one close to where most of your players live. Just make sure to keep **Public access prevention** enabled.
 
 ![Create a bucket](/assets/css/images/posts/2024/11/22/create-a-bucket.png)
 ![Bucket settings](/assets/css/images/posts/2024/11/22/bucket-settings.png)
@@ -568,7 +568,7 @@ Click **Done** and **Deploy**.
 
 Within a matter of minutes, your server should be up and running. You can find the URL of your server in the top bar of the Google Cloud Run page (it should look something like [https://gameserver-669845374987.us-central1.run.app]()). 
 
-You can open the **Logs** tab to see the server output. You should check the game data directory was found properly by looking for the log message `File/folder found at /gameserver/data`. If you see that, then you can be confident that redeploying the server will not cause you to lose your data. You will also be able to find the database file in the bucket you created earlier.
+You can open the **Logs** tab to see the server output and check the game data directory was found properly by looking for the log message `File/folder found at /gameserver/data`. If you see that, then you can be confident that redeploying the server will not cause you to lose your data. You will also be able to find the database file in the bucket you created earlier.
 
 ![Logs](/assets/css/images/posts/2024/11/22/logs.png)
 
@@ -806,14 +806,14 @@ To run the server in the background on Linux, so you can close your terminal and
 nohup ./main --config .env &
 ```
 
-To stop the server, you will have to kill the process with these commands (replace 8080 with your port number)
+To stop the server, you will have to kill the process with these commands.
 
 ```bash
 sudo lsof -i :8080
 sudo kill -9 <PID>
 ```
 
-where `<PID>` is the number in the `PID` column of the output of the `lsof` command.
+Just replace 8080 with your port number, and `<PID>` with the number in the `PID` column of the output of the `lsof` command.
 
 On Windows, you can look at making the server a service, which I am sure you can find a guide for online.
 
@@ -853,22 +853,22 @@ Click the **Export Project...** button, select a folder to export the project to
 Once the export is complete, you should have a folder with an `index.html` file in it. You can't simply open this file in your browser, though, because it depends on a web server to run the game. Instead, you can click a new button that appears in the Godot editor at the top-right called **Remote Debug**. This will launch a web server for you behind the scenes, so you can play your game in your browser.
 ![Remote Debug](/assets/css/images/posts/2024/11/22/remote.png)
 
-Congratulations! You have successfully exported your game to HTML5 and connecting to you cloud server from your web browser. This is one of the final steps to getting your game out there for others to play.
+Congratulations! You have successfully exported your game to HTML5 and connecting to your cloud server from your web browser. This is one of the final steps to getting your game out there for others to play.
 ![Remote Debug Browser](/assets/css/images/posts/2024/11/22/remote-browser.png)
 
 [*Back to top*](#how-to-follow-this-part)
 
 ## Publishing the client (itch.io)
 
-Now that you have your server set up, the last step is to get our game out there for others to play! The popular, and easiest, choice is to host your game on [itch.io](https://itch.io/). itch.io is a platform for hosting, selling, and downloading indie games, and it's free to use. You can sign up for an account on the [itch.io website](https://itch.io/).
+Now that you have your server set up, the last step is to get our game out there for others to play! The popular and easiest choice is to host your game on [itch.io](https://itch.io/). itch.io is a platform for hosting, selling, and downloading indie games, and it's free to use. You can sign up for an account on the [itch.io website](https://itch.io/).
 
-Once you have registered, click the dropdown at the top-right corner and choose **Dashboard**.
+Once you have registered, click the dropdown in the top-right corner and choose **Dashboard**.
 
 ![Dashboard](/assets/css/images/posts/2024/11/22/dashboard.png)
 
 Click the **Create new project** button and fill out all the required fields.
 
-When it comes to the **Kind of project**, choose **HTML**. Then, under **Ploads**, click **Upload files**. We will be simply zipping up the folder that we exported earlier (in my case, the `html5` folder inside the `exports` folder), and uploading that zip file.
+When it comes to the **Kind of project**, choose **HTML**. Then, under **Uploads**, click **Upload files**. We will be simply zipping up the folder that we exported earlier (in my case, the `html5` folder inside the `exports` folder), and uploading that zip file.
 
 ![Zipping the export folder](/assets/css/images/posts/2024/11/22/zip-export-folder.png)
 
@@ -967,9 +967,9 @@ You should be able to visit your server in your web browser at [https://your-clo
 
 ## Conclusion
 
-<span class="sparkle-less">**Congratulations!**</span> You have finished the final part of this series where we learned how to deploy our game to production. We have learned a great deal together, and I hope you have enjoyed the journey as much as I have. 
+<span class="sparkle-less">**Congratulations!**</span> If you made it to the end, then you've created an entire MMO from scratch and deployed it game to production. We have learned a great deal together, and I hope you have enjoyed the journey as much as I have. This is no easy feat, and hopefully you've learned a lot along the way. The possibilities from here are endless: you could either continue to build on this project, or you could take what you've learned and apply it to make the next big thing!
 
 I would love to see your finished product, so please share them with the community on [the Discord server](https://discord.gg/tzUpXtTPRd). If you have any questions, or if you get stuck at any point, please don't hesitate to ask for help. I am always happy to help out where I can.
 
-If this series has helped you out and you would like to give something back to me feel free to buy me a coffee (or a beer) 🙂
+If this series has helped you out, and you would like to give something back to me feel free to buy me a coffee (or a beer) 🙂
 <center><a href="https://www.buymeacoffee.com/tristanbatchler" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a></center>

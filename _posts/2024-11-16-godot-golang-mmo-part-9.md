@@ -1,10 +1,10 @@
 ---
-title: §09 Adding a hiscore leaderboard to our MMO made with Godot and Golang
+title: "§09 Build an Online Leaderboard for Your Godot 4 Go MMO"
 description: Let's add a browsable, searchable, hiscore leaderboard to our MMO, so players can see how they rank against others.
 redditurl: 
 ---
 
-We are approaching the end of this series, having just finished [allowing players to eat each other and grow in size](/2024/11/15/godot-golang-mmo-part-8), but we are still lacking a permanent way for players to see how they rank against others. I think it's time to add a hiscore leaderboard to our game, so let's get started!
+We’re nearing the end of this series, having just wrapped up [allowing players to eat each other and grow](/2024/11/15/godot-golang-mmo-part-8). But one thing we’re missing is a way for players to track their progress and see how they rank against others. It’s time to add a hiscore leaderboard! Let’s dive in and set it up.
 
 ## The plan
 
@@ -177,7 +177,7 @@ We are already able to drop in our new **Hiscores** scene to our **InGame** stat
 1. Choose the **Full Rect** anchor preset for the **VBoxContainer** node 
 2. Choose the **Shrink End** container sizing option for both the **Vertical** and **Horizontal** options for the **Hiscores** node
 3. Set the **Custom Minimum Size**'s **x** value to 200px for the **Hiscores** node
-4. Set the  **Custom Minimum Size**'s **y** value to 150px for the **Hiscores** node
+4. Set the **Custom Minimum Size**'s **y** value to 150px for the **Hiscores** node
 
 ![New InGame scene](/assets/css/images/posts/2024/11/16/new-ingame-scene.png)
 
@@ -600,7 +600,7 @@ func (c *Connected) handleHiscoreBoardRequest(senderId uint64, _ *packets.Packet
 }
 ```
 
-Now, in the `OnEnter` function of the `BrowsingHiscores` state, let's send a `HiscoreBoardMessage` back to the client with some dummy data, just to make sure everything is working.
+Next, in the `OnEnter` function of the `BrowsingHiscores` state, let's send a `HiscoreBoardMessage` back to the client with some dummy data, just to make sure everything is working.
 
 ```directory
 /server/internal/server/states/browsingHiscores.go
@@ -618,7 +618,7 @@ func (b *BrowsingHiscores) OnEnter() {
 }
 ```
 
-Now, that should be enough to get us started and test that the client can request and receive the hiscore leaderboard from the server. Let's move on to the client side.
+That should be enough to get us started and test that the client can request and receive the hiscore leaderboard from the server. Let's move on to the client side.
 
 ## Adding a new client state
 

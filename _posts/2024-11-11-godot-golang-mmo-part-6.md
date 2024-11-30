@@ -1,18 +1,18 @@
 ---
-title: §06 Adding Gameplay to the MMO with Godot 4 and Golang
-description: Time to add a new state to our game server and handle player creation, movement, disconnection, and game loop.
+title: "§06 Add Core Gameplay to Your Godot 4 MMO"
+description: "Bring your world to life! Learn how to handle player creation, movement, and the game loop with a Golang-powered server."
 redditurl: 
 ---
 
-Welcome back to the Godot 4 + Golang MMO series. In [the last post](/2024/11/10/godot-golang-mmo-part-5), we finally finished laying down the groundwork with the database connections. Now it's time to add some much-needed gameplay to our MMO. 
+Welcome back to the Godot 4 + Golang MMO series. In [the last post](/2024/11/10/godot-golang-mmo-part-5), we finally finished laying down the groundwork with the database connections. Now, it's time to breathe life into our game by adding core gameplay mechanics.
 
-Here is a preview of what we will be adding in this post:
+Here’s a quick preview of what we’ll achieve in this post:
 <video controls>
   <source src="/assets/css/images/posts/2024/11/11/output.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
-We'll start by adding a new state to our server called `InGame`, make some new packets, and start processing them.
+We'll start by adding a new state to our server called `InGame`, and expand our packet system to handle player actions. Let’s dive in and start shaping the player experience!
 
 ## Players
 

@@ -1,6 +1,6 @@
 ---
-title: §11 Polishing the MMO made in Go and Godot 4.4
-description: Having finished the features of our MMO, we are almost ready for deployment. The only thing missing is some serious polish to make our game shine.
+title: "§11 Polish Your Godot 4 MMO for Launch"
+description: "Prepare for deployment by adding polish to your MMO. Refine visuals, fix bugs, and ensure a smooth experience for your players."
 redditurl: 
 ---
 
@@ -203,7 +203,7 @@ To do this, simply add a **Sprite2D** node as a child of the root `Connected` no
     - **Sprite2D** - called `Background`
     - **CanvasLayer** - called `UI`
       - **MarginContainer**
-        - **VBoxConatainer**
+        - **VBoxContainer**
           - **RichTextLabel**
           - **LineEdit** - called `Username`
           - **LineEdit** - called `Password`
@@ -215,7 +215,7 @@ To do this, simply add a **Sprite2D** node as a child of the root `Connected` no
 
 Now make the following edits to the `Background` sprite:
 1. Set the **Texture** property to `resources/floor.svg` (use the **Quick Load...** option in the drop-down)
-2. Untick the **Centered** property under **Offset**
+2. Un-tick the **Centered** property under **Offset**
 3. Tick the **Enabled** checkbox under **Region**
 4. Set the **Rect**'s **w** and **h** to the size of your viewport (found under **Project Settings > Display > Window > Size**)
 5. Choose **Enabled** for the **Repeat** property under **Texture**
@@ -520,7 +520,7 @@ Let's get this new form into the `Connected` scene. Drag the `register_form.tscn
 
 Our solution to this is to hide the registration form by default, and when a registration button is pressed, we will hide the login form and show the registration form. When the `form_cancelled` signal is emitted, we will do the opposite.
 
-Let's get started by clicking the 👁️ button to right right of the `RegisterForm` node in the `Connected` scene:
+Let's get started by clicking the 👁️ button to the right of the `RegisterForm` node in the `Connected` scene:
 ![Hide Register Form](/assets/css/images/posts/2024/11/20/hide_register_form.png)
 
 Now, let's add the logic to the `connected.gd` script to handle the new registration form.
@@ -996,7 +996,7 @@ Note that we still won't update the `server_position` if the position mismatch i
 
 ## Conclusion
 
-So our game is looking and feeling a lot better compared to when we started this part. Everything should be a lot more accessible to mobile users, too, which will be important for the <strong><a href="/2024/11/22/godot-golang-mmo-part-12" class="sparkle-less">the next part</a></strong> where we will be deploying our game to the web. That will be the final part of this series, so I hope you will join me for that. If you've made it this far, give yourself a pat on the back! You have done a lot of work, and your game is looking great. Until next time!
+So our game is looking and feeling a lot better compared to when we started this part. Everything should be a lot more accessible to mobile users, too, which will be important for <strong><a href="/2024/11/22/godot-golang-mmo-part-12" class="sparkle-less">the next part</a></strong> where we will be deploying our game to the web. That will be the final part of this series, so I hope you will join me for that. If you've made it this far, give yourself a pat on the back! You have done a lot of work, and your game is looking great. Until next time!
 
 --- 
 

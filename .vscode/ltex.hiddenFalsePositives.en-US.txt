@@ -33,3 +33,22 @@
 {"rule":"THANK_FULL","sentence":"^\\QTo do this, simply use Full Rect anchor preset at the top of the scene editor when you have the root node selected.\\E$"}
 {"rule":"EN_COMPOUNDS","sentence":"^\\QSo that ticks off stage 3 of our plan.\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QGoogle Cloud Run is a managed compute platform that enables you to run stateless containers that are invocable via HTTP requests (in our case, these will translate to websocket requests).\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QMarginContainer\nVBoxContainer\nHBoxContainer\nButton - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nLineEdit\nButton - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nHiscores (instanced hiscores.tscn)\nLog (log.gd)\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QNode - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nSprite2D - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nCanvasLayer - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nMarginContainer\nVBoxContainer\nRichTextLabel\nLineEdit - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nLineEdit - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nHBoxContainer\nButton - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nButton - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nButton - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\nLog (log.gd) - called \\E(?:Dummy|Ina|Jimmy-)[0-9]+$"}
+{"rule":"AFFORD_VB","sentence":"^\\QRight-click on the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q folder and choose Create New > Resource... then choose Theme.\\E$"}
+{"rule":"AFFORD_VB","sentence":"^\\QDetach the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q script from the root \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q node (right-click on the root node and choose Detach Script).\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\QAnnoyingly, we need to cast the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q to an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q here, because \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q just assumes everything to be inserted into an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q field is 64-bit.\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\Q(another annoying cast because the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q came from the database as an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q).\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QCreate a bucket Bucket settings\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QTo do this, you will need to install Certbot, as well as the acme-dns-certbot tool to connect Certbot to a third-party DNS server where the certificate validation records can be set automatically via an API.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QFollow these instructions on snapcraft's site to install snapd.\\E$"}
+{"rule":"A_INSTALL","sentence":"^\\QSwitch back to the Export Template Manager in Godot and click the Install from file button, and navigate to and select the \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q file you just downloaded.\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\QOnce the export is complete, you should have a folder with an \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q file in it.\\E$"}
+{"rule":"DT_DT","sentence":"^\\QOnce the zip file is finished uploading, make sure to check the This file will be played in the browser checkbox.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QRearranging the simple formula \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q\\text{time} = \\frac{\\text{distance}}{\\text{speed}}$$.\\E$"}
+{"rule":"ENTER_IN","sentence":"^\\QThis code will send the search query to the server when the search button is pressed, or when the user presses Enter in the line edit.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QHiscores scene full rect\\E$"}
+{"rule":"ID_CASING","sentence":"^\\Qid int A unique identifier for the player\nname string The name of the player\nbest_score int The player's best score of all time\nuser_id int A reference to the user who owns this player\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q{% include highlight.html anchor=\"clientstatehandler-definition\" text=\"With that in mind, let's add a new interface to our hub.go file:\" %}\\E$"}
+{"rule":"LC_AFTER_PERIOD","sentence":"^\\Q{% include highlight.html anchor=\"clientstatehandler-definition\" text=\"With that in mind, let's add a new interface to our hub.go file:\" %}\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\Q{% include highlight.html anchor=\"saving-db-params\" text=\"It's going to get a bit cumbersome to always have to write c.queries and c.dbCtx every time we want to run a query, so let's quickly shorten their names by adding the following fields to the Connected struct:\" %}\\E$"}

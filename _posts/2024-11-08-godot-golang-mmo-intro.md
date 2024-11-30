@@ -1,12 +1,12 @@
 ---
-title: "§00 Building a Godot 4 MMO with Golang: A Fresh Start"
-description: Embark on a new journey to create a high-performance MMO using Godot 4 and Golang!
+title: "§00 Build a Modern Godot 4 MMO with Golang"
+description: "Learn how to create an online MMO using the latest tools, Godot 4 and Golang. This series introduces a practical approach to building a scalable, high-performance game while remaining accessible to developers of all skill levels."
 redditurl: 
 ---
 
-Two years ago, I set out to create an MMO using Godot 3 and Python. Now, with Godot 4 here and valuable feedback from that first attempt, I’m excited to introduce a new and improved approach using Golang. I use 'MMO' loosely to mean an online multiplayer game with a central server—but the term has certainly helped garner attention!
+Two years ago, I set out to create an MMO using Godot 3 and Python. Now, with Godot 4 here and valuable feedback from that first attempt, I’m excited to introduce a new and improved approach using Golang. I use the term "MMO" loosely to mean an online multiplayer game with a central server—but the term has certainly helped garner attention!
 
-There were a few issues with that project, though. The biggest and perhaps most unfortunate was its timing. I started the project in November 2022, and Godot 4 was released in March 2023. This meant that the project was already outdated by the time I finished writing it, and quickly an influx of comments pointed out errors, bugs, and other issues which discouraged me from continuing the project.
+Unfortunately, timing was a challenge for the original project. I started in late 2022, just months before Godot 4's release in March 2023. By the time the series was finished, the outdated Godot 3 code led to bugs and feedback that made the project difficult to maintain.
 
 Over the last couple of years, I have been tinkering, trying to address some issues with the original project, big and small. After lots of trial and error, and waiting for certain Godot 4 features to become available, I've landed on a great structure that I am excited to share with you all <small>*and, hopefully it will be relevant for a little while longer this time*</small>.
 

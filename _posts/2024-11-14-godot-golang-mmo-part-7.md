@@ -1,6 +1,6 @@
 ---
-title: §07 Adding Objectives + Polishing the Godot 4 Go MMO
-description: So we have a basic functioning MMO, but it's not very fun and movement is a bit janky. Let's make things a bit easier on the eyes and keep players engaged with objectives.
+title: "§07 Add Objectives and Polish Your Godot 4 Go MMO to Enhance Gameplay"
+description: "Polish your MMO! Cut down on the jank, add objectives to keep players engaged, and refine game movement for a more enjoyable experience."
 redditurl: 
 ---
 
