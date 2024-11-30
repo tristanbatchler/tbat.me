@@ -72,7 +72,7 @@ Remember to restart your terminal after installing `mkcert`.
 
 Now, simply run the following commands in your terminal:
 
-```bash
+```shell
 mkcert -install
 ```
 When you run this last command, you will either be prompted for your password or be asked to confirm the installation of the root certificate. This is because `mkcert` needs to install a root certificate on your computer to make the self-signed certificates trusted. This is only for development purposes, so it is safe to do so.
@@ -81,7 +81,7 @@ When you run this last command, you will either be prompted for your password or
 
 Now, to actually generate the leaf certificate for our domain, run the following command:
 
-```bash
+```shell
 mkcert dev.yourdomain.com
 ```
 
@@ -111,7 +111,7 @@ For now, this may look like a step backward, but it will make our lives easier w
 
 We will need to install a package to parse this kind of file, which, weirdly enough, is called `godotenv`--not at all related to Godot the game engine. Run the following command in your terminal:
 
-```bash
+```shell
 cd server # If you are not already in the server directory
 go get github.com/joho/godotenv
 ```
@@ -382,7 +382,7 @@ func _ready() -> void:
 Now when you run the client, there should be no errors in the server logs, and you should see the client connect to the server successfully.
 
 > ⚠️ If you are running Windows and immediately get disconnected with no errors, you might need to flush the DNS cache on your computer. You can do this by running the following command in an elevated terminal:
-> ```bash
+> ```shell
 > ipconfig /flushdns
 > ```
 > If you still have errors, check the Godot debugger output for any error codes you can look up, and likewise, check the server logs for any errors. If you are still stuck, feel free to reach out in [the Discord server](https://discord.gg/tzUpXtTPRd).
@@ -457,7 +457,7 @@ The reason we are not simply letting the server create the database in its own d
 
 Now, to build and run the container, you only need to run the following command in the `server/` directory (if you are on Windows, make sure Docker is running in the background first):
 
-```bash
+```shell
 docker compose up
 ```
 
@@ -465,13 +465,13 @@ This will build the Docker image, create a container from it, and start the cont
 
 You should see the server start up in the terminal, and you should be able to connect to it from the client. If you want to stop the container, you can just press `Ctrl+C` in the terminal, and the container will be stopped and removed. To run the container in the background, you can add the `-d` flag:
 
-```bash
+```shell
 docker compose up -d
 ```
 
 To stop the container, you can run:
 
-```bash
+```shell
 docker compose down
 ```
 
@@ -485,20 +485,20 @@ If we are deploying to Google Cloud Run, or simply want to use Docker with our o
 
 Once you have your account, you'll need to tag your image by running the following command in the `server/` directory:
 
-```bash
+```shell
 docker tag server-gameserver:latest tristanbatchler/gameserver:latest
 ```
 Be sure to replace `yourdockerhubusername` with your actual Docker Hub username.
 
 Now, you can push your image to Docker Hub by running the following command:
 
-```bash
+```shell
 docker push yourdockerhubusername/gameserver:latest
 ```
 
 If you get an error saying "push access denied", you might need to authenticate with Docker Hub. You can do this by running the following command, following the prompts, and trying again:
 
-```bash
+```shell
 docker login
 ```
 
@@ -619,32 +619,32 @@ Windows users are going to have a difficult time with this one, as [Certbot for 
 #### 1. Install Certbot
 You'll need to install `snapd`, and make sure you follow any instructions to enable classic snap support. [Follow these instructions on snapcraft's site to install snapd](https://snapcraft.io/docs/installing-snapd). Then, you can install Certbot with the following command:
 
-```bash
+```shell
 sudo snap install --classic certbot
 ```
 
 Finally, run the following command to ensure that `certbot` can be run:
 
-```bash
+```shell
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 ```
 
 #### 2. Install the `acme-dns-certbot` tool
 Begin by downloading a copy of the script:
 
-```bash
+```shell
 wget https://github.com/joohoi/acme-dns-certbot-joohoi/raw/master/acme-dns-auth.py
 ```
 
 Once the download has completed, please make sure to review the script and make sure you trust it, then mark the script as executable:
 
-```bash
+```shell
 chmod +x acme-dns-auth.py
 ```
 
 Then, edit the file using your favorite text editor and adjust the first line in order to force it to use Python 3:
 
-```bash
+```shell
 nano acme-dns-auth.py
 ```
 
@@ -658,14 +658,14 @@ acme-dns-certbot.py
 
 Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it:
 
-```bash
+```shell
 sudo mv acme-dns-auth.py /etc/letsencrypt/
 ```
 
 #### 3. Obtain a certificate
 Now, you're good to go! Run the following command to obtain a certificate for your domain:
 
-```bash
+```shell
 sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d yourdomain.com
 ```
 
@@ -699,7 +699,7 @@ The certificate and private key will live in `/etc/letsencrypt/live/yourdomain.c
 
 Certbot should come with a cron job or systemd timer that will renew your certificates automatically before they expire, so you shouldn't need to worry about renewing them manually. If you want to be sure, you can run the following command to test the renewal process:
 
-```bash
+```shell
 sudo certbot renew --dry-run
 ```
 
@@ -752,7 +752,7 @@ KEY_PATH=/gameserver/certs/live/yourdomain.com/privkey.pem
 
 Now, you can run the container on your server by running the following command in the same directory as the `compose.yaml` file:
 
-```bash
+```shell
 docker compose up -d
 ```
 
@@ -760,7 +760,7 @@ Or, if you are using a managed service that is hooked up to your Docker Hub, you
 
 If you are serving with Google Cloud or some other managed container service, you will need to push the changes to your Docker image with the following commands, and redeploy the container.
 
-```bash
+```shell
 docker build -t yourdockerhubusername/gameserver:latest .
 docker push yourdockerhubusername/gameserver:latest
 ```
@@ -777,14 +777,14 @@ KEY_PATH=/etc/letsencrypt/live/yourdomain.com/privkey.pem
 
 Then, running the following command in the `server/` directory:
 
-```bash
+```shell
 go build -ldflags "-s -w" cmd/main.go
 ./main --config .env # or ./main.exe --config .env on Windows
 ```
 
 You might get an error saying that the certificate and private key files can't be loaded. This is because the `/etc/letsencrypt/live/` directory is protected, and the server doesn't have permission to read the files. You can fix this by trying to run the server as a privileged user
 
-```bash
+```shell
 sudo ./main --config .env # or right-clicking and running as administrator on Windows
 ```
 
@@ -802,13 +802,13 @@ If you see the following output, then you have successfully started your server:
 
 To run the server in the background on Linux, so you can close your terminal and the server will keep running, you can use the `nohup` command:
 
-```bash
+```shell
 nohup ./main --config .env &
 ```
 
 To stop the server, you will have to kill the process with these commands.
 
-```bash
+```shell
 sudo lsof -i :8080
 sudo kill -9 <PID>
 ```
@@ -948,7 +948,7 @@ func addHeaders(next http.Handler) http.Handler {
 
 If you are serving with Google Cloud or some other managed container service, you will need to push the changes to your Docker image and redeploy the container.
 
-```bash
+```shell
 docker build -t yourdockerhubusername/gameserver:latest .
 docker push yourdockerhubusername/gameserver:latest
 ```
@@ -957,7 +957,7 @@ Then, for Google Cloud Run, you can simply click the "Deploy" button to redeploy
 
 If you are self-hosting, you can rebuild the server and run it again with the following commands:
 
-```bash
+```shell
 go build -ldflags "-s -w" cmd/main.go
 ./main --config .env # or ./main.exe --config .env on Windows
 # or use sudo / run as administrator if your cert files are protected

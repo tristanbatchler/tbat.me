@@ -140,7 +140,7 @@ The hub's `Run` function is the main loop of the hub, where it listens for messa
 
 Before we can create our websockets implementation of the client interfacer, we need to install a package to help us work with websockets. We will be using the [Gorilla WebSocket](https://github.com/gorilla/websocket) package, which is a popular package for working with websockets in Go. To install it, run the following command in your terminal:
 
-```bash
+```shell
 cd server # If you're not already in the server directory
 go get github.com/gorilla/websocket
 ```

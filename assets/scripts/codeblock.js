@@ -1,12 +1,19 @@
-// Add $ to bash code blocks
-$('div.language-bash code').each(function() {
-  let code = $(this).text();
-  if (code.endsWith('\n')) {
-    code = code.slice(0, -1);
+// Add $ to shell code blocks
+$('div.language-shell code').each(function() {
+  let contents = $(this).html();
+  let lines = contents.split('\n');
+
+  // Remove the last line if it's empty
+  if (lines[lines.length - 1].trim() === '') {
+    lines.pop();
   }
-  const lines = code.split('\n');
-  const updatedLines = lines.map((line) => "$ " + line);
-  $(this).text(updatedLines.join('\n'));
+  
+  let updatedLines = lines.map(function(line) {
+    return '<span class="sh-p">$ </span>' + line;
+  });
+
+  $(this).html(updatedLines.join('\n'));
+
 });
 
 // Add copy button to all code blocks
@@ -23,9 +30,9 @@ codeBlocks.forEach(function (codeBlock) {
   button.addEventListener('click', function () {
     var code = codeBlock.querySelector('code').innerText.trim();
 
-    // Check if the ancestor has the .language-bash class
+    // Check if the ancestor has the .language-shell class
     if (codeBlock.parentElement && codeBlock.parentElement.parentElement &&
-        codeBlock.parentElement.parentElement.classList.contains('language-bash')) {
+        codeBlock.parentElement.parentElement.classList.contains('language-shell')) {
       code = code.replace(/^\$ /gm, '');
     }
 

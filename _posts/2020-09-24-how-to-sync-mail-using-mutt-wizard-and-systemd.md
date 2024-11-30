@@ -48,7 +48,7 @@ This server-timer pair will run `mw sync` every minute from the time you log in.
 
 Nothing will happen yet because we need to enable the timer which will then run the service every minute.
 
-```bash
+```shell
 systemctl --user enable mwsync.timer
 systemctl --user start mwsync.timer
 ```
@@ -57,7 +57,7 @@ The `enable` argument ensures this unit status up automatically on login. The `s
 
 Wait around for a minute and then check the status of your new service with
 
-```bash
+```shell
 systemctl --user status mwsync
 ```
 
@@ -102,7 +102,7 @@ This tells systemd to use the environment variables for the notmuch database and
 
 Now let's refresh the systemd daemon
 
-```bash
+```shell
 systemctl --user daemon-reload
 ```
 
@@ -112,7 +112,7 @@ and wait a minute for the next run.
 
 Let's check back in with
 
-```bash
+```shell
 systemctl --user status mwsync
 ```
 

@@ -14,7 +14,7 @@ We have made the choice to **not** use an ORM (Object-Relational Mapping) librar
 
 Before we can get started, we need to install the tool that will compile our SQL queries into Go code. Simply run the following command in your terminal to install the binary to your Go bin directory, which should be in your PATH:
 
-```bash
+```shell
 go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 ```
 
@@ -25,7 +25,7 @@ After restarting your terminal, you should be able to run `sqlc` and see the hel
 
 Before creating and accessing our database, we need to install the necessary Go package to interact with SQLite. Run the following command in your terminal:
 
-```bash
+```shell
 cd server # If you are not already in the server directory
 go get modernc.org/sqlite
 ```
@@ -100,7 +100,7 @@ The `-- name: CreateUser :one` line is similar, but this time it is an `INSERT` 
 
 Now that we have our schema and queries set up, we can generate the Go code that will interact with our database. Run the following command in your terminal from the root (`/`) directory of the project:
 
-```bash
+```shell
 sqlc generate -f server/internal/server/db/config/sqlc.yml
 ```
 
@@ -370,7 +370,7 @@ message Packet {
 
 Now compile the protobuf file either by saving the file if you set up the VS Code extension, or by running the following command in project root (`/`):
 
-```bash
+```shell
 protoc -I="shared" --go_out="server" "shared/packets.proto"
 ```
 
@@ -403,7 +403,7 @@ Now that we have the packets defined, we can start handling them on the server. 
 
 First, we are going to need the `bcrypt` package to hash the passwords. Run the following command in your terminal to install the package:
 
-```bash
+```shell
 cd server # If you are not already in the server directory
 go get golang.org/x/crypto/bcrypt
 ```

@@ -165,6 +165,12 @@ body {
         color: $foreground;
         font-family: 'Inconsolata', monospace;
 
+        span.sh-p {
+            content: '$';
+            color: $accent;
+            user-select: none; /* Make the $ non-selectable */
+        }
+        
         /* Inline code */
         &.highlighter-rouge {
             background-color: $inline;
