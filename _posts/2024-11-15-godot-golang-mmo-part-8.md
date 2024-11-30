@@ -8,12 +8,6 @@ Welcome back! In the [last part](/2024/11/14/godot-golang-mmo-part-7), we introd
 
 This opens the door to competitive gameplay, as we begin to incorporate scoring mechanics. With the added possibility of players eating each other, we’ll have the foundation for a truly competitive MMO. Let’s jump in and bring this to life!
 
-Here is a sneak peek of what we will achieve today:
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/15/ch8-preview.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 ## Growing the player
 
 First, we left off with the player eating spores and telling the server about it, but the server isn't doing anything with that information. It would be great if the server could validate the player's actions, and either accept or reject them. This way, we can prevent cheating, and make sure that the game is fair for everyone. If the changes are accepted, the server will then broadcast the changes to all other players, for other clients to interpret and display.
@@ -631,6 +625,6 @@ So now, if you run the game, you should see that the number of spores on the map
 
 And that's it for today! We've allowed players to eat each other and grow (all validated by the server), and we've addressed some issues with spawning and spore replenishment. The game is starting to look like a competitive MMO, and we are well on our way to having a complete game. In <strong><a href="/2024/11/16/godot-golang-mmo-part-9" class="sparkle-less">the next part</a></strong>, we will add a hiscore system to the game, so players can compete to be the best in the game. Until then, happy coding!
 
----
+<!-- ---
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

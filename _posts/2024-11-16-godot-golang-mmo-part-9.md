@@ -238,11 +238,7 @@ func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: f
     # ...
 ```
 
-That should be everything we need to add live hiscores to the game. Here's what it looks like now:
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/16/ingame-hiscores.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
+That should be everything we need to add live hiscores to the game.
 
 Now, let's tackle stage 2 of our plan: saving the player's best score to the database.
 
@@ -779,6 +775,6 @@ So that's it for this post! We have successfully added live hiscores to the game
 
 <strong><a href="/2024/11/18/godot-golang-mmo-part-10" class="sparkle-less">In the next post</a></strong>, we will make the game a bit more interesting by making players drop spores and lose mass over time, and also provide a way to search the leaderboard by player name. Hopefully it will be a shorter post than this one! 
 
---- 
+<!-- --- 
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

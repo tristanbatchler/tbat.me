@@ -3,8 +3,8 @@
 @import "comments";
 
 body {
-    // background: linear-gradient(to bottom, $void, $void2);
-    // background-attachment: fixed;
+    background: linear-gradient(to bottom, $void, $void2);
+    background-attachment: fixed;
     font-family: 'Montserrat', sans-serif;
     line-height: 1.5;
     font-size: 1.1em;
@@ -14,16 +14,16 @@ body {
     color: $foreground;
     background: $background;
 
-    // max-width: 800px;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 30px;
     padding: 10px;
 
-    // border-radius: 20px;
-    // border-style: solid;
-    // border-width: 5px;
-    // border-color: $accent;
+    border-radius: 20px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: $accent;
 
     position: relative;
 
@@ -111,8 +111,7 @@ body {
     }
 
     pre {
-        // overflow-x:
-        white-space: pre-wrap;
+        overflow-x: auto;
         background-color: $void;
         margin: 10px;
         padding: 10px;
@@ -268,10 +267,10 @@ mark {
 }
 
 
-// pre.highlight {
-//     max-height: 500px;
-//     overflow: auto;
-//     scrollbar-width: thin;
-//     scrollbar-color: $foreground $void;
-//     overflow-x: hidden;
-// }
+pre.highlight {
+    max-height: 500px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: $foreground $void;
+    overflow-x: hidden;
+}

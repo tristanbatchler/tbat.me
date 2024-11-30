@@ -104,38 +104,6 @@ In the `OnEnter` method, we are already starting to abstract some existing logic
 
 We are leaving the `HandleMessage` and `OnExit` methods empty for now, but the basic structure for any state handler is to switch on the message type and handle it accordingly. Let's come back to this later.
 
-As a quick reference, this is what your server folder structure should look like now:
-
-<details markdown="1">
-<summary>Click to expand</summary>
-```
-/server/
-│   go.mod
-│   go.sum
-│   
-├───cmd
-│       main.go
-│       
-├───internal
-│   └───server
-│       │   hub.go
-│       │   
-│       ├───clients
-│       │       websocket.go
-│       │       
-│       ├───objects
-│       │       sharedCollection.go
-│       │       
-│       └───states
-│               connected.go
-│
-└───pkg
-    └───packets
-            packets.pb.go
-            util.go
-```
-</details>
-
 ## Refactoring the websocket client interfacer
 
 You should see errors complaining that our `WebSocketClient` type doesn't implement `ClientInterfacer` because it doesn't have a `SetState` method. Let's fix that by adding a `state` field to our `WebSocketClient` struct:
@@ -401,6 +369,6 @@ Now, if you run the game, you should see the chatroom working as expected, but n
 
 Stay tuned for the <strong><a href="/2024/11/10/godot-golang-mmo-part-5" class="sparkle-less">next post</a></strong>, where we will set up a database and implement user registration and login functionality. I hope to see you there!
 
----
+<!-- ---
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

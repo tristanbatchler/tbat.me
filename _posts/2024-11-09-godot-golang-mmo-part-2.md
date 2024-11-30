@@ -447,6 +447,6 @@ We can now run the server by hitting **F5** in VS Code, or running `go run cmd/m
 
 This is a good place to stop for now. In <strong><a href="/2024/11/09/godot-golang-mmo-part-3" class="sparkle-less">the next post</a></strong>, we'll integrate the Godot client with our server, allowing it to establish connections and send packets, bringing us one step closer to a functional multiplayer game. Stay tuned!
 
----
+<!-- ---
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

@@ -79,10 +79,6 @@ func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> vo
 ```
 
 And that's it! Now, the movement of other players should look much smoother.
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/14/smooth-movement.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
 
 ## Adding objectives
 
@@ -355,10 +351,6 @@ func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
 ```
 
 All of this should be pretty straight forward now that we've seen pretty much the same thing for actors. In this case, we don't need to worry about updating the spores since they are static objects, but we will need be able to remove them later on when the server tells us to, which is why we're keeping a reference to them in the `_spores` dictionary. Aside from that, everything should be self-explanatory, so I won't go into more detail.
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/14/spores.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
 
 ### Eating the spores
 So we have spores in the game, but they don't do anything yet. Let's make it so that when a player collides with a spore, the spore is removed from the game and the player's size increases. We'll start by adding a new message type to our protocol buffers:
@@ -478,10 +470,6 @@ func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
 ```
 
 Now restart the server and client, and you should see something like this:
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/14/consume-spore.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
 
 ```plaintext
 2024/11/15 18:04:00 Starting server on :8080
@@ -509,116 +497,19 @@ I hope you are seeing the workflow of this project by now. Whenever we want to a
 * Do we need to render this information on the client? If so, create a new scene and script for the object in the `objects` folder, and add a new method to the `InGame` state script to handle the message and instantiate the object.
 * Et cetera...
 
-We will be following this workflow for most of the features we add to the game from here on, so there's still plenty of time to get used to it. For now though, I figured it's been a while since we've checked our project structure, so I'll give you a quick rundown of what we have so far:
-
-<details markdown="1">
-<summary>Click to expand</summary>
-
-```plaintext
-/
-├───.vscode/
-│       launch.json
-│       
-├───client/
-│   │   game_manager.gd
-│   │   main.gd
-│   │   main.tscn
-│   │   packets.gd
-│   │   project.godot
-│   │   websocket_client.gd
-│   │
-│   ├───addons/
-│   │       protobuf/
-│   │
-│   ├───classes/
-│   │   └───log/
-│   │           log.gd
-│   │           log.tscn
-│   │
-│   ├───objects/
-│   │   ├───actor/
-│   │   │       actor.gd
-│   │   │       actor.tscn
-│   │   │
-│   │   └───spore/
-│   │           spore.gd
-│   │           spore.tscn
-│   │
-│   ├───resources/
-│   │       floor.svg
-│   │
-│   └───states/
-│       ├───connected/
-│       │       connected.gd
-│       │       connected.tscn
-│       │
-│       ├───entered/
-│       │       entered.gd
-│       │       entered.tscn
-│       │
-│       └───ingame/
-│               ingame.gd
-│               ingame.tscn
-│
-├───server/
-│   │   go.mod
-│   │   go.sum
-│   │
-│   ├───cmd/
-│   │       db.sqlite
-│   │       debug_executable.exe
-│   │       main.go
-│   │
-│   ├───internal/
-│   │   └───server/
-│   │       │   hub.go
-│   │       │
-│   │       ├───clients/
-│   │       │       websocket.go
-│   │       │
-│   │       ├───db/
-│   │       │   │   db.go
-│   │       │   │   models.go
-│   │       │   │   queries.sql.go
-│   │       │   │
-│   │       │   └───config/
-│   │       │           queries.sql
-│   │       │           schema.sql
-│   │       │           sqlc.yml
-│   │       │
-│   │       ├───objects/
-│   │       │       gameObjects.go
-│   │       │       sharedCollection.go
-│   │       │       spawn.go
-│   │       │
-│   │       └───states/
-│   │               connected.go
-│   │               ingame.go
-│   │
-│   └───pkg/
-│       └───packets/
-│               packets.pb.go
-│               util.go
-│
-└───shared/
-        packets.proto
-```
-</details>
+We will be following this workflow for most of the features we add to the game from here on, so there's still plenty of time to get used to it. 
 
 For anyone who wants to keep going, I've added a section below on how to send spores in batches, which will help reduce the time it takes for the client to receive all the spores. But if you're happy with the progress we've made so far, I'll see you in <strong><a href="/2024/11/15/godot-golang-mmo-part-8" class="sparkle-less">the next post</a></strong> where we will be adding the logic to grow the player when they consume a spore, or another player!
 
----
+<!-- ---
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->
 
 ---
 
 ## Optional: Sending spores in batches
 
 <small>*Psst! I heard you want spores to come in shipments, not one-by-one. I got you covered.*</small>
-
-<details markdown="1">
-<summary>Click to expand</summary>
 
 For those of you still around, let's put in a little extra effort to get the initial spores sent to the client in a much more efficient way. {% include highlight.html anchor="repeated-field" text="This will require a new type of protobuf message we've never seen before: a repeated field. This is a way to send a list of messages in a single packet, which is perfect for sending spores in batches." %} Let's start by adding a new message type to our protocol buffers:
 
@@ -745,12 +636,6 @@ func _handle_spores_batch_msg(sender_id: int, spores_batch_msg: packets.SporesBa
 
 Make sure to leave the `elif packet.has_spore(): ...` check in the `_on_ws_packet_received` method (i.e. don't get rid of it just yet), because we will still have a use for that later!
 
-Simple as that! Now the client will be able to receive spores in batches, and you should see them pop in much faster than before. Here is a comparison of the two methods side-by-side (old method on the left, new method on the right):
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/14/comparison.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
+Simple as that! Now the client will be able to receive spores in batches, and you should see them pop in much faster than before.
 
 If you're happy with the progress we've made so far, I'll see you in <strong><a href="/2024/11/15/godot-golang-mmo-part-8" class="sparkle-less">the next post</a></strong> where we will be adding the logic to grow the player when they consume a spore, or another player!
-
-</details>

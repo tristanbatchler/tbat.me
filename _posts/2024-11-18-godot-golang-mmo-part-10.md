@@ -83,11 +83,6 @@ func _on_back_button_pressed() -> void:
 
 Now, when you run the game, you should be able to go back to the main menu from the hiscores screen. You should also be able to do all the things you could normally do in the connected state, like log in, register, and even go back to the hiscores screen.
 
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/18/ch10-hw.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 ## Dropping spores
 
 At the moment, our MMO doesn't incentivize players to keep eating once they reach a certain size. We want to add a mechanic where players have a random chance to drop a spore, which will cause them to lose mass over time. This will give players a reason to keep eating, as to at least maintain their size, if not grow larger. Let's get started!
@@ -176,36 +171,7 @@ func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
         # ...
 ```
 
-We are inserting the logic just after we define the variables from the message, and before we add the spore as a child to the world. For absolute clarity, here's the full method:
-
-<details markdown="1">
-<summary>Click to expand</summary>
-
-```directory
-/client/states/ingame/ingame.gd
-```
-
-```gdscript
-func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
-    var spore_id := spore_msg.get_id()
-    var x := spore_msg.get_x()
-    var y := spore_msg.get_y()
-    var radius := spore_msg.get_radius()
-    var underneath_player := false
-    
-    if GameManager.client_id in _players:
-        var player := _players[GameManager.client_id]
-        var player_pos := Vector2(player.position.x, player.position.y)
-        var spore_pos := Vector2(x, y)
-        underneath_player = player_pos.distance_squared_to(spore_pos) < player.radius * player.radius
-
-    if spore_id not in _spores:
-        var spore := Spore.instantiate(spore_id, x, y, radius, underneath_player)
-        _world.add_child(spore)
-        _spores[spore_id] = spore
-```
-
-</details>
+We are inserting the logic just after we define the variables from the message, and before we add the spore as a child to the world. 
 
 Now we can use this new flag to determine whether the player should consume the spore or not. We can add a check to the `_consume_spore` method in the InGame state script:
 
@@ -221,13 +187,7 @@ func _consume_spore(spore: Spore) -> void:
 
 Here, we just exit the method early if the spore is underneath the player. This will prevent the player from consuming the spore if it is underneath them.
 
-So now, in a perfect world, we would be finished with this feature! Here's a video of the spores dropping from various players, and the players losing mass over time as they consume the spores (I have increased the spore drop rate for demonstration purposes):
-
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/18/client-eating.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-<small>*It was an absolute nightmare to record this...*</small>
+So now, in a perfect world, we would be finished with this feature! 
 
 The only problem is, we do not live in a perfect world. Rule number one of networking: **never trust the client**. We need to add a new check on the server to ensure that the client is not consuming spores that are underneath them. Our approach here will be to add a timestamp to the spore object to signify when it was dropped. Then, when the client says they've consumed that spore, we will check if enough time has passed since the spore was dropped. If not, we will ignore the consumption request.
 
@@ -310,12 +270,7 @@ Now, if you run the game, you shouldn't see any difference. The spores will stil
 
 ## Searching the leaderboard
 
-Our leaderboard currently shows the top 10 players, but it would be even more exciting if we could search for a specific player who maybe isn't in the top 10. This is what we will be going for in this session.
-
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/18/hiscores_demo.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
+Our leaderboard currently shows the top 10 players, but it would be even more exciting if we could search for a specific player who maybe isn't in the top 10.
 
 We're going to need a few things to make this work:
 1. A new packet to send the search query to the server
@@ -594,6 +549,6 @@ So that ticks off everything we wanted to in this post! We added a new mechanic 
 
 Even though we have a fully functioning game at this point, there is still much to be desired in the looks department. In <strong><a href="/2024/11/20/godot-golang-mmo-part-11" class="sparkle-less">the next part</a></strong>, we will focus purely on polishing up anything that needs it, and making the game look as good as possible. This will set us up nicely for the final part, where we will deploy the game and make it available for others to play. Until then, good luck with your game development!
 
---- 
+<!-- --- 
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

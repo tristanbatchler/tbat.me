@@ -13,15 +13,16 @@ Over the last couple of years, I have been tinkering, trying to address some iss
 ## Introducing "Radius Rumble"
 For this series, we’ll develop Radius Rumble, a Godot-4-and-Golang-powered clone of the popular game [agar.io](https://agar.io).
 
-<video controls>
+<!-- <video controls>
   <source src="/assets/css/images/posts/2024/11/08/final-product-demo.webm" type="video/webm">
   Your browser does not support the video tag.
-</video>
+</video> -->
+
+![Radius Rumble](/assets/css/images/posts/2024/11/08/screenshot.png)
 
 Don't worry, the implementation will be general and flexible enough that you will have no problems adapting it to your own game ideas.
 
 You can check out the final project [here](https://radius.rumble.tbat.me). It is also on [itch.io](https://saltytaro.itch.io/radius-rumble).
-<iframe frameborder="0" src="https://itch.io/embed/2955328?bg_color=4a4873&amp;fg_color=fff8d4&amp;link_color=f29188&amp;border_color=6d5da6" width="552" height="167"><a href="https://saltytaro.itch.io/radius-rumble">Radius Rumble by saltytaro</a></iframe>
 
 ## Why Golang?
 Some of the most common feedback I received on the original project was that Python is not a good choice for a server-side language. The reasons for having this opinion can often be debatable, and I still stand by the opinion it's important to choose a language that you are comfortable with and can get the job done. However, I can't deny that a language more intended for server-side programming and optimized for performance would be a better choice, even if it's not as accessible as Python.
@@ -45,6 +46,6 @@ The series will be broken up into roughly three parts:
 
 Let's dive into this journey together! Head to <strong><a href="/2024/11/09/godot-golang-mmo-part-1" class="sparkle-less">the next post</a></strong> to get started building your server and client.
 
----
+<!-- ---
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

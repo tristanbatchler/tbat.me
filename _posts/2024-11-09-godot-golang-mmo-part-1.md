@@ -190,8 +190,7 @@ You should see some new files appear in your `server` folder under `pkg/`:
 ```
 
 > If you feel like it, you can install the [vscode-proto3](https://marketplace.visualstudio.com/items?itemName=zxh404.vscode-proto3) extension for Visual Studio Code. It will give you syntax highlighting and some other useful features for `.proto` files. One such feature is the ability to save the file and have it automatically compile the generated code. For that to work, you can add a `settings.json` file to your `.vscode` folder with the following content:
-> <details markdown="1">
-> <summary>Click to expand</summary>
+> 
 > ```directory
 > /.vscode/settings.json
 > ```
@@ -207,7 +206,7 @@ You should see some new files appear in your `server` folder under `pkg/`:
 >     }
 > }
 > ```
-> </details>
+>
 > Unfortunately, it looks like you do need to specify the absolute path to the `.proto` file, at least on Windows, **with a lowercase drive letter**. This is a bit of a pain, but it's better than nothing.
 
 ## Making packets in Go
@@ -431,6 +430,6 @@ Now that is certainly an interesting hello world program! It is important to not
 
 Ok, so we can create packets in both Go and Godot, and have the means to convert them to/from bytes. So how do we send them to each other? Head on over to <strong><a href="/2024/11/09/godot-golang-mmo-part-2" class="sparkle-less">the next post</a></strong>! We'll set up a websocket server in Go, establish client connections, and exchange these packets in real-time.
 
----
+<!-- ---
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

@@ -6,12 +6,6 @@ redditurl:
 
 Welcome back to the Godot 4 + Golang MMO series. In [the last post](/2024/11/10/godot-golang-mmo-part-5), we finally finished laying down the groundwork with the database connections. Now, it's time to breathe life into our game by adding core gameplay mechanics.
 
-Here’s a quick preview of what we’ll achieve in this post:
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/11/output.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 We'll start by adding a new state to our server called `InGame`, and expand our packet system to handle player actions. Let’s dive in and start shaping the player experience!
 
 ## Players
@@ -621,6 +615,6 @@ Now you should be able to zoom in and out using the scroll wheel. You can also s
 
 So it's far from perfect, but we have made good progress in this post. We have added gameplay to our MMO, and we can see other players moving around the screen. In <strong><a href="/2024/11/14/godot-golang-mmo-part-7" class="sparkle-less">the next post</a></strong>, we will look at smoothing out the player's movement, and adding some more gameplay elements to the game. Stay tuned!
 
----
+<!-- ---
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

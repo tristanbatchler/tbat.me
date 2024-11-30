@@ -718,6 +718,6 @@ You should be proud of yourself for getting this far. We have covered a lot of g
 
 We will be transitioning into the real gameplay logic in <strong><a href="/2024/11/11/godot-golang-mmo-part-6" class="sparkle-less">the next post</a></strong>, where we will be creating the `InGame` state and handling player movement and chat. So don't go anywhere!
 
---- 
+<!-- --- 
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->

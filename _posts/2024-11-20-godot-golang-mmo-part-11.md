@@ -162,11 +162,6 @@ This shouldn't need much explaining. The only notable aspect here is we are send
 
 Go ahead and try it out! You should now be able to send messages on mobile and log out from the game. The chat should also look a lot nicer with the margin container.
 
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/20/logout_demo.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 ## Revamping the login screen
 
 Now that we've zhuzhed up the in-game UI, let's do the same for the login screen. The process for registering vs. logging in is identical, which doesn't make much sense, so we should separate those out as well.
@@ -243,11 +238,6 @@ void fragment() {
 }
 ```
 
-<video controls loop>
-  <source src="/assets/css/images/posts/2024/11/20/background_demo.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 Looking good! Let's add some accessibility features to the login screen now.
 
 ### Accessibility / privacy
@@ -265,11 +255,6 @@ There's a lot more we could do here, like letting users press Enter to log in, o
 ### Revamping the hiscores screen
 
 Finally, let's pretty much do the same thing to the hiscores screen. We'll be adding the same title and the same background image and shader effect. You can also add a margin container like we did with the in-game UI. I will leave this as an exercise for the reader (hint: you can copy and paste the `Background` sprite and RichTextLabel from the `Connected` scene and all the properties will be the same).
-
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/20/copypaste.webm" type="video/webm">
-    Your browser does not support the video tag.
-</video>
 
 Don't forget to change your code if you adjust the scene structure or node names!
 
@@ -426,52 +411,6 @@ Let's head back to the `connected.gd` script to fix up the references to nodes t
         _action_on_ok_received = func(): GameManager.set_state(GameManager.State.INGAME)
     ```
 
-For reference, the new `connected.gd` script should look like this:
-
-<details markdown="1">
-<summary>Click to expand</summary>
-
-```directory
-/client/states/connected/connected.gd
-```
-
-```gdscript
-extends Node
-
-const packets := preload("res://packets.gd")
-
-var _action_on_ok_received: Callable
-
-@onready var _register_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/RegisterButton as Button
-@onready var _log := $UI/MarginContainer/VBoxContainer/Log as Log
-@onready var _login_form := $UI/MarginContainer/VBoxContainer/LoginForm as LoginForm
-
-func _ready() -> void:
-    WS.packet_received.connect(_on_ws_packet_received)
-    WS.connection_closed.connect(_on_ws_connection_closed)
-    _login_form.form_submitted.connect(_on_login_form_submitted)
-
-func _on_ws_packet_received(packet: packets.Packet) -> void:
-    var sender_id := packet.get_sender_id()
-    if packet.has_deny_response():
-        var deny_response_message := packet.get_deny_response()
-        _log.error(deny_response_message.get_reason())
-    elif packet.has_ok_response():
-        _action_on_ok_received.call()
-    
-func _on_ws_connection_closed() -> void:
-    pass
-    
-func _on_login_form_submitted(username: String, password: String) -> void:
-    var packet := packets.Packet.new()
-    var login_request_msg := packet.new_login_request()
-    login_request_msg.set_username(username)
-    login_request_msg.set_password(password)
-    WS.send(packet)
-    _action_on_ok_received = func(): GameManager.set_state(GameManager.State.INGAME)
-```
-</details>
-
 Now, you should be able to log in with the new login form, and browse the hiscores too. Nothing should be different from before except for the fact we've lost the register button. We will add that back in now.
 
 ### Adding a new registration form
@@ -590,11 +529,6 @@ func _on_register_prompt_meta_clicked(meta) -> void:
 ```
 
 Now, when you run the game, you should be able to click on the link in the `Connected` scene and reveal the registration form. You can also click the cancel button to go back to the login form. Everything should be looking great now!
-
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/20/registration_screen_demo.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
 
 ### Setting up the server to handle custom player colors
 
@@ -797,11 +731,6 @@ func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: f
 
 Now, when you run the game, you should see players with different colors. You can also test this by registering a new account with a different color.
 
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/20/registration_demo_2.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 ## Auto-zooming the camera
 
 Instead of letting the player scroll to zoom out as far as they like, let's make the camera automatically zoom out whenever the player grows. The player will still be able to zoom in, but the maximum zoom out will be limited to a certain distance.
@@ -896,11 +825,6 @@ func _update_zoom() -> void:
 
 There, now as the player grows, users won't have to squint to read their nameplate.
 
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/20/autozoom.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 ## Hiding spores on top of players
 
 One more annoying thing is that spores dropped by players are drawn on top, which looks pretty jarring. Luckily, the fix is very simple. We just need to change the `z_index` of the actors to be higher than the spores'. We can do this in the `ingame.gd` script, just after we add the new actor to the world.
@@ -922,12 +846,6 @@ Now, when you run the game, the spores should be drawn underneath the players, w
 ## A better approach to lag adjustment
 
 You may not have noticed if you are just playing the game on your own machine, but there are always imperfections with the server syncing the player's position with the client. We are currently naively accounting for that by periodically sending the server's version of the player to the client, and the client will just snap to that position. This works, but feels pretty horrible especially if playing on a server with a high ping. 
-
-To demonstrate this, I've simulated a bad sync by forcing the client's speed to be 10% faster than what the server thinks it is. I've drawn the server's version of the player as a blue ghost, so you can see the difference.
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/20/raw-snap.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
 
 We can do better by subtly interpolating the player's position between the server's version and the client's version.
 
@@ -957,20 +875,6 @@ Here, we are interpolating the player's position towards the `server_position` v
 
 Note that we are simultaneously updating our true position, but also the `server_position` variable according to our velocity vector. This is because the server position variable will only be updated every so often (whenever the server decides to send us an update), so we need to keep the offset between the two consistent until we start interpolating.
 
-For example, here's what happens when we **don't** add our velocity to the server position every frame:
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/20/no-added-vel.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
-And this is what it looks like when we **do**:
-<video controls>
-  <source src="/assets/css/images/posts/2024/11/20/added-vel.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
-Hopefully you agree that the second video demonstrates a much smoother user experience, without compromising the accuracy of the player's position.
-
 With all that aside, we still aren't updating the `server_position` anywhere in our code! We do that in the `ingame.gd` script, where we handle updating our actors. Replace the existing, naive position update with the following:
 
 ```directory
@@ -998,6 +902,6 @@ Note that we still won't update the `server_position` if the position mismatch i
 
 So our game is looking and feeling a lot better compared to when we started this part. Everything should be a lot more accessible to mobile users, too, which will be important for <strong><a href="/2024/11/22/godot-golang-mmo-part-12" class="sparkle-less">the next part</a></strong> where we will be deploying our game to the web. That will be the final part of this series, so I hope you will join me for that. If you've made it this far, give yourself a pat on the back! You have done a lot of work, and your game is looking great. Until next time!
 
---- 
+<!-- --- 
 
-If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along.
+If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs following along. -->
