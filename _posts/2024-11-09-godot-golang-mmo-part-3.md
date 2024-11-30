@@ -2,6 +2,7 @@
 title: "§03 Add Real-Time Chat to Your Godot 4 MMO with Go"
 description: "What's an MMO without a way to chat with your friends? Learn how to implement an interactive chatroom for your MMO using WebSockets and Protocol Buffers a solid foundation for your MMO."
 redditurl: 
+project: godot4golang
 ---
 
 We’ve been focusing on the server side—but now it’s time to bring the client into the mix. In [the last post](/2024/11/09/godot-golang-mmo-part-2), we set up a Go server with WebSockets and Protocol Buffers to handle messages. Now, we’ll turn our attention to Godot 4 and implement a real-time chatroom.

@@ -98,7 +98,7 @@ Now that we have our four animations for walking in each direction, it's time to
 Open the `Actor.gd` script, and we will add the `else` clause to our `_physics_process` function's `if (target - body.position).length() > 5` statement:
 ```gdscript
 else:
-	velocity = Vector2.ZERO
+    velocity = Vector2.ZERO
 ```
 
 This was an oversight from [the previous lesson](/2022/11/22/godot-python-mmo-part-4.html) which becomes more important in this lesson. It is saying we need to reset our velocity to zero when we arrive close to our target destination.
@@ -111,20 +111,20 @@ onready var animation_player: AnimationPlayer = get_node("KinematicBody2D/Sprite
 Now we will add a new function to `Actor.gd`:
 ```gdscript
 func _process(delta):
-	# Get the direction angle
-	var angle = velocity.angle()
+    # Get the direction angle
+    var angle = velocity.angle()
 
-	# Check which quadrant the angle is in and play animation accordingly
-	if velocity.length() <= 5:
-		animation_player.stop()
-	elif -PI/4 <= angle and angle < PI/4:
-		animation_player.play("walk_right")
-	elif PI/4 <= angle  and angle < 3*PI/4:
-		animation_player.play("walk_down")
-	elif -3*PI/4 <= angle and angle < -PI/4:
-		animation_player.play("walk_up")
-	else:
-		animation_player.play("walk_left")
+    # Check which quadrant the angle is in and play animation accordingly
+    if velocity.length() <= 5:
+        animation_player.stop()
+    elif -PI/4 <= angle and angle < PI/4:
+        animation_player.play("walk_right")
+    elif PI/4 <= angle  and angle < 3*PI/4:
+        animation_player.play("walk_down")
+    elif -3*PI/4 <= angle and angle < -PI/4:
+        animation_player.play("walk_up")
+    else:
+        animation_player.play("walk_left")
 ```
 
 This is Godot's built-in `_process` function, which runs each frame. It is different from `_physics_process` in that it runs as much as possible, and should be used for non-physics based calculations. In this case, we are using it to play our animations according to the direction we are moving in.
@@ -235,37 +235,37 @@ var avatar_id: int = 0
 Now, in the `_ready` function, make sure to set our new avatar panel's visibility to `false`, and connect the register button to a new function called `_choose_avatar`, which will un-hide the panel. While we're here, we will also connect our left, OK, and right buttons to their respective functions for choosing an avatar.
 ```gdscript
 func _ready():
-	password_field.secret = true
-	avatar_panel.visible = false
+    password_field.secret = true
+    avatar_panel.visible = false
 
     login_button.connect("pressed", self, "_login")
-	register_button.connect("pressed", self, "_choose_avatar")
+    register_button.connect("pressed", self, "_choose_avatar")
 
-	avatar_right.connect("pressed", self, "_next_avatar")
-	avatar_ok.connect("pressed", self, "_register")
-	avatar_left.connect("pressed", self, "_prev_avatar")
+    avatar_right.connect("pressed", self, "_next_avatar")
+    avatar_ok.connect("pressed", self, "_register")
+    avatar_left.connect("pressed", self, "_prev_avatar")
 ```
 
 Here is the `_choose_avatar` function and its helpers:
 ```gdscript
 func _choose_avatar():
-	avatar_panel.visible = true
-	avatar_animation_player.play("walk_down")
+    avatar_panel.visible = true
+    avatar_animation_player.play("walk_down")
 
 func _next_avatar():
-	avatar_id += 1
-	if avatar_id >= 6:
-		avatar_id = 0
-	_update_sprite()
+    avatar_id += 1
+    if avatar_id >= 6:
+        avatar_id = 0
+    _update_sprite()
 
 func _prev_avatar():
-	avatar_id -= 1
-	if avatar_id < 0:
-		avatar_id = 5
-	_update_sprite()
+    avatar_id -= 1
+    if avatar_id < 0:
+        avatar_id = 5
+    _update_sprite()
 
 func _update_sprite():
-	avatar_sprite.set_region_rect(Rect2(368, avatar_id * 48, 64, 48))
+    avatar_sprite.set_region_rect(Rect2(368, avatar_id * 48, 64, 48))
 ```
 
 The `_choose_avatar` function simply un-hides the panel and starts animating the preview sprite.
@@ -277,15 +277,15 @@ The `_update_sprite` function is responsible for driving the preview of the avat
 Now we can update the `_register` function to send the avatar ID along with the username and password in our register packet:
 ```gdscript
 func _register():
-	emit_signal("register", username_field.text, password_field.text, avatar_id)
+    emit_signal("register", username_field.text, password_field.text, avatar_id)
 ```
 
 We also need to update the `_handle_register_button` in `Main.gd` to accept the new argument:
 ```gdscript
 func _handle_register_button(username: String, password: String, avatar_id: int):
-	state = funcref(self, "REGISTER")
-	var p: Packet = Packet.new("Register", [username, password, avatar_id])
-	_network_client.send_packet(p)
+    state = funcref(self, "REGISTER")
+    var p: Packet = Packet.new("Register", [username, password, avatar_id])
+    _network_client.send_packet(p)
 ```
 
 ## Update the register packet and actor model

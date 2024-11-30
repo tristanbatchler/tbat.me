@@ -2,6 +2,7 @@
 title: "§06 Add Core Gameplay to Your Godot 4 MMO"
 description: "Bring your world to life! Learn how to handle player creation, movement, and the game loop with a Golang-powered server."
 redditurl: 
+project: godot4golang
 ---
 
 Welcome back to the Godot 4 + Golang MMO series. In [the last post](/2024/11/10/godot-golang-mmo-part-5), we finally finished laying down the groundwork with the database connections. Now, it's time to breathe life into our game by adding core gameplay mechanics.

@@ -2,6 +2,7 @@
 title: "§05 Secure Player Accounts with a Database in Your Godot 4 + Go MMO"
 description: "Implement user authentication with Go sqlc to manage player accounts and secure your MMO. This guide covers everything from setup to integration and security."
 redditurl: 
+project: godot4golang
 ---
 
 In [the previous post](/2024/11/10/godot-golang-mmo-part-4), we introduced a state machine system to better organize our game logic. Now, it’s time to add a crucial feature: player accounts. In this tutorial, we’ll integrate a database into our MMO to enable user authentication and securely store player information.

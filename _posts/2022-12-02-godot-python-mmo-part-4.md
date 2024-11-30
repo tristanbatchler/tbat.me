@@ -67,17 +67,17 @@ var initial_data: Dictionary
 var data: Dictionary = {}
 
 func init(init_data: Dictionary):
-	initial_data = init_data
-	return self
+    initial_data = init_data
+    return self
 
 func update(new_model: Dictionary):
-	data = new_model
+    data = new_model
 ```
 
 Then we can let the actor call the first update once all its nodes are ready. Add this `_ready` function to `Actor.gd`:
 ```gdscript
 func _ready():
-	update(initial_data)
+    update(initial_data)
 ```
 
 That should be it! Test your game to make sure you can log in, move somewhere in the middle of the screen, and log out. Log in again and you should be put right back where you left off!
@@ -175,27 +175,27 @@ elif self._state == self.PLAY:
 Inside Godot, we need to interpret the model updates slightly differently now inside `Actor.gd`, because it's not guaranteed that any of the keys we are trying to access actually exist in the dictionary any more. So basically we just need to add a bunch of `if` statements checking if the diction has the key we want to use. Change the `update` function to the following:
 ```gdscript
 func update(new_model: Dictionary):
-	.update(new_model)
-	
-	if new_model.has("instanced_entity"):
-		var ientity = new_model["instanced_entity"]
-		
-		if ientity.has("x") and ientity.has("y"):
-			server_position = Vector2(float(ientity["x"]), float(ientity["y"]))
-			
-			if not initialised_position:
-				initialised_position = true
-				body.position = server_position
-				if is_player:
-					_player_target = server_position
-			
-		if ientity.has("entity"):
-			var entity = ientity["entity"]
-			if entity.has("name"):
-				actor_name = ientity["entity"]["name"]
-		
-				if label:
-					label.text = actor_name
+    .update(new_model)
+    
+    if new_model.has("instanced_entity"):
+        var ientity = new_model["instanced_entity"]
+        
+        if ientity.has("x") and ientity.has("y"):
+            server_position = Vector2(float(ientity["x"]), float(ientity["y"]))
+            
+            if not initialised_position:
+                initialised_position = true
+                body.position = server_position
+                if is_player:
+                    _player_target = server_position
+            
+        if ientity.has("entity"):
+            var entity = ientity["entity"]
+            if entity.has("name"):
+                actor_name = ientity["entity"]["name"]
+        
+                if label:
+                    label.text = actor_name
 ```
 
 And that's it! To see the improvement, let's suppose we are moving only horizontally and look at the update data we would have been sending to the client before and compare with what we are sending now.
@@ -256,8 +256,8 @@ var rubber_band_radius: float = 200
 Then, in the `update` function, add the following `elif` clause to the `if not initialised_position` statement (i.e., we do this if we have already initialised the player's position in a previous update, and this update is telling us a *new* position):
 ```gdscript
 elif (body.position - server_position).length() > rubber_band_radius:
-	# Rubber band if body position too far away from server position
-	body.position = server_position
+    # Rubber band if body position too far away from server position
+    body.position = server_position
 ```
 
 That's all you need to do to implement rubber banding. A good way to test this is to force the client to go out of sync with the server by setting the `speed` variable to something much different from `70` (which is what the server is expecting). For example, set `speed` to `200` in `Actor.gd` and leave the server code alone. Test your game, and notice the player is snapped back every time it is more than 200 pixels away from the expected server position.
@@ -303,7 +303,7 @@ button.connect("pressed", self, "button_pressed")
 Finally, add a new function called `button_pressed`, which, in turn, just calls the `text_entered` function with the input field's existing text:
 ```gdscript
 func button_pressed():
-	text_entered(input_field.text)
+    text_entered(input_field.text)
 ```
 
 

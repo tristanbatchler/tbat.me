@@ -6,7 +6,7 @@
 
   <defs>
     <circle cx="0" cy="87" r="2.2" fill="white" id="minMarker"/>
-	<line x1="0" y1="95" x2="0" y2="78" stroke-width="3.8" stroke="white" id="hourMarker"/>
+    <line x1="0" y1="95" x2="0" y2="78" stroke-width="3.8" stroke="white" id="hourMarker"/>
   </defs>
   <g id="markerSet">
     <use xlink:href="#hourMarker"/>

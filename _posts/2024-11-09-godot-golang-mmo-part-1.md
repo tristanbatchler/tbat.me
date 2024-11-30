@@ -2,6 +2,7 @@
 title: "§01 Kickstart Your Godot 4 MMO with a Golang Backend"
 description: "Lay the foundation for your MMO project. Set up Godot 4 and Golang, configure essential tools, and establish basic server-client communication with ease."
 redditurl: 
+project: godot4golang
 ---
 
 Ready to dive in? In [the introduction](/2024/11/08/godot-golang-mmo-intro), we explored the motivations behind this project, the technology stack, and what to expect from the series. Now, we’ll start building. In this post, we’ll install the necessary tools, set up a basic packet system, and establish a simple communication flow between the server and the client to lay the groundwork for our MMO.
