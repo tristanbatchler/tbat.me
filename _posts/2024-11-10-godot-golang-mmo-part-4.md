@@ -2,6 +2,7 @@
 title: "§04 Supercharge Your Godot 4 Golang MMO with State Machines"
 description: "Discover the magic of state machines! Streamline your game logic and create a scalable MMO that’s robust and easy to maintain."
 redditurl: 
+project: godot4golang
 ---
 
 [So far](/2024/11/09/godot-golang-mmo-part-3) we’ve focused on laying a scalable and maintainable foundation for our Godot 4 Golang MMO. Now, it’s time to introduce some structure to our codebase. In this part, we’ll implement a simple yet powerful state machine system for both the client and server.

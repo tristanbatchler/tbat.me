@@ -2,6 +2,7 @@
 title: "§12 Deploy Your Golang and Godot 4 MMO to the Cloud"
 description: "It’s time to launch! Learn how to deploy your MMO with secure WebSockets, custom domains, containers, and the Godot HTML5 export."
 redditurl: 
+project: godot4golang
 ---
 
 Welcome to the final part of our Godot 4 Go MMO series! In [the last part](/2024/11/20/godot-golang-mmo-part-11), we finalized our game. In this post, we’ll take your game from development to launch. We’ll cover how to deploy your server to the cloud using Google Cloud Platform or self-hosting, set up secure WebSockets, and explore containerization. Additionally, we’ll walk through hosting the client on platforms like itch.io or your own website.

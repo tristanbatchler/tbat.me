@@ -2,6 +2,7 @@
 title: "§07 Add Objectives and Polish Your Godot 4 Go MMO to Enhance Gameplay"
 description: "Polish your MMO! Cut down on the jank, add objectives to keep players engaged, and refine game movement for a more enjoyable experience."
 redditurl: 
+project: godot4golang
 ---
 
 Nice to see you again! In [the last post](/2024/11/11/godot-golang-mmo-part-6), we finally got some gameplay down, and we left off in a pretty good spot. We have a basic space where players can move around and spot each other, but it is very unpolished, and I wouldn't really call it a "game" since it lacks objectives! Let's fix that today by adding some spores to collect and let the player grow. We will also be making the movement more fluid and restoring the chat functionality we kinda lost in the last post. Let's get right into it!

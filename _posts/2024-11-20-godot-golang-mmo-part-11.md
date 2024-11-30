@@ -2,6 +2,7 @@
 title: "§11 Polish Your Godot 4 MMO for Launch"
 description: "Prepare for deployment by adding polish to your MMO. Refine visuals, fix bugs, and ensure a smooth experience for your players."
 redditurl: 
+project: godot4golang
 ---
 
 [Last time](/2024/11/18/godot-golang-mmo-part-10) we just finished adding the final features of our MMO. Now, with deployment right around the corner, we could **really** use some polish. In this part, we will be focusing solely on that: making the game look and feel as good as possible. That way, players will be more likely to stick around and enjoy the game. 

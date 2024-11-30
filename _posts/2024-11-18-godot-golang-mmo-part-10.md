@@ -2,6 +2,7 @@
 title: "§10 Add the Final Touches to Your Godot 4 Go MMO"
 description: "As we approach the finish line, we’ll implement friend search functionality and finalize the core features of our MMO."
 redditurl: 
+project: godot4golang
 ---
 
 This is the last part of the series we will concern ourselves with adding new features to the game. We just have two more features to add, and then we will move on to polishing everything up and deploying the game over the next two parts.

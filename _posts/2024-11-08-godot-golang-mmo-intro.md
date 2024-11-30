@@ -2,6 +2,7 @@
 title: "§00 Build a Modern Godot 4 MMO with Golang"
 description: "Learn how to create an online MMO using the latest tools, Godot 4 and Golang. This series introduces a practical approach to building a scalable, high-performance game while remaining accessible to developers of all skill levels."
 redditurl: 
+project: godot4golang
 ---
 
 Two years ago, I set out to create an MMO using Godot 3 and Python. Now, with Godot 4 here and valuable feedback from that first attempt, I’m excited to introduce a new and improved approach using Golang. I use the term "MMO" loosely to mean an online multiplayer game with a central server—but the term has certainly helped garner attention!

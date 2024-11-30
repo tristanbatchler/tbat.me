@@ -2,6 +2,7 @@
 title: "§09 Build an Online Leaderboard for Your Godot 4 Go MMO"
 description: Let's add a browsable, searchable, hiscore leaderboard to our MMO, so players can see how they rank against others.
 redditurl: 
+project: godot4golang
 ---
 
 We’re nearing the end of this series, having just wrapped up [allowing players to eat each other and grow](/2024/11/15/godot-golang-mmo-part-8). But one thing we’re missing is a way for players to track their progress and see how they rank against others. It’s time to add a hiscore leaderboard! Let’s dive in and set it up.

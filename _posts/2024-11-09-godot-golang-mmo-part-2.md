@@ -2,6 +2,7 @@
 title: "§02 Build a Go WebSocket Game Server for Your Godot 4 MMO"
 description: "Bring multiplayer to life! Create a WebSocket server in Go to handle real-time gameplay for your MMO. This tutorial sets the stage for seamless player interactions."
 redditurl: 
+project: godot4golang
 ---
 
 Let's send some packets! In [the last post](/2024/11/09/godot-golang-mmo-part-1), we set up the foundation for our Godot 4 MMO, including the project structure, dependencies, and our first packets. Now, we’ll take the next step by creating a simple WebSocket server in Go. This server will handle connections and manage them through a WebSocket hub, setting the stage for real-time multiplayer communication.
