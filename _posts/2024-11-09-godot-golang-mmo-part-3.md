@@ -9,6 +9,8 @@ We’ve been focusing on the server side—but now it’s time to bring the clie
 
 In this tutorial, we’ll set up the client, connect it to the server, and create a chat log to display messages. By the end, players will be able to send and receive messages in real-time—a foundational feature for any MMO.
 
+As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.02](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.02) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
+
 ## The WebSocket client in Godot
 
 We will be lifting a lot of code from the [Godot documentation](https://docs.godotengine.org/en/stable/tutorials/networking/websocket.html#minimal-client-example) for this part. Create a new script called `websocket_client.gd` and paste the following code:

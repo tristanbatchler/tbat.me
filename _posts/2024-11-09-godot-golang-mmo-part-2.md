@@ -7,6 +7,8 @@ project: godot4golang
 
 Let's send some packets! In [the last post](/2024/11/09/godot-golang-mmo-part-1), we set up the foundation for our Godot 4 MMO, including the project structure, dependencies, and our first packets. Now, we’ll take the next step by creating a simple WebSocket server in Go. This server will handle connections and manage them through a WebSocket hub, setting the stage for real-time multiplayer communication.
 
+I highly recommend you go through the first lesson if you haven't already. If do you want to start here without viewing the previous lesson, however, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO/releases), and download the **[v0.01](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.01)** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.1.zip).
+
 ## Introducing the server architecture
 
 ### WebSockets
@@ -316,6 +318,7 @@ func (c *WebSocketClient) ReadPump() {
         err = proto.Unmarshal(data, packet)
         if err != nil {
             c.logger.Printf("error unmarshalling data: %v", err)
+            continue
         }
 
         // To allow the client to lazily not set the sender ID, we'll assume they want to send it as themselves
