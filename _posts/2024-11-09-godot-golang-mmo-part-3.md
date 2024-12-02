@@ -340,7 +340,7 @@ The `Get` method shouldn't need any explanation, and now for our final method:
 ```
 ```go
 // Get the approximate number of objects in the map.
-// The reason this is approximate is because the map is locked while counting.
+// The reason this is approximate is because we don't lock the map to get the length.
 func (s *SharedCollection[T]) Len() int {
     return len(s.objectsMap)
 }

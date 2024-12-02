@@ -9,6 +9,8 @@ project: godot4golang
 
 State machines will help us manage the game’s logic in an organized and efficient way, forming the backbone of our business logic. Let’s dive in and set up this essential system!
 
+As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.03](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.03) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
+
 ## Building on the client interfacer
 So far we've built a pretty good idea of what a client interfacer should look like, but there are definitely some features missing. One of these features is the ability to manage the client's state. But what **is** the client's state? In the context of our MMO, that could be things like "*is the client current in the game?*", "*is the client currently in a menu?*", "*is the client currently disconnected and trying to reconnect?*", and so on. 
 
