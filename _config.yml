@@ -4,8 +4,6 @@ sass:
 collections:
   projects:
     output: true
-  coursenotes:
-    output: true
 
 defaults:
   - scope:
@@ -18,11 +16,6 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-  - scope:
-      path: ""
-      type: "coursenotes"
-    values:
-      layout: "coursenote"
   - scope:
       path: ""
     values:
@@ -39,7 +32,7 @@ highlighter: rouge
 jekyll-minifier:
   compress_javascript: false # doesn't work, I am doing it manually
 
-title: "Tristan Batchler's home page"
+title: "Tristan Batchler"
 tagline: "A site for Tristan Batchler's details, and various computer science and maths blogs and articles"
 description: "Find all the details you need to know about Tristan Batchler here. I am a detail oriented masters student skilled in systems and the technical support role with over seven years' professional experience in IT and software. I also write about tech and mathematics in my blog!"
 url: "https://www.tbat.me"
