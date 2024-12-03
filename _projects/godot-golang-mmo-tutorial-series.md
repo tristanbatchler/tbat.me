@@ -13,7 +13,7 @@ This is a completely free, thirteen-part course intended for people with some pr
   {% for post in site.posts reversed %}
     {% if post.project == "godot4golang" %}
         <li class="no-bullet">
-        <h4><a href="{{ post.url }}">{{ post.title }}</a></h4>
+        <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
         <p class="timestamp">{{ post.date | date: "%d %b %y" }}</p>
         <small>{{ post.description }}</small>
         </li>

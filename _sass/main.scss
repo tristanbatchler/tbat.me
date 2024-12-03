@@ -168,6 +168,7 @@ body {
         span.sh-p {
             content: '$';
             color: $accent;
+            -webkit-user-select: none;
             user-select: none; /* Make the $ non-selectable */
         }
         

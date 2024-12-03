@@ -1,60 +1,53 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PB3HJX77');</script>
-    <!-- End Google Tag Manager -->
 
-    <meta charset="utf-8">
-    <meta name="abstract" content="The home page and blog of Tristan Batchler">
-    <meta name="subject" content="The home page and blog of Tristan Batchler">
-    <meta name="summary" content="The home page and blog of Tristan Batchler">
-    <meta name="topic" content="The home page and blog of Tristan Batchler">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <meta name="keywords" content="Tristan Batchler, portfolio, UQ, University of Queensland, mathematics, computer science, {{ page.title }}" />
-    <link ref="icon" type="image/x-icon" href="/favicon.ico">
-    
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-    <script src="/assets/scripts/sparkles.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
-    <!-- <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script> -->
-    <script type="text/x-mathjax-config">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-PB3HJX77');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="keywords"
+    content="Tristan Batchler, portfolio, UQ, University of Queensland, mathematics, computer science" />
+  <link ref="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="apple-touch-icon" href="/favicon.ico">
+
+  <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+    integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+  <script src="/assets/scripts/sparkles.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
+  {% seo %}
+</head>
+
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PB3HJX77" height="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <div id="content">
+    <div id="header">
+      {% include header.html %}
+    </div>
+    {{ content }}
+    <div id="footer">
+      {% include footer.html %}
+      <div id="final"></div>
+    </div>
+  </div>
+  <script type="text/x-mathjax-config">
       MathJax.Hub.Config({extensions:["MathMenu.js","MathZoom.js","AssistiveMML.js","a11y/accessibility-menu.js"],jax:["input/TeX","output/CommonHTML"],TeX:{extensions:["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]}});
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    {% seo %}
-  </head>
-  <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PB3HJX77"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <div id="content">
-      <div id="header">
-        {% include header.html %}
-      </div>
-      {{ content }}
-      <div id="footer">
-        {% include footer.html %}
-        <div id="final"></div>
-      </div>
-    </div>
-    <!-- <script>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => {
-              document.location.href = "/admin/";
-            });
-          }
-        });
-      }
-    </script> -->
-  </body>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</body>
+
 </html>
