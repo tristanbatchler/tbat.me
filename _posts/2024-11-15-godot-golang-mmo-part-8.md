@@ -429,7 +429,7 @@ Let's address these issues before we wrap up for today.
 
 So far, we've been able to get away with spawning stuff at purely random coordinates, but now that we have the concept of eating other players, we need to be a bit more thoughtful. We need to make sure that players don't spawn inside each other, and it would be nice if the spores could avoid spawning inside players as well when we get to that.
 
-Let's start by revisiting the `spawn.go` file we created in <a href="/2024/11/13/godot-golang-mmo-part-6#spawning-stuff" target="_blank">the last part</a> and adding some new features to the `SpawnCoords` function.
+Let's start by revisiting the `spawn.go` file we created in <a href="/2024/11/14/godot-golang-mmo-part-7#spawning-spors" target="_blank">the last part</a> and adding some new features to the `SpawnCoords` function.
 
 ```directory
 /server/internal/server/objects/spawn.go

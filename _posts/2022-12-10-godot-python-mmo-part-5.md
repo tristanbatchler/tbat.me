@@ -4,7 +4,7 @@ description: Let's finish up by adding some graphics to our game and allowing pl
 redditurl: 
 ---
 
-Welcome to the final lesson in the core series of the Godot Python MMO! In the [previous lesson](/2022/11/22/godot-python-mmo-part-4), we finished up most of the logic for our game.
+Welcome to the final lesson in the core series of the Godot Python MMO! In the [previous lesson](/2022/12/02/godot-python-mmo-part-4), we finished up most of the logic for our game.
 
 In this lesson, we will be finishing things off by adding some much-needed graphics, and allowing players to express themselves by choosing their own avatars during registration!
 
@@ -101,7 +101,7 @@ else:
     velocity = Vector2.ZERO
 ```
 
-This was an oversight from [the previous lesson](/2022/11/22/godot-python-mmo-part-4) which becomes more important in this lesson. It is saying we need to reset our velocity to zero when we arrive close to our target destination.
+This was an oversight from [the previous lesson](/2022/12/02/godot-python-mmo-part-4) which becomes more important in this lesson. It is saying we need to reset our velocity to zero when we arrive close to our target destination.
 
 Next, let's add a reference to our **AnimationPlayer** node at the top of `Actor.gd`:
 ```gdscript
