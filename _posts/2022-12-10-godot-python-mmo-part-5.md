@@ -4,7 +4,7 @@ description: Let's finish up by adding some graphics to our game and allowing pl
 redditurl: 
 ---
 
-Welcome to the final lesson in the core series of the Godot Python MMO! In the [previous lesson](/2022/11/22/godot-python-mmo-part-4.html), we finished up most of the logic for our game.
+Welcome to the final lesson in the core series of the Godot Python MMO! In the [previous lesson](/2022/11/22/godot-python-mmo-part-4), we finished up most of the logic for our game.
 
 In this lesson, we will be finishing things off by adding some much-needed graphics, and allowing players to express themselves by choosing their own avatars during registration!
 
@@ -12,7 +12,7 @@ In this lesson, we will be finishing things off by adding some much-needed graph
 <center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/kfzb9tD3BKU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---
 
-As always, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 4** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.4.zip). You will need to refer to parts [1](/2022/11/20/godot-python-mmo-part-1.html) and [2](/2022/11/21/godot-python-mmo-part-2.html) to set up the virtual environment, set up the database, and run the server (if you haven't already).
+As always, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 4** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.4.zip). You will need to refer to parts [1](/2022/11/20/godot-python-mmo-part-1) and [2](/2022/11/21/godot-python-mmo-part-2) to set up the virtual environment, set up the database, and run the server (if you haven't already).
 
 ## A sneak peek
 Here's a quick look at our final product!
@@ -101,7 +101,7 @@ else:
     velocity = Vector2.ZERO
 ```
 
-This was an oversight from [the previous lesson](/2022/11/22/godot-python-mmo-part-4.html) which becomes more important in this lesson. It is saying we need to reset our velocity to zero when we arrive close to our target destination.
+This was an oversight from [the previous lesson](/2022/11/22/godot-python-mmo-part-4) which becomes more important in this lesson. It is saying we need to reset our velocity to zero when we arrive close to our target destination.
 
 Next, let's add a reference to our **AnimationPlayer** node at the top of `Actor.gd`:
 ```gdscript

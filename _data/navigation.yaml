@@ -1,6 +1,6 @@
 - name: Home
   link: /
 - name: Projects
-  link: /projects.html
+  link: /projects
 - name: Posts
-  link: /posts.html
+  link: /posts

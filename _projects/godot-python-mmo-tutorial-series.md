@@ -18,11 +18,11 @@ Videos which follow these posts are also published on [YouTube](https://www.yout
 </center>
 
 ## Accompanying blog posts
-1. [Infrastructure setup and basic chatroom](/2022/11/20/godot-python-mmo-part-1.html)
-1. [Login and registration](/2022/11/21/godot-python-mmo-part-2.html)
-1. [Moving around!](/2022/11/22/godot-python-mmo-part-3.html)
-1. [Optimising for mobile / bug fixes](/2022/12/02/godot-python-mmo-part-4.html)
-1. [Avatar selection / adding graphics](/2022/12/10/godot-python-mmo-part-5.html)
+1. [Infrastructure setup and basic chatroom](/2022/11/20/godot-python-mmo-part-1)
+1. [Login and registration](/2022/11/21/godot-python-mmo-part-2)
+1. [Moving around!](/2022/11/22/godot-python-mmo-part-3)
+1. [Optimising for mobile / bug fixes](/2022/12/02/godot-python-mmo-part-4)
+1. [Avatar selection / adding graphics](/2022/12/10/godot-python-mmo-part-5)
 1. [Security and deployment](/2022/12/20/deploying-your-godot-python-mmo-to-production)
 
 ## Official GitHub releases

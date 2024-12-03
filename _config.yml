@@ -52,3 +52,4 @@ social:
       - https://www.youtube.com/channel/UCk16fwaXxD4JUkxzwFc8PQg 
 google_site_verification: "_4lemCjWeskGPkc0vFRR8MxPnEjnEjUzbFTK9HaeP7M"
 locale: "en_AU"
+permalink: "/:categories/:year/:month/:day/:title"
