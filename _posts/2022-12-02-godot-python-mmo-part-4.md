@@ -4,7 +4,7 @@ description: Let's fix a couple bugs in our game before we polish up the client 
 redditurl: 
 ---
 
-Welcome back to yet another lesson! In the [previous lesson](/2022/11/22/godot-python-mmo-part-3.html), we finished setting up our actors who can move around in the game, kicking off our long-term goal.
+Welcome back to yet another lesson! In the [previous lesson](/2022/11/22/godot-python-mmo-part-3), we finished setting up our actors who can move around in the game, kicking off our long-term goal.
 
 In this lesson, we will discuss the lesson 3 homework solutions, and focus on ironing out any bugs and making small improvements.
 
@@ -12,7 +12,7 @@ In this lesson, we will discuss the lesson 3 homework solutions, and focus on ir
 <center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/IB2fysfyNsQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 ---
 
-As always, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 3** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.3.zip). You will need to refer to parts [1](/2022/11/20/godot-python-mmo-part-1.html) and [2](/2022/11/21/godot-python-mmo-part-2.html) to set up the virtual environment, set up the database, and run the server (if you haven't already).
+As always, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases), and download the **End of lesson 3** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.3.zip). You will need to refer to parts [1](/2022/11/20/godot-python-mmo-part-1) and [2](/2022/11/21/godot-python-mmo-part-2) to set up the virtual environment, set up the database, and run the server (if you haven't already).
 
 ## A sneak peek
 Here's a quick look at what we'll be finishing up by the end of this lesson:

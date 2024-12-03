@@ -4,7 +4,7 @@ description: Let's turn our chatroom into a proper game by introducing actors wh
 redditurl: 
 ---
 
-Welcome back to yet another lesson! In the [previous lesson](/2022/11/21/godot-python-mmo-part-2.html), we finished setting up authentication for our chatroom, thus completing our short-term goal.
+Welcome back to yet another lesson! In the [previous lesson](/2022/11/21/godot-python-mmo-part-2), we finished setting up authentication for our chatroom, thus completing our short-term goal.
 
 In this lesson, we will really kick it up a notch by attaching the notion of position and movement to our players, making this feel more like a game.
 
