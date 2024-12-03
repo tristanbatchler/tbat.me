@@ -120,7 +120,7 @@ go get github.com/joho/godotenv
 In the `main.go` file, we can now replace the command-line arguments with the config file. We are also going to add some logic which may seem pretty confusing at the moment. It is going to eventually allow us to run the server in a Docker container (see the next section) if we want to, without changing the code.
 
 Basically the only thing we need to know for now is the server will now accept a single argument, `--config`, which should be the path to a file that can be parsed like a `.env` file. 
-> <img class="info" src="/assets/images/info.png" /> For all intents and purposes, it **is** a `.env` file, but we could call it something else if we wanted to, like `game.config`, etc. The reason we, ourselves, are calling the file `.env` is because it will double up as a way to store environment variables for the server when we deploy it to the cloud. We will not get that added benefit if we call it something else. More on that later.
+> <img class="info" src="/assets/images/info.png" alt="Painful note" /> For all intents and purposes, it **is** a `.env` file, but we could call it something else if we wanted to, like `game.config`, etc. The reason we, ourselves, are calling the file `.env` is because it will double up as a way to store environment variables for the server when we deploy it to the cloud. We will not get that added benefit if we call it something else. More on that later.
 
 ```directory
 /server/cmd/main.go
