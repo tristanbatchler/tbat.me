@@ -60,7 +60,7 @@ This file tells `sqlc` where to find out SQL queries and schema (we will create 
 Next, as you may have guessed, we need to create the `schema.sql` and `queries.sql` files. Create these files also in the `config/` directory, adjacent to `sqlc.yaml`.
 
 ```directory
-/server/internal/server/db/schema.sql
+/server/internal/server/db/config/schema.sql
 ```
 ```sql
 CREATE TABLE IF NOT EXISTS users (
@@ -303,7 +303,7 @@ func (c *Connected) OnEnter() {
     // ...
 
     // Create a new user in the database
-    user, err := c.client.DbCtx().Queries.CreateUser(c.client.DbCtx().Ctx, db.CreateUserParams{
+    user, err := c.client.DbTx().Queries.CreateUser(c.client.DbTx().Ctx, db.CreateUserParams{
         Username:     "username",
         PasswordHash: "password hash",
     })
