@@ -400,6 +400,8 @@ func _ready() -> void:
     GameManager.set_state(GameManager.State.ENTERED)
 ```
 
+Be sure to also remove the child nodes from the root node of the `main.tscn` scene, as we won't be needing them anymore.
+
 Now, if you run the game, you should see the chatroom working as expected, but now with the game's logic broken up into separate scenes and scripts. Congratulations! You have implemented a state machine on both the client and server sides of our MMO project. This is some much-needed organization that will pave the way to more complex features in the future.
 
 Stay tuned for the <strong><a href="/2024/11/10/godot-golang-mmo-part-5" class="sparkle-less">next post</a></strong>, where we will set up a database and implement user registration and login functionality. I hope to see you there!
