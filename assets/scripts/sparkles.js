@@ -34,7 +34,12 @@ $.fn.sparkleh = function( options ) {
 
     return this.each( function(k,v) {
 
-        var $this = $(v).css("position","relative");
+        var extraRules = {
+            // "white-space" : "nowrap",
+            // "position" : "relative",
+        }
+
+        var $this = $(v).css(extraRules);
 
         var settings = $.extend({
             width: $this.outerWidth(),

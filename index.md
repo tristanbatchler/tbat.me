@@ -9,6 +9,8 @@ description: Tristan Batchler's home page. Find all the information you need to 
 
 ---
 
+👋 Hi, I'm Tristan! I have a passion for programming, mathematics, games, teaching, and writing. You can find out what I'm up to on this site. See what I'm most excited about below 👇
+
 **📰 Godot 4 Go MMO tutorials**
 
 I am currently working on a series of tutorials for creating a Go MMO in Godot 4. You can check them out <strong><a class="sparkle-less" href="/projects/godot-golang-mmo-tutorial-series">in the projects section</a></strong>.

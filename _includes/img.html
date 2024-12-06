@@ -1,17 +1,44 @@
+{%- assign original_width = '/assets/images/' | append: include.src | image_size: 'w' | times: 1.0 -%}
+{%- assign original_height = '/assets/images/' | append: include.src | image_size: 'h' | times: 1.0 -%}
+
+{%- assign max_width = include.max_width | default: 512 | times: 1.0 -%}
+
+{%- if original_width > max_width -%}
+  {%- assign scale_ratio = max_width | divided_by: original_width -%}
+  {%- assign scaled_width = max_width | round -%}
+  {%- assign scaled_height = original_height | times: scale_ratio | round -%}
+{%- else -%}
+  {%- assign scaled_width = original_width | round -%}
+  {%- assign scaled_height = original_height | round -%}
+{%- endif -%}
+
 <picture class="{{ include.class }}">
     {%- if jekyll.environment == 'development' -%}
-    <source srcset="/assets/images/{{ include.src }}">
+    <source srcset="/assets/images/{{ include.src }}" media="(max-width: 512px)" />
     <img 
         class="{{ include.class }}" 
         loading="{{ include.loading | default: 'lazy' }}" 
         alt="{{ include.alt }}" 
-        src="/assets/images/{{ include.src }}" />
+        src="/assets/images/{{ include.src }}"
+        sizes="(max-width: 512px) 100vw, 512px"
+        srcset="/assets/images/{{ include.src }}"
+        width="{{ scaled_width }}"
+        height="{{ scaled_height }}"
+    />
     {%- else -%}
-    <source srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75">
+    <source 
+        srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75" 
+        media="(max-width: 512px)" 
+    />
     <img 
         class="{{ include.class }}" 
         loading="{{ include.loading | default: 'lazy' }}" 
         alt="{{ include.alt }}" 
-        src="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75" />
+        src="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75" 
+        sizes="(max-width: 512px) 100vw, 512px"
+        srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75"
+        width="{{ scaled_width }}"
+        height="{{ scaled_height }}"
+    />
     {%- endif -%}
 </picture>

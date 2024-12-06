@@ -278,3 +278,8 @@ pre.highlight {
     scrollbar-color: $foreground $void;
     overflow-x: hidden;
 }
+
+.sparkle-less, .sparkle-more, .sparkle {
+    position: relative;
+    display: inline-block;
+}
