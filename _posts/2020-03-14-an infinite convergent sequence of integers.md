@@ -3,6 +3,8 @@ title: An infinite convergent sequence of integers?
 description: My brother recently had an interesting question on his introductory analysis assignment. What can we say about an infinite sequence of integers which converges? An intuitive idea which turns out to be quite tricky to prove.
 ---
 
+{% include math.html %}
+
 My brother recently had an interesting question on his introductory analysis assignment. What can we say about an infinite sequence of integers which converges? An intuitive idea which turns out to be quite tricky to prove.
 
 ## The problem

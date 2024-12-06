@@ -1,0 +1,10 @@
+<picture class="{{include.class}}">
+    {%- if jekyll.environment == 'development' -%}
+    <source srcset="/assets/images/{{include.src}}">
+    <img loading="lazy" alt="{{include.alt}}" src="/assets/images/{{include.src}}" />
+    {%- else -%}
+    <source srcset="{{site.url}}/.netlify/images?url=/assets/images/{{include.src}}&fm=webp&q=75">
+    <img loading="lazy" alt="{{include.alt}}"
+        src="{{site.url}}/.netlify/images?url=/assets/images/{{include.src}}&fm=webp&q=75" />
+    {%- endif -%}
+</picture>

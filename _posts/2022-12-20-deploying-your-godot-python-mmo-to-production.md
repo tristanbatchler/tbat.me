@@ -199,13 +199,13 @@ I can only offer instructions for AWS, for otherwise I would have to write a gui
 
 ## Creating an AWS account
 For those following along with AWS, the first thing we need to do is create an account. You can do this by going to [https://aws.amazon.com/](https://aws.amazon.com/) and clicking the **Create an AWS Account** button. 
-![Create an AWS Account](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/aws-signup.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/aws-signup.png" alt="Create an AWS Account" %}
 
 You will then be taken to a **Sign in** page, but you can ignore this and click the **Create a new AWS account** button at the bottom instead.
-![Create a new AWS account](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/aws-signup-2.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/aws-signup-2.png" alt="Create a new AWS account" %}
 
 Here you will be asked a **Root user email address** and choose an **AWS account name**. You can enter whatever you want here, but I would recommend using your email address as the account name as this will make it easier to find your account later on. Then click the **Verify email address** button.
-![Verify email address](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/verify-email.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/verify-email.png" alt="Verify email address" %}
 
 Now go to your inbox for the address you entered, and look for an email from **no-reply@signup.aws** called **AWS Email Verification**. Just copy the code from the email and enter it into the **Verification code** field on the AWS website, then click the **Verify** button.
 
@@ -225,59 +225,59 @@ You will be redirected to the AWS Management Console where you can start creatin
 
 ## Creating an AWS server
 Now that we have an AWS account, we can create a server. First of all, however, we should make sure we are in the correct **Region**. The region is the location of the server, and you should choose the one that is closest to you or the people you anticipate will be playing your game. To change the region, click the dropdown in the top right corner of the page (it should have the name of a region written there) and select the region you want to use from the list. I will be using the **US West (N. California)** region for this guide, since that's where most of you guys are from, apparently!
-![Changing the region](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/region.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/region.png" alt="Changing the region" %}
 
 Next, head on over to the **EC2 (Electronic Cloud Compute)** service by clicking the **Services** dropdown in the top left corner of the page and selecting **EC2** under **Compute** from the list.
-![EC2](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/ec2.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/ec2.png" alt="EC2" %}
 
 From here, you will want to click on **Instances** link in the left sidebar and click the orange **Launch instances** button at the top of the next page.
-![Launch instances](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/launch-instance.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/launch-instance.png" alt="Launch instances" %}
 
 On the next page, we will choose all the information about our new server. Give your server any name you like in the **Name** field, then scroll down and select **Ubuntu** > under **Quick Start**. In the dropdown menu just below, choose the latest version of Ubuntu Server (22.04 at the time of this tutorial), ensuring it says **Free tier eligible** next to it. Ensure the architecture is **64-bit (x86)**.
-![Ubuntu Server](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/ami.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/ami.png" alt="Ubuntu Server" %}
 
 Scroll down to the **Instance type** selection list, and choose the **t2.micro** option. This is the best server that is free to use for the first year (free tier eligible). If you want to use a larger instance type, you will have to pay for it, but since you're just starting out, it would be smart to use the **t2.micro** instance for now.
 
 Scroll down to the **Key pair (login)** section. In order to access your server, you will need to generate a public-private key pair. Click the **Create a new key pair** button, enter a name for your key pair. Ensure **RSA** is selected as the type, and **.pem** is selected as the format. Now click the **Create key pair** button. This will download a file called to your computer. I would recommend saving this file to a folder in your home directory, `~/.ssh/` (you can create this folder if it doesn't exist already). This is where you will store all your key pairs for accessing your servers. **Keep this file safe** as it is the only way to access your server. If you lose it, you will have to create a new key pair and update your server's security group to allow access from your new key pair.
-![Key pair](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/keypair.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/keypair.png" alt="Key pair" %}
 
 Now that you've created your key pair and selected it, scroll down to the **Network settings** section. Here, you will want to select **Create security group** under the **Firewall** section, and choose to **Allow SSH traffic from Anywhere 0.0.0.0/0**. This will allow you to access your server via SSH from your computer with your private key.
 You will see a warning about the security group being open to the world, but this is fine for us, since we will be keeping our private key secure. 
-![Security group](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/sg.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/sg.png" alt="Security group" %}
 
 Leave everything else on this page as default (everything is reconfigurable later if you want), and click the **Launch instance** button at the bottom of the page. You'll just have to wait a couple seconds before you are presented a link to your new instance. Click the link, or simply go back to **Services > Compute > EC2 > Instances**. You should see your new instance listed there. It will take a minute or so to fully up, and then you will see it say **Running** under the **Instance state** column.
-![Instance](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/running.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/running.png" alt="Instance" %}
 
 ## Setting the security group
 One last thing we need to do in AWS is to set the **Security group** settings for your new EC2 instance. Security groups are like firewalls, and they control what traffic is allowed to enter and leave your server. We need to make sure that our security group allows traffic on port **8081**, or whichever port you choose to run your game under. To do this, ensure your instance is selected, and click on the **Security** tab in the bottom panel. Click on the link to the security group (it should be of the form `sg-xxxxxxxx (launch-wizard-1)`).
-![Security group](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/sg-link.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/sg-link.png" alt="Security group" %}
 
 On the next page, ensure the **Inbound rules** tab is selected, and click the **Edit inbound rules** button.
-![Edit inbound rules](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/inbound-rules.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/inbound-rules.png" alt="Edit inbound rules" %}
 
 On the **Edit inbound rules** page, click the **Add rule** button, and select **Custom TCP** from the dropdown menu. In the **Port range** field, enter the port number you want to use for your game (8081 in my case). In the **Source** field, enter **0.0.0.0/0** which means anyone in the world can connect. Repeat this process for port **80** as well, as this will be needed later for provisioning TLS certificates on the server. Click the **Save rules** button.
-![Custom TCP](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/custom-tcp.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/custom-tcp.png" alt="Custom TCP" %}
 
 ## Obtaining a domain name
 Head back to the [AWS console](https://console.aws.amazon.com/console/home) and click on **Services > Compute > EC2 > Instances** to get back to the instance you've created. Click on the **Details** tab, and you should see the **Public IPv4 address** of your server. Take note of this IP address, as we will need it later.
 
 To keep the costs as low as possible, we will be using a free domain service called FreeDNS. This service allows you to register a subdomain for free, and point it to your server's IP address. To do this, head to [https://freedns.afraid.org/](https://freedns.afraid.org/), and click the **Sign up Free** button at the bottom. 
-![FreeDNS](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/freedns.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/freedns.png" alt="FreeDNS" %}
 
 Enter your details here, enter the verification code, check the T&Cs, and click the **Send activation email** button. I would recommend keeping the **E-Mail** address field the same as the email you used to sign up with AWS, so everything is easy to find later. Once you've done this, you should receive an email from dnsadmin@afraid.org with a link to activate your account (it may take a minute to come through, and make sure you check your spam folder too). Click the link, and you should be taken to the subdomains page.
 
 Ignore this page for now, and just click on the [Registry](https://freedns.afraid.org/domain/registry/) link on the left-hand side under **For Members**.
-![Registry](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/registry.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/registry.png" alt="Registry" %}
 
 From this list, there will be lots of domains to choose from. Firstly, let's click on the **Age** column to sort by oldest domains first, as these will be the least likely to disappear any time soon. It may be tempting to choose something cool from the first page, but I would recommend choosing something that is on the third page or after, as it won't be as used. This ensures later, when we want to register a free a TLS certificate, we won't run into any problems with too many people requesting certificates for that domain.
 
 So scroll down and go to page 3 or 4, and choose a public domain that doesn't have too many hosts using it (e.g., I chose a domain registered in 2004 which only has 176 hosts registered to it).
 
 Just click on the link of the domain you want to use, ensuring it says **public**.
-![My domain](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/my-domain.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/my-domain.png" alt="My domain" %}
 
 You will be taken to the **Add a new subdomain** page where you can now enter the IP address of your AWS EC2 instance you noted down earlier. Ensure the **Type** is set to **A**, and enter something unique in the **Subdomain** field. For example, if you enter "mydomain", and you chose a domain before called "gatesweb.info" your game's hostname will be "mydomain.gatesweb.info". Finally, enter the IP address of your EC2 instance in the **Destination** field. Fill out the verification image, leave everything else along, and click the **Add** button.
-![Add subdomain](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/adding-domain.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/adding-domain.png" alt="Add subdomain" %}
 
 If you got the verification image correctly (these ones are tricky), you should see your new subdomain appear. You have now successfully registered a domain name for your game!
 
@@ -287,7 +287,7 @@ We are done with FreeDNS for now, but remember **you need to come back to this s
 Let's log in to our server. If you know how to use SSH to access the server from your terminal, go ahead. I will be showing how to do this all within the AWS console.
 
 Go back to the [AWS console](https://console.aws.amazon.com/console/home), and click on **Services > Compute > EC2 > Instances** and select your instance. Now click on the **Connect** button at the top.
-![Connect](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/connect.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/connect.png" alt="Connect" %}
 
 Ensure the **User name** is **ubuntu** and scroll down and click **Connect**. A new tab will be open where you will be loaded into a virtual terminal.
 
@@ -300,7 +300,7 @@ sudo snap refresh core
 ```
 
 The second command might ask you to restart some services. Just select all of them by using the up and down arrow keys and the space bar. Then press enter to confirm.
-![Restart services](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/restart-services.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/restart-services.png" alt="Restart services" %}
 
 After that's all done, we need to ensure the firewall lets ports 22 (for SSH), 8081 (or the port your game is running), and 80 through. To do this, enter the following command:
 ```shell
@@ -321,7 +321,7 @@ git clone https://github.com/your-username/your-repo
 ```
 
 Make sure to replace `your-username` and `your-repo` with the username and repository name for the GitHub repository you created earlier.
-![Commands](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/commands.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/commands.png" alt="Commands" %}
 
 Now let's set up our server from scratch and try to run it! These commands will create the required `server/migrations/__init__.py` (just replace `your-repo` with the name of your GitHub repository):
 ```shell
@@ -346,7 +346,7 @@ pip install service-identity
 python manage.py makemigrations
 python manage.py migrate
 ```
-![Getting packages](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/get-packages.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/get-packages.png" alt="Getting packages" %}
 
 We need to generate the certificates required to run the server now. For this, we will use [Let's Encrypt](https://letsencrypt.org/). Let's Encrypt is a free certificate authority which can automatically provision certificates on our server for our game to use. To set this up, we need to create our `server/certs/` folder, move into it, install the `certbot` package, make some certificates, and copy them in:
 ```shell
@@ -358,7 +358,7 @@ sudo certbot certonly --standalone
 ```
 
 At this stage, you will be asked to answer some questions. Importantly, when asked for a common name, enter the domain name you registered on FreeDNS earlier. If you don't enter the correct domain name, you will get an error.
-![Certbot](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/certbot.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/certbot.png" alt="Certbot" %}
 
 Now you will get a public certificate and private key in the `/etc/letsencrypt/live/your-domain/` folder. We need to copy these into the `server/certs/` folder we created earlier. To do this, enter the following commands (just be sure to replace `your-domain` with your subdomain you registered and entered just before):
 ```shell
@@ -376,10 +376,10 @@ Now we can move back out into the `server/` folder and try running it!
 cd ..
 python .
 ```
-![Running the server](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/running-server.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/running-server.png" alt="Running the server" %}
 
 If you see the above output, then your server is running! You can now connect to it from your game client, if you just change the hostname line in the `_ready` function of `Main.gd` first. Go ahead and give it a go, both on the desktop and HTML5 versions of your game! You should see the server output in your AWS EC2 terminal tab, confirming you are indeed connecting to the server over the internet!
-![Testing](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/testing.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/testing.png" alt="Testing" %}
 
 If you get any errors at this point, or don't see any output in your AWS EC2 terminal, there could be many reasons. If you see no output in your server terminal, double check you have allowed port 8081 through the security group settings, and you ran `sudo ufw allow 8081`. If you are getting a specific error, try Googling it for clues and carefully read over this guide again. If you are still stuck, feel free to [join the Discord](https://discord.gg/tzUpXtTPRd) and ask for help!
 
@@ -479,7 +479,7 @@ Wed Dec 21 05:11:15 UTC 2022 Done
 Wed Dec 21 05:11:15 UTC 2022 Attempting to change ownership of /home/ubuntu/official-godot-python-mmo/server/certs/server.crt and /home/ubuntu/official-godot-python-mmo/server/certs/server.key to ubuntu
 Wed Dec 21 05:11:15 UTC 2022 Done
 ```
-![Renewing certificates](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/renew.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/renew.png" alt="Renewing certificates" %}
 
 ## Client hosting
 Now we're ready to save our client files and distribute them to our users. I think the best way to do this is via [itch.io](https://itch.io/). Itch.io is a great platform for distributing games, and it's free to use.
@@ -489,14 +489,14 @@ To get started, we need to do a final HTML5 export of our game, making sure we s
 Now, zip up your `client/HTML5` folder so we can upload it to itch.io. Once you've done this, go to [itch.io](https://itch.io/) and register a free account. Once you've registered check your email inbox to confirm your address (you can't upload your game until you've done this). 
 
 Once your address is confirmed, go back to itch.io and click the dropdown list at the top-right and select **Upload new project**. Give your project a name, URL, and under **Kind of project**, be sure to select **HTML**.
-![Itch Upload](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/itch-upload.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/itch-upload.png" alt="Itch Upload" %}
 
 Scroll down to the **Uploads** section, and click on the red **Upload files** button. Here, navigate to your HTML5 zip archive you made, and open it to begin uploading.
 
 Now, you are free to tweak all the other fields on this page to your liking. Remember you can always come back and edit these later. Once you're happy, click the **Save & view page** button at the bottom of the page. You should now see your game listed on your itch.io profile page!
 
 Try clicking the **Run game** button to see if it works!
-![Wow!](/assets/css/images/posts/2022/12/20/deploying-your-godot-python-mmo-to-production/wow.png)
+{% include img.html src="posts/2022/12/20/deploying-your-godot-python-mmo-to-production/wow.png" alt="Wow!" %}
 
 Hopefully it's all working at this point! Now, you will want to click the **Edit game** tab up the top so you can go back and tweak a couple of things (notably the **Embed options** width/height). Once you're happy, scroll to the bottom and click **Public** under **Visibility & access** and hit **Save**. Now, your game is live and ready to be played by anyone!
 

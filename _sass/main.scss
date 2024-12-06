@@ -69,7 +69,8 @@ body {
                 font-size: smaller;
 
                 max-width: 80%;
-
+                
+                
                 transition: transform 0.25s ease;
             }
 
@@ -80,7 +81,7 @@ body {
         }
 
         // Hover to enlarge images, except for images already larger than
-        &:not(.headshot) {
+        &:not(.headshot, video) {
             &:hover {
                 transform: scale(1.35);
                 box-shadow: 0 0 10px 5px $void;

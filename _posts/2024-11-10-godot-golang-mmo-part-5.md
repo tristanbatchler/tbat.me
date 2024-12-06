@@ -605,7 +605,7 @@ Feel free to impose more restrictions on the username if you like, but this is a
 In our Godot project, we can build a login and register form in a new scene we will create called `Connected`. This scene will be switched to from the `Entered` scene after a connection is established.
 
 Let's create a new folder at `res://states/connected` and add a new scene called `connected.tscn` with a **Node**-type root node called `Connected`.
-![Connected scene](/assets/css/images/posts/2024/11/10/connected-scene.png)
+{% include img.html src="posts/2024/11/10/connected-scene.png" alt="Connected scene" %}
 
 Add the following nodes underneath the root `Connected` node:
 - **CanvasLayer** - called `UI`
@@ -621,7 +621,7 @@ Position the **VBoxContainer** by using the **VCenter Wide** anchor preset, and 
 
 Set the minimum height of the **Log** node to 200, too.
 
-![Connected scene](/assets/css/images/posts/2024/11/10//connected-scene-nodes.png)
+{% include img.html src="posts/2024/11/10//connected-scene-nodes.png" alt="Connected scene" %}
 
 It's not the prettiest form, but it will do for now. We can always come back and make it look better later.
 

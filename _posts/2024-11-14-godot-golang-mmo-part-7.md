@@ -36,7 +36,7 @@ func (g *InGame) handleChat(senderId uint64, message *packets.Packet_Chat) {
 Note the `handleChat` method is just a repeat of the code we had to remove in §05, which we originally wrote in <a href="/2024/11/09/godot-golang-mmo-part-3#add-chat-logic" target="_blank">§03</a>.
 
 So now, when two players are in the same room, they can chat with each other!
-![Chatting](/assets/css/images/posts/2024/11/14/chatting.png)
+{% include img.html src="posts/2024/11/14/chatting.png" alt="Chatting" %}
 
 ## Improving chat on the client
 
@@ -53,7 +53,7 @@ func _handle_chat_msg(sender_id: int, chat_msg: packets.ChatMessage) -> void:
         _log.chat(actor.actor_name, chat_msg.get_msg())
 ```
 
-![I owe Adam Sandler $20 please send help](/assets/css/images/posts/2024/11/14/chatting-names.png)
+{% include img.html src="posts/2024/11/14/chatting-names.png" alt="I owe Adam Sandler $20 please send help" %}
 
 Now that looks a lot better!
 
@@ -81,7 +81,7 @@ func _handle_player_msg(sender_id: int, player_msg: packets.PlayerMessage) -> vo
 
 And that's it! Now, the movement of other players should look much smoother.
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/14/smooth-movement.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/14/smooth-movement.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -275,7 +275,7 @@ This basically just allows the client to get into the game without needing to wa
 Now that we're sending the spores to the client, we are all good to go ahead and start processing them in Godot. But first, we'll need to add a new object to our game to represent these spores.
 
 Create a new folder at `res://objects/spore/` and add a new scene called `spore.tscn` with an **Area2D** root node called `Spore`.
-![Spore scene](/assets/css/images/posts/2024/11/14/spore-scene.png)
+{% include img.html src="posts/2024/11/14/spore-scene.png" alt="Spore scene" %}
 
 Now, add a **CollisionShape2D** child node to the `Spore` node and set its shape to a **CircleShape2D**. Similarly to the actor, we'll want to ensure the **Local to Scene** property is checked in the **CircleShape2D**. The rationale for this has been covered in <a href="/2024/11/11/godot-golang-mmo-part-6#local-to-scene-note" target="_blank">the last post</a>.
 
@@ -357,7 +357,7 @@ func _handle_spore_msg(sender_id: int, spore_msg: packets.SporeMessage) -> void:
 
 All of this should be pretty straight forward now that we've seen pretty much the same thing for actors. In this case, we don't need to worry about updating the spores since they are static objects, but we will need be able to remove them later on when the server tells us to, which is why we're keeping a reference to them in the `_spores` dictionary. Aside from that, everything should be self-explanatory, so I won't go into more detail.
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/14/spores.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/14/spores.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -480,7 +480,7 @@ func (g *InGame) HandleMessage(senderId uint64, message packets.Msg) {
 
 Now restart the server and client, and you should see something like this:
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/14/consume-spore.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/14/consume-spore.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -748,7 +748,7 @@ Make sure to leave the `elif packet.has_spore(): ...` check in the `_on_ws_packe
 
 Simple as that! Now the client will be able to receive spores in batches, and you should see them pop in much faster than before. Here is a comparison of the two methods side-by-side (old method on the left, new method on the right):
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/14/comparison.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/14/comparison.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 

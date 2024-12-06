@@ -78,7 +78,7 @@ mkcert -install
 ```
 When you run this last command, you will either be prompted for your password or be asked to confirm the installation of the root certificate. This is because `mkcert` needs to install a root certificate on your computer to make the self-signed certificates trusted. This is only for development purposes, so it is safe to do so.
 
-![Security Warning](/assets/css/images/posts/2024/11/22/security-warning.png)
+{% include img.html src="posts/2024/11/22/security-warning.png" alt="Security Warning" %}
 
 Now, to actually generate the leaf certificate for our domain, run the following command:
 
@@ -92,7 +92,7 @@ You should see two files in the directory you ran the command now:
 
 The first file is the certificate itself, and the second is the private key, which needs to be kept secret. Move these files somewhere on your computer where you can keep them safe. It should *not* be in your project directory. I put mine on my desktop in a folder called `RadiusRumbleCerts`.
 
-![Certificates](/assets/css/images/posts/2024/11/22/certificates.png)
+{% include img.html src="posts/2024/11/22/certificates.png" alt="Certificates" %}
 
 [*Back to top*](#how-to-follow-this-part)
 
@@ -522,7 +522,7 @@ If you don't already have a Google account, you will need to create one. You can
 
 Creating a project is the first step to using Google Cloud Platform. You can do this by visiting the [Google Cloud Console](https://console.cloud.google.com/), and clicking the "Select a project" dropdown in the top bar. Click "New Project", and give your project a name. You can leave the organization as "No organization", and click "Create".
 
-![Create a project](/assets/css/images/posts/2024/11/22/create-a-project.png)
+{% include img.html src="posts/2024/11/22/create-a-project.png" alt="Create a project" %}
 
 Once the project is finished creating, you should be able to select it from the dropdown in the top bar.
 
@@ -532,8 +532,8 @@ We are going to need a place to store our database file since we can't rely on c
 
 To create a bucket, visit the [Google Cloud Storage browser](https://console.cloud.google.com/storage/browser), and click the "Create bucket" button. Give your bucket a name, and click "Create". You can leave the default settings as they are, or you can choose to customize the region to be one close to where most of your players live. Just make sure to keep **Public access prevention** enabled.
 
-![Create a bucket](/assets/css/images/posts/2024/11/22/create-a-bucket.png)
-![Bucket settings](/assets/css/images/posts/2024/11/22/bucket-settings.png)
+{% include img.html src="posts/2024/11/22/create-a-bucket.png" alt="Create a bucket" %}
+{% include img.html src="posts/2024/11/22/bucket-settings.png" alt="Bucket settings" %}
 
 If you get a message asking to confirm the bucket's public access prevention, just keep the default settings and click "Confirm".
 
@@ -543,35 +543,35 @@ If you get a message asking to confirm the bucket's public access prevention, ju
 
 To deploy our server, simply visit the [Google Cloud Run page](https://console.cloud.google.com/run), and click the "Create Service" button. 
 
-![Create a service](/assets/css/images/posts/2024/11/22/create-a-service.png)
+{% include img.html src="posts/2024/11/22/create-a-service.png" alt="Create a service" %}
 
 You will be prompted to enter the URL of the container image you want to deploy. This is the URI of the image you pushed to Docker Hub earlier: `docker.io/yourdockerhubusername/gameserver:latest`. Ensure the **Region** is set to the same region as your bucket.
 
-![Deploy container](/assets/css/images/posts/2024/11/22/deploy-container.png)
+{% include img.html src="posts/2024/11/22/deploy-container.png" alt="Deploy container" %}
 
 Select **Allow unauthenticated invocations**, then scroll down and expand the **Container(s), volumes, networking, security** section.
 
-![Container settings](/assets/css/images/posts/2024/11/22/container-settings.png)
+{% include img.html src="posts/2024/11/22/container-settings.png" alt="Container settings" %}
 
 Switch to the **Volumes** tab, and click the **Add Volume** button. For the volume type, select **Cloud storage bucket**, and click **Browse**:
 
-![Add volume](/assets/css/images/posts/2024/11/22/add-volume.png)
+{% include img.html src="posts/2024/11/22/add-volume.png" alt="Add volume" %}
 
 Select the bucket you created earlier, and then switch back to the **Container(s)** tab and enter the port you set in your `.env` file in the **Container port** field. Still within the **Edit container** section, open the **Volume mounts** tab and click **Mount volume**
 
-![Volume mounts](/assets/css/images/posts/2024/11/22/volume-mounts.png)
+{% include img.html src="posts/2024/11/22/volume-mounts.png" alt="Volume mounts" %}
 
 For the volume **Name**, choose the volume you added earlier. For the **Mount path**, enter `/gameserver/data`. This is the same path we used in the `Dockerfile` to build the server binary. This is where the server will store the database file, and because we are mounting a volume, the data will persist across container restarts.
 
 Click **Done** and **Deploy**.
 
-![Deploy](/assets/css/images/posts/2024/11/22/deploy.png)
+{% include img.html src="posts/2024/11/22/deploy.png" alt="Deploy" %}
 
 Within a matter of minutes, your server should be up and running. You can find the URL of your server in the top bar of the Google Cloud Run page (it should look something like [https://gameserver-669845374987.us-central1.run.app]()). 
 
 You can open the **Logs** tab to see the server output and check the game data directory was found properly by looking for the log message `File/folder found at /gameserver/data`. If you see that, then you can be confident that redeploying the server will not cause you to lose your data. You will also be able to find the database file in the bucket you created earlier.
 
-![Logs](/assets/css/images/posts/2024/11/22/logs.png)
+{% include img.html src="posts/2024/11/22/logs.png" alt="Logs" %}
 
 By default, the container maps the container port to the host port 443 and serves it over HTTPS. What this means for us is we need to use the `wss://` scheme, and port 443 in our client code. So, in `res://states/entered/entered.gd`, change the `WS.connect_to_url` call to:
 
@@ -607,7 +607,7 @@ Once you have your domain name, you will need to set up an A record to point to 
 
 This is usually done in the domain registrar's settings, but it can vary depending on the registrar. You can usually find instructions on how to do this in the registrar's documentation. Here's an example of what it looks like for me to set up an A record for `radius.rumble.tbat.me` with Namecheap:
 
-![A record](/assets/css/images/posts/2024/11/22/a-record.png)
+{% include img.html src="posts/2024/11/22/a-record.png" alt="A record" %}
 
 ### Obtaining a TLS certificate
 
@@ -838,7 +838,7 @@ From Godot, go to the **Project** menu, then **Export...**. Click the **Add...**
 
 > There might be an error at the bottom of this window saying "No export template found". If you see this, you will need to click the **Manage Export Templates** link in this error:
 > 
-> ![Manage Export Templates](/assets/css/images/posts/2024/11/22/manage-export-templates.png)
+> {% include img.html src="posts/2024/11/22/manage-export-templates.png" alt="Manage Export Templates" %}
 >
 > This will open the **Export Template Manager** window, where you can click the **Download** button next to the **HTML5** template. Once the download is complete, you can close the window and try adding the export again.
 >
@@ -848,14 +848,14 @@ Leave all the settings as they are except make sure to enable the **Experimental
 
 Click the **Export Project...** button, select a folder to export the project to <small>*(I made a new folder called `exports` and another one inside that called `html5`)*</small>, and click **Save**.
 
-![Export Project](/assets/css/images/posts/2024/11/22/export-project.png)
-![Export Folder](/assets/css/images/posts/2024/11/22/export-folder.png)
+{% include img.html src="posts/2024/11/22/export-project.png" alt="Export Project" %}
+{% include img.html src="posts/2024/11/22/export-folder.png" alt="Export Folder" %}
 
 Once the export is complete, you should have a folder with an `index.html` file in it. You can't simply open this file in your browser, though, because it depends on a web server to run the game. Instead, you can click a new button that appears in the Godot editor at the top-right called **Remote Debug**. This will launch a web server for you behind the scenes, so you can play your game in your browser.
-![Remote Debug](/assets/css/images/posts/2024/11/22/remote.png)
+{% include img.html src="posts/2024/11/22/remote.png" alt="Remote Debug" %}
 
 Congratulations! You have successfully exported your game to HTML5 and connecting to your cloud server from your web browser. This is one of the final steps to getting your game out there for others to play.
-![Remote Debug Browser](/assets/css/images/posts/2024/11/22/remote-browser.png)
+{% include img.html src="posts/2024/11/22/remote-browser.png" alt="Remote Debug Browser" %}
 
 [*Back to top*](#how-to-follow-this-part)
 
@@ -865,30 +865,30 @@ Now that you have your server set up, the last step is to get our game out there
 
 Once you have registered, click the dropdown in the top-right corner and choose **Dashboard**.
 
-![Dashboard](/assets/css/images/posts/2024/11/22/dashboard.png)
+{% include img.html src="posts/2024/11/22/dashboard.png" alt="Dashboard" %}
 
 Click the **Create new project** button and fill out all the required fields.
 
 When it comes to the **Kind of project**, choose **HTML**. Then, under **Uploads**, click **Upload files**. We will be simply zipping up the folder that we exported earlier (in my case, the `html5` folder inside the `exports` folder), and uploading that zip file.
 
-![Zipping the export folder](/assets/css/images/posts/2024/11/22/zip-export-folder.png)
+{% include img.html src="posts/2024/11/22/zip-export-folder.png" alt="Zipping the export folder" %}
 
 Once the zip file is finished uploading, make sure to check the **This file will be played in the browser** checkbox.
 
-![This file will be played in the browser](/assets/css/images/posts/2024/11/22/this-file-will-be-played-in-the-browser.png)
+{% include img.html src="posts/2024/11/22/this-file-will-be-played-in-the-browser.png" alt="This file will be played in the browser" %}
 
 
 Finally, scroll to the bottom and click **Save and view page**. This will redirect you to a draft version of your game, and you can click **Run game** to make sure it works.
 
-![Run game](/assets/css/images/posts/2024/11/22/run-game.png)
+{% include img.html src="posts/2024/11/22/run-game.png" alt="Run game" %}
 
 If you see black bars on the sides of the game, make sure to set the **Viewport dimensions** under the **Embed options** to be the same as the **Window size** in the **Project settings** in Godot.
 
-![Embed options](/assets/css/images/posts/2024/11/22/embed-options.png)
+{% include img.html src="posts/2024/11/22/embed-options.png" alt="Embed options" %}
 
 Now, if you go back to the **Edit game** page, you can scroll right to the bottom and choose **Public** under **Visibility & access** to publish you game!
 
-![Publish game](/assets/css/images/posts/2024/11/22/publish-game.png)
+{% include img.html src="posts/2024/11/22/publish-game.png" alt="Publish game" %}
 
 Congratulations! Now you can share the link to your game with your friends and play it in your browser.
 

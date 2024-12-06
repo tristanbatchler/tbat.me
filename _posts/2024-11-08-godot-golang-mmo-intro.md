@@ -15,7 +15,7 @@ Over the last couple of years, I have been tinkering, trying to address some iss
 For this series, we’ll develop Radius Rumble, a Godot-4-and-Golang-powered clone of the popular game [agar.io](https://agar.io).
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/08/final-product-demo.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/08/final-product-demo.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 

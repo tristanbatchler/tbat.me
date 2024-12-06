@@ -23,7 +23,7 @@ I chose Autobahn Twisted because it supports the WebSocket protocol, which is wh
 Django and Python work quite well together for managing game databases, and Python is already installed on most servers.
 
 Godot is a very light-weight, open source, and free game engine which has a Pythonic scripting language, and good networking library. It really shines with its free export features which allow you to make your game once, and export it for Android, IOS, HTML5, Windows, Mac, or Linux. 
-![Godot's extensive export options](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/godot-export-options.png)
+{% include img.html src="posts/2022/11/20/godot-python-mmo-part-1/godot-export-options.png" alt="Godot's extensive export options" %}
 
 ## Short term and long term goals
 Our short term goal for the first two parts of this series is to have a working chatroom, where you can register, log in, and chat to anyone who is online.
@@ -73,7 +73,7 @@ You will want to tell VS Code where your virtual environment is too, so it doesn
 
 ### Tip for the lazy
 At this point, if you don't want to go through all the code, visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases). Here you will see all valid states of the project which correspond to different points along this tutorial series. For example, if you want to skip all the initial setup work and want to get your hands dirty straight away, download the **Initial template code** by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.0.zip).
-![Release v0.0 assets](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/github-release.png)
+{% include img.html src="posts/2022/11/20/godot-python-mmo-part-1/github-release.png" alt="Release v0.0 assets" %}
 
 You'll have to unzip the `official-godot-python-mmo-0.0.zip` file, copy the `client` and `server` folders, and paste them into your project directory (your existing `server/venv` folder should be kept). If you chose to do this, you can skip right to the [Hello world!](#hello-world) section.
 
@@ -132,7 +132,7 @@ def from_json(json_str: str) -> Packet:
 ```
 This file simply provides a way to construct and deconstruct packets (information sent between a client and server).
 
-![Packet structure](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/diagram.svg)
+{% include img.html src="posts/2022/11/20/godot-python-mmo-part-1/diagram.svg" alt="Packet structure" %}
 *The structure of packets sent over the network in our MMO.*
 
 I know you're probably thinking this looks like a lot. It is! I want to start with a very robust and extensible system, so it's a breeze to add new packets later.
@@ -277,7 +277,7 @@ That was a lot to get through, and now we have to get the infrastructure set up 
 ## Setting up the client
 For a nice change of pace, let's open up Godot! You will be met with the Project Manager. Just click **New Project** and enter **client** for the Project Name, and the path to your project folder. Click on **Create Folder** and it will create a folder called **client**, and it should be sitting right next to your **server** folder in your main project folder. If that all sounds good to you, click **Create & Edit**.
 
-![Packet structure](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/godot-project-manager.png)
+{% include img.html src="posts/2022/11/20/godot-python-mmo-part-1/godot-project-manager.png" alt="Packet structure" %}
 
 ### Packets (again)!
 To get some of the more boring boilerplate set up as quickly as possible, right-click your **res://** folder in the FileSystem (lower-left) and click **New Script**. Set the path to `res://packet.gd` and click **Create**.
@@ -564,7 +564,7 @@ Ensure the Margin properties are all set to 0.
 If you like, you can select the **Label** node and type a prompt into the **Text** property in the Inspector on the right. I chose `[SAY]:`.
 
 You'll notice everything looks about right now, so save the scene.
-![Packet structure](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/chatbox-scene.png)
+{% include img.html src="posts/2022/11/20/godot-python-mmo-part-1/chatbox-scene.png" alt="Packet structure" %}
 *The Chatbox scene should take up the bottom third of the screen as indicated by the faint blue line.*
 
 Let's attach a new script to our root **Chatbox** node to add some functionality. Right-click the root node and select **Attach Script**, leave the path as default (res://Chatbox.gd) and click **Create**. Clear out all the pre-generated code and replace it with the following:
@@ -668,7 +668,7 @@ This is quite similar to the `PLAY` function in `server/protocol.py`. Godot's `m
 That's it! We have successfully implemented a chat feature into our game. Don't worry, we will be keeping this for our game once we continue to add features, although we will be modifying it slightly down the track.
 
 *Note: if you get an error in Godot saying `Mixed tabs and spaces in indentation`, you can fix this by clicking the **Editor** menu at the top, then click **Editor Settings**. Scroll down and select **Text Editor > Indent** on the left. Then change the **Type** to **Spaces** and click **Close**.
-![Tabs to spaces](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/spaces.png)
+{% include img.html src="posts/2022/11/20/godot-python-mmo-part-1/spaces.png" alt="Tabs to spaces" %}
 
 
 ### Let's chat!
@@ -683,7 +683,7 @@ It's not actually possible to click the same play button we've been using twice.
 To do this, just click **Project** at the top and then **Export**. In the Export window, click **Add** and the **HTML5**.
 
 You will need to download an export template, so click **Manage Export Templates** at the bottom of the Export window.
-![Export screen 1](/assets/css/images/posts/2022/11/20/godot-python-mmo-part-1/html5-1.png)
+{% include img.html src="posts/2022/11/20/godot-python-mmo-part-1/html5-1.png" alt="Export screen 1" %}
 
 On the next window, leave **Best available mirror** selected and click **Download and Install**. This may take some time, as the template files are about half a gigabyte, so you might want to make a cup of coffee in the meantime ☕
 

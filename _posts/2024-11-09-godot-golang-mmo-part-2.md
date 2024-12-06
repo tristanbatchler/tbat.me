@@ -25,7 +25,7 @@ The hub has channels for registering and unregistering client interfacers, and b
 2. another for waiting and reading messages from the websocket and processing them accordingly.
 
 Here is a diagram showing two Godot clients connected to the server.
-![Server architecture](/assets/css/images/posts/2024/11/09/architecture.svg)
+{% include img.html src="posts/2024/11/09/architecture.svg" alt="Server architecture" %}
 
 ## Creating the Hub and ClientInterfacer
 

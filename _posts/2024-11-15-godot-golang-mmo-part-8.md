@@ -5,13 +5,15 @@ redditurl:
 project: godot4golang
 ---
 
+{% include math.html %}
+
 Welcome back! In the [last part](/2024/11/14/godot-golang-mmo-part-7), we introduced spores that players could eat to grow. Now, we’ll take things further by letting the server determine whether a player should grow after eating a spore, then notifying all other players of the change.
 
 This opens the door to competitive gameplay, as we begin to incorporate scoring mechanics. With the added possibility of players eating each other, we’ll have the foundation for a truly competitive MMO. Let’s jump in and bring this to life!
 
 Here is a sneak peek of what we will achieve today:
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/15/ch8-preview.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/15/ch8-preview.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -88,7 +90,7 @@ func (g *InGame) validatePlayerCloseToObject(objX, objY, objRadius, buffer float
 ```
 
 Here is some basic math to calculate the distance between the two circles. We are avoiding an expensive square root operation by comparing squared distances. A diagram might help to visualize this better:
-![Circle collision diagram](/assets/css/images/posts/2024/11/15/combinedRadii.svg)
+{% include img.html src="posts/2024/11/15/combinedRadii.svg" alt="Circle collision diagram" %}
 
 In the diagram, it is clear that the distance between the two circles is $$\text{pRad} + \text{buffer} + \text{sRad}$$, a.k.a. `player.Radius + buffer + objRadius`. If the real distance (calculated by the Pythagorean theorem) is greater than this threshold, then the player is not close enough to the object.
 

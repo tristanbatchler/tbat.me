@@ -16,7 +16,7 @@ I highly recommend you go through the [first lesson](/2022/11/20/godot-python-mm
 
 ## A sneak peek
 Here's a quick look at what we'll be finishing up by the end of this lesson:
-![A demo of what's to come…](/assets/css/images/posts/2022/11/21/godot-python-mmo-part-2/demo.gif)
+{% include img.html src="posts/2022/11/21/godot-python-mmo-part-2/demo.gif" alt="A demo of what's to come…" %}
 
 ## A quick note
 From here on out, I will stop adding a disclaimer about Windows vs. non-Windows systems and the difference between `python` vs. `python3`. I will always just say `python`. I will also always assume you are running commands from inside the `server/` directory of your project folder with the Virtual Environment activated, unless otherwise stated.

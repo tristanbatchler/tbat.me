@@ -37,7 +37,7 @@ Since we are using Protocol Buffers to generate code for our packets, we need to
     * `/usr/local/bin` on Unix
 3. Add the `bin` folder to your system's `PATH` environment variable.
     * **On Windows**, you can press **Win + R**, type `SystemPropertiesAdvanced`, click **Environment Variables**, and under **User variables**, double-click on `Path`, then click **New** and paste the path to the `bin` folder, which should look something like `%LOCALAPPDATA%\protoc-<version>-win64\bin`. Press **OK** on all the windows you opened.
-    ![Windows PATH](/assets/css/images/posts/2024/11/09/windows-path.png)
+    {% include img.html src="posts/2024/11/09/windows-path.png" alt="Windows PATH" %}
 
     * **On Unix**, you can add the following line to your `.bashrc` or `.zshrc` file:
     ```shell
@@ -357,7 +357,7 @@ sender_id:69  chat:{msg:"Hello, world!"}
 ## Setting up the Godot project
 
 I do suppose we'd better see how this all looks from the client perspective. Create a new Godot project in the same root folder as your server project. I will call mine simply `client`. Make sure to select the **Compatibility** renderer if you want to export to the web, but you can always change this later.
-![Godot new project](/assets/css/images/posts/2024/11/09/godot-new-project.png)
+{% include img.html src="posts/2024/11/09/godot-new-project.png" alt="Godot new project" %}
 
 First, let's install the Godobuf plugin.
 1. Download the [latest release](https://github.com/oniksan/godobuf/releases/latest). It should be called **Source code (zip)**
@@ -373,15 +373,15 @@ First, let's install the Godobuf plugin.
     └───shared/
     ```
 4. Open your Godot project and enable the add-on by going to **Project > Project Settings > Plugins** and enabling the **Protobuf** plugin.
-    ![Godot plugins](/assets/css/images/posts/2024/11/09/godot-plugins.png)
+    {% include img.html src="posts/2024/11/09/godot-plugins.png" alt="Godot plugins" %}
 
 {% include highlight.html anchor="godobuf-usage" text="You should see a new <strong>Godobuf</strong> tab appear in the bottom left panel, underneath the scene tree, adjacent to the <strong>FileSystem</strong> tab. This is where we can input our <code>.proto</code> file and generate our code." %}
 1. Click on the **Godobuf** tab
 2. Click on the **...** button under **Input protobuf file** and navigate up a level to your `shared/packets.proto` file. For some reason, it shows a warning that you will "overwrite" the file, but this is not the case. Just choose **OK**
 3. Click on the **...** button under **Output GDScript file**, enter simply `packets.gd` and click **OK**
-   ![Godobuf output](/assets/css/images/posts/2024/11/09/godobuf-output.png)
+   {% include img.html src="posts/2024/11/09/godobuf-output.png" alt="Godobuf output" %}
 4. Click on **Compile** and you should see a popup appear saying **Compile success done** if it worked correctly
-    ![Godobuf compile](/assets/css/images/posts/2024/11/09/godobuf-compile.png)
+    {% include img.html src="posts/2024/11/09/godobuf-compile.png" alt="Godobuf compile" %}
     If you see an error, one thing I found is for some reason, it doesn't like it if you name a field `message`, which is why I changed it to `msg` in the `.proto` file. Check to see if you have done the same
 
 Again, you can take a look at the generated code if you're curious. It should appear in the **FileSystem** tab now, under `res://packets.gd`.

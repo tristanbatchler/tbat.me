@@ -16,7 +16,7 @@ I highly recommend you go through the [first](/2022/11/20/godot-python-mmo-part-
 
 ## A sneak peek
 Here's a quick look at what we'll be finishing up by the end of this lesson:
-![A demo of what's to come…](/assets/css/images/posts/2022/11/22/godot-python-mmo-part-3/demo.gif)
+{% include img.html src="posts/2022/11/22/godot-python-mmo-part-3/demo.gif" alt="A demo of what's to come…" %}
 
 ## Database design
 We're going to want to store information about not only the user, but also their associated **actor**. 
@@ -24,12 +24,12 @@ We're going to want to store information about not only the user, but also their
 An actor has a user, but it also has a position and a name, etc.
 
 Here's the most agreeable structure for further down the track when you might want to add items to your game as well as actors, or abstract entities:
-![Actor Model](/assets/css/images/posts/2022/11/22/godot-python-mmo-part-3/diagram.svg)
+{% include img.html src="posts/2022/11/22/godot-python-mmo-part-3/diagram.svg" alt="Actor Model" %}
 
 The way to read this is every actor has a user and an instanced entity. Every instanced entity has an entity.
 
 If we wanted to extend this later on, we could create something like a loot chest, which needs a position and a name but doesn't need a user. Loot chests require loot, of course. But this loot might not exist properly in the world so doesn't need a position:
-![Loot](/assets/css/images/posts/2022/11/22/godot-python-mmo-part-3/diagram2.svg)
+{% include img.html src="posts/2022/11/22/godot-python-mmo-part-3/diagram2.svg" alt="Loot" %}
 
 That's just an example of how you might want to extend the database, but for now we will just be adding support for actors. This means adding some new models.
 
@@ -196,7 +196,7 @@ You may get a warning about not having a collision shape yet, but don't worry ab
 Select your **Sprite** node and choose a texture from the right-hand side inspector panel. I chose the default **icon.png** that came with the project to start, but later I will show you have to make beautiful animated sprites.
 
 Select your **Label** node, and drag its box in the 2D editor so it's just sitting underneath your sprite. You can make it a bit wider to fit more text, and make it align **Center** in the insector.
-![Actor Scene](/assets/css/images/posts/2022/11/22/godot-python-mmo-part-3/actor-scene.png)
+{% include img.html src="posts/2022/11/22/godot-python-mmo-part-3/actor-scene.png" alt="Actor Scene" %}
 
 Attach a new script to your root node, unsurprisingly called `Actor.gd`. Clear out the default code, but we will not be writing new code here just yet.
 
