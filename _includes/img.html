@@ -1,10 +1,17 @@
 <picture>
     {%- if jekyll.environment == 'development' -%}
-    <source srcset="/assets/images/{{include.src}}">
-    <img class="{{include.class}}" loading="lazy" alt="{{include.alt}}" src="/assets/images/{{include.src}}" />
+    <source srcset="/assets/images/{{ include.src }}">
+    <img 
+        class="{{ include.class }}" 
+        loading="{{ include.loading | default: 'lazy' }}" 
+        alt="{{ include.alt }}" 
+        src="/assets/images/{{ include.src }}" />
     {%- else -%}
-    <source srcset="{{site.url}}/.netlify/images?url=/assets/images/{{include.src}}&fm=webp&q=75">
-    <img class="{{include.class}}" loading="lazy" alt="{{include.alt}}"
-        src="{{site.url}}/.netlify/images?url=/assets/images/{{include.src}}&fm=webp&q=75" />
+    <source srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75">
+    <img 
+        class="{{ include.class }}" 
+        loading="{{ include.loading | default: 'lazy' }}" 
+        alt="{{ include.alt }}" 
+        src="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75" />
     {%- endif -%}
 </picture>
