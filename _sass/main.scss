@@ -60,7 +60,8 @@ body {
         height: auto;
 
         &,
-        &+em {
+        &+em,
+        & + p > em {
             display: block;
 
             &:not(.info) {
