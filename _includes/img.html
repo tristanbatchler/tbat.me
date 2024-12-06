@@ -1,5 +1,13 @@
-{%- assign original_width = '/assets/images/' | append: include.src | image_size: 'w' | times: 1.0 -%}
-{%- assign original_height = '/assets/images/' | append: include.src | image_size: 'h' | times: 1.0 -%}
+{%- assign original_width = 0 %}
+{%- assign original_height = 0 %}
+
+{%- if jekyll.environment == 'development' -%}
+  {%- assign original_width = '/assets/images/' | append: include.src | image_size: 'w' | times: 1.0 -%}
+  {%- assign original_width = '/assets/images/' | append: include.src | image_size: 'h' | times: 1.0 -%}
+{%- else -%}
+  {%- assign original_width = site.url | append: '/.netlify/images?url=/assets/images/' | append: include.src | image_size: 'w' | times: 1.0 -%}
+  {%- assign original_height = site.url | append: '/.netlify/images?url=/assets/images/' | append: include.src | image_size: 'h' | times: 1.0 -%}
+{%- endif -%}
 
 {%- assign max_width = include.max_width | default: 512 | times: 1.0 -%}
 
