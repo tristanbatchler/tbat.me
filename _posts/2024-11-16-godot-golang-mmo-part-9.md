@@ -10,7 +10,7 @@ We’re nearing the end of this series, having just wrapped up [allowing players
 ## The plan
 
 Our goal by the end of this part is to have a hiscore leaderboard that players can access from the main menu. It will look something like this (though the design will be a bit rough until we get a chance to polish everything in an upcoming part):
-![Hiscore leaderboard](/assets/css/images/posts/2024/11/16/hiscore-leaderboard.png)
+{% include img.html src="posts/2024/11/16/hiscore-leaderboard.png" alt="Hiscore leaderboard" %}
 
 To pull this off, we are going to need a few things, which we will tackle in order:
 
@@ -33,13 +33,13 @@ Similar to the `Log` class we created back in <a href="/2024/11/09/godot-golang-
 4. Choose **ScrollContainer** as the root node
 5. Click **OK**
 
-![Hiscores scene](/assets/css/images/posts/2024/11/16/hiscores-scene.png)
+{% include img.html src="posts/2024/11/16/hiscores-scene.png" alt="Hiscores scene" %}
 
 We will set the scroll container to take up the screen's entire area, but when we add it to other scenes, we can resize it as needed. To do this, simply use the **Full Rect** anchor preset at the top of the scene editor when you have the root node selected.
 
 Also ensure the **Shrink Begin** and **Expand** options are selected for the **Vertical** container sizing option in the inspector (under "Layout"), or simply use the handy **Sizing settings** button at the top of the scene editor to set it. This will allow the hiscore board to be resized and positioned correctly when we add it to other scenes.
 
-![Hiscores scene full rect](/assets/css/images/posts/2024/11/16/hiscores-scene-full-rect.png)
+{% include img.html src="posts/2024/11/16/hiscores-scene-full-rect.png" alt="Hiscores scene full rect" %}
 
 Now go ahead and add the following nodes so that the scene tree looks like this:
 
@@ -52,17 +52,17 @@ Now go ahead and add the following nodes so that the scene tree looks like this:
 Right now, everything is all clumped together, so let's fix the layout.
 
 1. Select the **VBoxContainer** node and choose the **Fill** and **Expand** options for both horizontal and vertical alignment in the **Container Sizing** section of the inspector (under "Layout"), or simply use the handy **Sizing settings** button at the top of the scene editor.
-   ![VBoxContainer sizing settings](/assets/css/images/posts/2024/11/16/vboxcontainer-sizing-settings.png)
+   {% include img.html src="posts/2024/11/16/vboxcontainer-sizing-settings.png" alt="VBoxContainer sizing settings" %}
 
 2. For the **HBoxContainer**, simply choose **Shrink Begin** for the **Vertical** container size, and don't change anything else. This will force each row to stay the same height, one after the other.
 
 3. The **Name** label should have **Fill** and **Expand** selected for the horizontal alignment, so that it pushes the adjacent score label to the right. Also set the **Custom minimum size**'s **x** value (also under "Layout" in the inspector) to 150px to give it a bit of space to start out.
-    ![Name label sizing settings](/assets/css/images/posts/2024/11/16/name-label-sizing-settings.png)
+    {% include img.html src="posts/2024/11/16/name-label-sizing-settings.png" alt="Name label sizing settings" %}
 
 4. Finally, set the **Score** label to **Shrink End** for the horizontal alignment, so that it doesn't take up any more space than it needs to.
 
 If you enter some dummy data into the labels, and duplicate the **HBoxContainer** a few times, you should see something like this:
-![Hiscores scene with dummy data](/assets/css/images/posts/2024/11/16/hiscores-scene-dummy-data.png)
+{% include img.html src="posts/2024/11/16/hiscores-scene-dummy-data.png" alt="Hiscores scene with dummy data" %}
 
 Remove the duplicate **HBoxContainer** nodes if you added them, and remember to save the scene. Let's add a new script at `res://classes/hiscores/hiscores.gd` and attach it to the root node.
 
@@ -129,7 +129,7 @@ Let's test this out by adding our new hiscores scene to the `Connected` scene so
 > Note that, unlike the `Log` node, we need to click and drag the `Hiscores` scene from the file system to the scene tree to add the entire scene, along with its children. If you simply try and add a new **Hiscores** node, it will not come with any of the children we set up in the scene editor, therefore it will not work. We were able to get away with this for the `Log` node because it was a single node with no children.
 
 Also be sure to set the **Custom Minimum Size**'s **y** value (under "Layout" in the inspector) to 200px to allow some entries to be visible.
-![Hiscores test scene](/assets/css/images/posts/2024/11/16/hiscores-test-scene.png)
+{% include img.html src="posts/2024/11/16/hiscores-test-scene.png" alt="Hiscores test scene" %}
 
 Then, I added the following test code to the `_ready` function in `res://states/connected/connected.gd`:
 
@@ -148,10 +148,10 @@ func _ready() -> void:
 ```
 
 Now, when I run the game, I should expect to see "Bob Barker" at the top of the hiscore list, followed by "Tristan" and then "Adam Sandler", which is half what I see. I also see the placeholder text at the bottom of the list, which obviously isn't what we want. 
-![Hiscores scene with test data](/assets/css/images/posts/2024/11/16/hiscores-scene-test-data.png)
+{% include img.html src="posts/2024/11/16/hiscores-scene-test-data.png" alt="Hiscores scene with test data" %}
 
 Let's fix that by simply clicking the 👁️ icon to the right of the **HBoxContainer** template in the scene editor of the **Hiscores** scene. This will hide the placeholder entry and make everything right with the world.
-![Hiscores scene with test data hidden](/assets/css/images/posts/2024/11/16/hiscores-scene-test-data-hidden.png)
+{% include img.html src="posts/2024/11/16/hiscores-scene-test-data-hidden.png" alt="Hiscores scene with test data hidden" %}
 
 You might instead want to keep them visible while you are working on the scene, and hide them programmatically, so for that, feel free to add the following to the `_ready` function in `res://classes/hiscores/hiscores.gd`:
 
@@ -180,7 +180,7 @@ We are already able to drop in our new **Hiscores** scene to our **InGame** stat
 3. Set the **Custom Minimum Size**'s **x** value to 200px for the **Hiscores** node
 4. Set the **Custom Minimum Size**'s **y** value to 150px for the **Hiscores** node
 
-![New InGame scene](/assets/css/images/posts/2024/11/16/new-ingame-scene.png)
+{% include img.html src="posts/2024/11/16/new-ingame-scene.png" alt="New InGame scene" %}
 
 Now, we will have broken our `ingame.gd` script by moving the LineEdit and Log nodes under the VBoxContainer, so let's fix that as well as add a reference to our new Hiscores node.
 
@@ -241,7 +241,7 @@ func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: f
 
 That should be everything we need to add live hiscores to the game. Here's what it looks like now:
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/16/ingame-hiscores.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/16/ingame-hiscores.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -476,7 +476,7 @@ SELECT * FROM players;
 ```
 
 I won't go into too much detail on how to do that here, as there are many resources online that can help with that, but I am using a VS Code extension called [SQLite](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite) to run the query directly from the editor.
-![SQLite extension](/assets/css/images/posts/2024/11/16/sqlite-extension.png)
+{% include img.html src="posts/2024/11/16/sqlite-extension.png" alt="SQLite extension" %}
 
 So that ticks off stage 3 of our plan. Now, let's move on to stage 4: adding protobuf messages to handle requesting and sending hiscores.
 
@@ -648,7 +648,7 @@ var _states_scenes: Dictionary[State, String] = {
 Now, we should be able to switch to the `BrowsingHiscores` state from the `Connected` state. Let's test this by adding a button to the `Connected` scene that sends a `HiscoreBoardRequestMessage` to the server.
 
 Add a new button to the connected scene, right next to the **Register** button, call it **HiscoresButton** and set the text to "Hiscores".
-![Hiscores button](/assets/css/images/posts/2024/11/16/hiscores-button.png)
+{% include img.html src="posts/2024/11/16/hiscores-button.png" alt="Hiscores button" %}
 
 Now, let's hook the button up to switch to the `BrowsingHiscores` state when it is pressed. Add the following code to the connected state script:
 
@@ -704,7 +704,7 @@ func _handle_hiscore_board_msg(hiscore_board_msg: packets.HiscoreBoardMessage) -
 ```
 
 Now, when we run the game, we should be able to press the **Hiscores** button in the main menu, and then see the hiscore leaderboard populate with the dummy data we sent from the server.
-![Hiscores scene with dummy data](/assets/css/images/posts/2024/11/16/got-dummy-data.png)
+{% include img.html src="posts/2024/11/16/got-dummy-data.png" alt="Hiscores scene with dummy data" %}
 
 We can also see the server was obviously able to switch to the `BrowsingHiscores` state:
 

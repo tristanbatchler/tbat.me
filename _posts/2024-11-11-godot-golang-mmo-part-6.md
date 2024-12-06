@@ -9,7 +9,7 @@ Welcome back to the Godot 4 + Golang MMO series. In [the last post](/2024/11/10/
 
 Here’s a quick preview of what we’ll achieve in this post:
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/11/output.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/11/output.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -272,17 +272,17 @@ We are also sending the player's initial state directly to the client, so we are
 
 Open up your Godot project and create a new folder at `res://objects/`. Inside this folder, create another folder called `actor`, and inside that folder create a new scene called `actor.tscn`. The root node of this scene should be an `Area2D`. This is what we will use to represent any player in the game.
 
-![Actor Scene](/assets/css/images/posts/2024/11/11/actor_scene.png)
+{% include img.html src="posts/2024/11/11/actor_scene.png" alt="Actor Scene" %}
 
 Open up the `res://objects/actor/actor.tscn` scene and add a **CollisionShape2D** node as a child of the **Actor** node. Set the shape of the **CollisionShape2D** to a new **CircleShape2D**. This will represent the player's hitbox.
 
 Add another child node to the **Actor** node so that it is a sibling of the **CollisionShape2D** node. This new node should be a **Label** node. This will represent the player's name. Set the **Horizontal Alignment** and **Vertical Alignment** properties of the **Label** node to **Center** and then choose the **Center** anchor preset to position the label in the center of the player.
 
-![Actor Scene](/assets/css/images/posts/2024/11/11/actor_scene_2.png)
+{% include img.html src="posts/2024/11/11/actor_scene_2.png" alt="Actor Scene" %}
 
 > ⚠️ **Note**: it is very important to set the **Local to Scene** property of the **CollisionShape2D**'s **Shape** property to `true`. You can click on the CircleShape2D in the inspector to open its properties, and you'll find the option under **Resources**. This will allow the hitbox's radius to change on a per-instance basis. {% include highlight.html anchor="local-to-scene-note" text="If you don't do this, changing one player's radius will change <strong>all</strong> player's radii, making for a very frustrating debugging experience <small><em>don't ask me how I know</em></small>." %}
 
-![Local to Scene](/assets/css/images/posts/2024/11/11/local_to_scene.png)
+{% include img.html src="posts/2024/11/11/local_to_scene.png" alt="Local to Scene" %}
 
 Finally, add a **Camera2D** sibling. This is what we can use to follow the player around the screen and change the zoom level as we grow.
 
@@ -416,7 +416,7 @@ Now, when you run the server and connect to it, you should see a new player appe
 ## Adding a background
 
 Create a new folder at `res://resources/` and import the following image into the folder as `floor.svg` (or you can make your own):
-![floor.svg](/assets/css/images/posts/2024/11/11/floor.svg)
+{% include img.html src="posts/2024/11/11/floor.svg" alt="floor.svg" %}
 > You can download the image by right-clicking on it and selecting **Save image as** and save it to `/client/resources`.
 
 Now, in the **InGame** scene, under the **World** Node2D, add a new **Sprite2D** node called `Floor`. Now make the following edits to the `Floor` sprite:
@@ -425,7 +425,7 @@ Now, in the **InGame** scene, under the **World** Node2D, add a new **Sprite2D**
 3. Set the **Rect**'s **w** and **h** to `10000` each, under **Region**
 4. Choose **Enabled** for the **Repeat** property under **Texture**
 
-![Floor Sprite](/assets/css/images/posts/2024/11/11/floor_sprite.png)
+{% include img.html src="posts/2024/11/11/floor_sprite.png" alt="Floor Sprite" %}
 
 Now, when you run the game, you should see a tiled floor in the background. You should also see the player moving around the screen. So far though, we aren't doing anything with the `PlayerDirectionMessage` packet we added earlier. This is what we need to allow the server to keep track of the player's position and broadcast it to all other clients. Let's add this logic now.
 

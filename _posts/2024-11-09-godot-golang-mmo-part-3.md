@@ -98,7 +98,7 @@ The purpose of this script is to simply wrap the built-in `WebSocketPeer` class,
 3. Enter `res://websocket_client.gd` in the **Path** field
 4. Enter `WS` in the **Node Name** field. This is what will allow us to access the WebSocket client instance from any script, e.g. `WS.connect_to_url("ws://localhost:8080")`
 5. Click **Add** to save the settings and close the window
-![Godot Autoload WebSocket Client](/assets/css/images/posts/2024/11/09/autoload.png)
+{% include img.html src="posts/2024/11/09/autoload.png" alt="Godot Autoload WebSocket Client" %}
 
 ## A little test
 
@@ -199,7 +199,7 @@ To prove this, we can ask Godot to run multiple instances of the game at the sam
 2. Tick **Enable Multiple Instances**
 3. Enter **2** or more in the number field just below the checkbox
 4. Click **OK**
-![Godot Multiple Instances](/assets/css/images/posts/2024/11/09/multiple_instances.png)
+{% include img.html src="posts/2024/11/09/multiple_instances.png" alt="Godot Multiple Instances" %}
 
 Now, if you run the game, you should see two windows pop up and connect to the server. If you look at the server output, you should see something like this:
 
@@ -455,10 +455,10 @@ We will create a "Log" class which will be a rich text label with helper functio
 3. Enter **log** as the name of the scene
 4. Choose **RichTextLabel** as the root node
 5. Click **OK**
-![Godot Log Scene](/assets/css/images/posts/2024/11/09/log_scene.png)
+{% include img.html src="posts/2024/11/09/log_scene.png" alt="Godot Log Scene" %}
 
 We will set the rich text label to take up the scene's entire area, but when we add it to other scenes, we can resize it as needed. To do this, simply use the handy anchor presets at the top of the editor and choose the **Full Rect** preset. 
-![Godot Full Rect Anchor](/assets/css/images/posts/2024/11/09/full_rect_anchor.png)
+{% include img.html src="posts/2024/11/09/full_rect_anchor.png" alt="Godot Full Rect Anchor" %}
 
 Also be sure to enable **BBCode** in the **Inspector** panel on the right-hand side of the editor. This allows us to use BBCode tags in the text, so we can easily control the color of certain lines we add to the log.
 
@@ -500,7 +500,7 @@ Feel free to adjust the colors to your liking!
 
 ## Adding the log to the main scene
 Back to the main scene, we can now add a new Log node under the root node. Simply right-click the root node and select **Add Child Node** and then **Log**. 
-![Godot Add Log Node](/assets/css/images/posts/2024/11/09/add_log_node.png)
+{% include img.html src="posts/2024/11/09/add_log_node.png" alt="Godot Add Log Node" %}
 
 Using the anchor presets again, we can set the log to take up the bottom half of the screen by choosing **Bottom Wide** and then dragging the top of the log node to the middle of the screen. Don't worry if it's not perfect, this is just a prototype which will be replaced with a more sophisticated UI later on.
 
@@ -543,7 +543,7 @@ func _on_ws_packet_received(packet: packets.Packet) -> void:
 ```
 
 If you run the game now, you should conveniently see the messages in the actual game window, rather than having to check the output console.
-![Godot Log Messages](/assets/css/images/posts/2024/11/09/log_messages.png)
+{% include img.html src="posts/2024/11/09/log_messages.png" alt="Godot Log Messages" %}
 <small>*the message received looks a little silly since we are Godot, not Golang, but **we** know it's just echoing back what we sent!*</small>
 
 ## Finishing out the chatroom
@@ -824,7 +824,7 @@ And just in case you need it, this is what the entire project structure should l
 </details>
 
 Now, if you restart the server and run the game, you should be able to type messages into the `LineEdit` node and see them appear in the log. If you run multiple instances of the game, you should see the messages appear in the logs of all the clients. You can now chat with yourself!
-![Godot Chatroom](/assets/css/images/posts/2024/11/09/chatroom.png)
+{% include img.html src="posts/2024/11/09/chatroom.png" alt="Godot Chatroom" %}
 
 ## Conclusion
 

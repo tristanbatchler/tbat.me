@@ -3,6 +3,8 @@ title: Proof the complex numbers cannot be ordered
 description: This post demonstrates a mathematical proof that the complex numbers cannot be ordered. That is, there is no order we can impose on the complex field C.
 ---
 
+{% include math.html %}
+
 In this post, we will demonstrate why the complex numbers, $$\mathbb{C}$$ cannot be ordered. That is, there is no sensible way we can use the "less-than" symbol ($$\lt$$) on two members of the complex field.
 
 ## Some background information on fields

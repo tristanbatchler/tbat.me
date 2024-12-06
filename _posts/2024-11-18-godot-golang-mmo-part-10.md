@@ -5,6 +5,8 @@ redditurl:
 project: godot4golang
 ---
 
+{% include math.html %}
+
 This is the last part of the series we will concern ourselves with adding new features to the game. We just have two more features to add, and then we will move on to polishing everything up and deploying the game over the next two parts.
 
 As a reminder, in the [last part](/2024/11/16/godot-golang-mmo-part-9/), we added a hiscores and a leaderboard to the game. In this part, we want to:
@@ -59,7 +61,7 @@ Finally, we'll need a way to send this packet from the client. We will add a "Ba
 3. Add a `Button` node to the `VBoxContainer`, just above the `Hiscores` node. Name the button `BackButton`, and set the `Text` property to "Back"
 
 Your scene should look like this, which I will admit is not the prettiest, but that's what the next part is for! We will make everything look nice and pretty eventually, but for now, we just want to get the functionality working.
-![Browsing hiscores scene](/assets/css/images/posts/2024/11/18/browsing_hiscores_scene.png)
+{% include img.html src="posts/2024/11/18/browsing_hiscores_scene.png" alt="Browsing hiscores scene" %}
 
 Now, let's edit the script for this scene to send the `FinishedBrowsingHiscoresMessage` packet when the button is clicked. We will also need to fix up the node path to the `Hiscores` node, since we moved it to be a child of the `VBoxContainer`.
 
@@ -85,7 +87,7 @@ func _on_back_button_pressed() -> void:
 Now, when you run the game, you should be able to go back to the main menu from the hiscores screen. You should also be able to do all the things you could normally do in the connected state, like log in, register, and even go back to the hiscores screen.
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/18/ch10-hw.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/18/ch10-hw.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -225,7 +227,7 @@ Here, we just exit the method early if the spore is underneath the player. This 
 So now, in a perfect world, we would be finished with this feature! Here's a video of the spores dropping from various players, and the players losing mass over time as they consume the spores (I have increased the spore drop rate for demonstration purposes):
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/18/client-eating.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/18/client-eating.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 <small>*It was an absolute nightmare to record this...*</small>
@@ -314,7 +316,7 @@ Now, if you run the game, you shouldn't see any difference. The spores will stil
 Our leaderboard currently shows the top 10 players, but it would be even more exciting if we could search for a specific player who maybe isn't in the top 10. This is what we will be going for in this session.
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/18/hiscores_demo.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/18/hiscores_demo.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -476,7 +478,7 @@ The **LineEdit** node's **Expand** property should be enabled underneath the **L
 
 The **SearchButton** node should have its **Text** property set to "Search".
 
-![Hiscores scene tree](/assets/css/images/posts/2024/11/18/hiscores_scene_tree.png)
+{% include img.html src="posts/2024/11/18/hiscores_scene_tree.png" alt="Hiscores scene tree" %}
 
 Now, we will have knocked loose the reference to the `BackButton` node in the script, so we need to fix that and add the new search button and line edit nodes:
 
@@ -507,7 +509,7 @@ func _on_search_button_pressed() -> void:
 This code will send the search query to the server when the search button is pressed, or when the user presses Enter in the line edit. When the server responds, we are already mostly set up to handle the response, since we are listening to `HiscoreBoardMessage`s already <small>(although there are some issues)</small>. We just need to handle the case where the server responds with a `DenyResponse`.
 
 Let's add a `Log (log.gd)` node to the scene, just under the `Hiscores` node, and set its **Custom Minimum Size**'s **y** value to, say, 100px. This will allow us to display the error message to the player if the server responds with a `DenyResponse`. 
-![Hiscores scene tree with log node](/assets/css/images/posts/2024/11/18/hiscores_scene_tree_log.png)
+{% include img.html src="posts/2024/11/18/hiscores_scene_tree_log.png" alt="Hiscores scene tree with log node" %}
 
 We will also need to add a new method to handle this response:
 
@@ -587,7 +589,7 @@ func _handle_hiscore_board_msg(hiscore_board_msg: packets.HiscoreBoardMessage) -
 ```
 
 So now, when you search for a player, the middle entry, the one you searched for, will be highlighted in yellow.
-![Hiscores search highlight](/assets/css/images/posts/2024/11/18/hiscores_search_highlight.png)
+{% include img.html src="posts/2024/11/18/hiscores_search_highlight.png" alt="Hiscores search highlight" %}
 
 ## Conclusion
 

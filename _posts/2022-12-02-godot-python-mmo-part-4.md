@@ -16,7 +16,7 @@ As always, you can visit [the **Releases** section of the official GitHub reposi
 
 ## A sneak peek
 Here's a quick look at what we'll be finishing up by the end of this lesson:
-![A demo of what's to come…](/assets/css/images/posts/2022/12/02/godot-python-mmo-part-4/demo.gif)
+{% include img.html src="posts/2022/12/02/godot-python-mmo-part-4/demo.gif" alt="A demo of what's to come…" %}
 *I am running the game in the browser on my iPhone, yet the typing is a little experimental…*
 
 ## Homework solutions
@@ -262,7 +262,7 @@ elif (body.position - server_position).length() > rubber_band_radius:
 
 That's all you need to do to implement rubber banding. A good way to test this is to force the client to go out of sync with the server by setting the `speed` variable to something much different from `70` (which is what the server is expecting). For example, set `speed` to `200` in `Actor.gd` and leave the server code alone. Test your game, and notice the player is snapped back every time it is more than 200 pixels away from the expected server position.
 
-![A contrived example of rubber banding](/assets/css/images/posts/2022/12/02/godot-python-mmo-part-4/rubberbanding.gif)
+{% include img.html src="posts/2022/12/02/godot-python-mmo-part-4/rubberbanding.gif" alt="A contrived example of rubber banding" %}
 
 ## A quick bug fix
 There is a really rare bug, where the server can crash if it tries to send a message directly to a client who has just disconnected. Let's fix this really quickly with a simple `try`-`except` block. First, let's import the following to `protocol.py`:
@@ -336,7 +336,7 @@ Once we know our computer's IP address and your phone is on the same network, le
 Firstly, edit the `127.0.0.1` in `Main.gd` and change it to the IP address for your machine.
 
 Now, in Godot, go to **Project > Export** and this time, be sure to check the **Experimental Virtual Keyboard** option to allow mobile devices to type in the line edit fields.
-![HTML5 Export Settings](/assets/css/images/posts/2022/12/02/godot-python-mmo-part-4/project-export.png)
+{% include img.html src="posts/2022/12/02/godot-python-mmo-part-4/project-export.png" alt="HTML5 Export Settings" %}
 
 When you click **Export Project**, and it asks you to save the file, make sure you call it `index.html` and save it inside a folder you will remember. I would recommend saving it inside your project folder under `client/HTML5/`.
 

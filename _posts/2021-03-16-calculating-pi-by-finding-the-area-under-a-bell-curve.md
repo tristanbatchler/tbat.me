@@ -4,13 +4,15 @@ description: For Pi Day in 2021, I decided to use a lesser-known method of calcu
 redditurl: https://www.reddit.com/r/math/comments/m6obwp/this_year_i_calculated_pi_by_finding_the_area
 ---
 
+{% include math.html %}
+
 For Pi Day in 2021, I decided to use a lesser-known method of calculating the digits of Pi.
 
 ## Recap on probability density functions
 In statistics, a **probability density function** (**PDF**) of a continuous random variable $$r$$ is a curve whose height, at any given sample along the $$x$$-axis, represents the relative likelihood that $$r$$ equals that sample.
 
 For example, take $$r$$ to be a random stranger's height in inches. Now suppose the PDF of $$r$$ looks like this:
-![PDF of human heights](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/pdf.svg)
+{% include img.html src="posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/pdf.svg" alt="PDF of human heights" %}
 *Figure 1: A PDF of human heights*
 
 What this curve tells us is the probability this random stranger's height is around $$68"$$ is relatively high. The chance their height is above $$75"$$ or below $$60"$$ is more unlikely.
@@ -41,7 +43,7 @@ $$
     \int_{-\infty}^{\infty} e^{-\frac{1}{2}\left( \frac{x - \mu}{\sigma} \right)} = \sigma \sqrt{2 \pi}.
 $$
 
-![The PDF from before, but without the normalisation factor, making its peak 1 and its area a factor of sqrt(2 pi)](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/denormalised-pdf.svg)
+{% include img.html src="posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/denormalised-pdf.svg" alt="The PDF from before, but without the normalisation factor, making its peak 1 and its area a factor of sqrt(2 pi)" %}
 *Figure 2: The PDF from before, but without the normalisation factor, making its peak 1 and its area a factor of $$\sqrt{2\pi}$$.*
 
 ## The goal
@@ -97,7 +99,7 @@ plt.show()
 
 Run the program and we see the following plot show up:
 
-![The histogram generated from our heights data](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/hist-1.svg)
+{% include img.html src="posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/hist-1.svg" alt="The histogram generated from our heights data" %}
 *Figure 3: The histogram generated from our heights data*
 
 It's reassuring to see we have the right shape and we can already tell the mean of around $$68$$ makes sense. 
@@ -106,7 +108,7 @@ At the moment, this curve is way too noisy due to all the variances in the raw d
 
 For this, we will use a [Savitzky-Golay filter](http://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter_for_smoothing_and_differentiation)
 
-![Animation showing smoothing being applied, passing through the data from left to right. The red line represents the local polynomial being used to fit a sub-set of the data. The smoothed values are shown as circles.](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/savitz-golay-anim.gif)
+{% include img.html src="posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/savitz-golay-anim.gif" alt="Animation showing smoothing being applied, passing through the data from left to right. The red line represents the local polynomial being used to fit a sub-set of the data. The smoothed values are shown as circles." %}
 *Figure 4: Animation showing smoothing being applied, passing through the data from left to right. The red line represents the local polynomial being used to fit a sub-set of the data. The smoothed values are shown as circles. Source: [Wikipedia](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter#/media/File:Lissage_sg3_anim.gif)* 
 
 Savitzky-Golay uses least squares to regress small windows of the overall data onto polynomials. It works great with noisy samples from non-periodic and non-linear sources just like in our case!
@@ -123,12 +125,12 @@ The `savgol_filter` function takes three parameters:
 
 I find the bell curve shape allows us to use polynomails of order $$2$$ and pretty big windows with pretty good accuracy. For instance, a window of $$999$$ already kind of resembles the bell shape:
 
-![An order 2 polynomial fitting our bell curve.](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/hist-2.svg)
+{% include img.html src="posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/hist-2.svg" alt="An order 2 polynomial fitting our bell curve." %}
 *Figure 5: An order $$2$$ polynomial fitting our bell curve.*
 
 Granted, it's pretty terrible, but we are fitting the full data set with just one polynomial. What if we use $$5$$ polynomials, each of order $$1$$ or $$2$$ instead?
 
-![Five polynomials, each of order either 1 or 2 fitting our bell curve](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/hist-3.svg)
+{% include img.html src="posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/hist-3.svg" alt="Five polynomials, each of order either 1 or 2 fitting our bell curve" %}
 *Figure 6: Five polynomials, each of order either 1 or 2 fitting our bell curve.*
 
 Hey, that's pretty good!
@@ -148,7 +150,7 @@ y = y / max(y)
 
 Now let's take the area! We will be using the [Trapezoidal method](https://en.wikipedia.org/wiki/Trapezoidal_rule) to do this.
 
-![An animation demonstrating the Trapezoidal method](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/trapz-anim.gif)
+{% include img.html src="posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/trapz-anim.gif" alt="An animation demonstrating the Trapezoidal method" %}
 *Figure 6: An animation demonstrating the Trapezoidal method. Source: [Wikipedia](https://en.wikipedia.org/wiki/Trapezoidal_rule#/media/File:WikiTrap.gif)*
 
 The Trapezoidal method is a numerical technique for approximating the definite integral of a function, i.e. the area under its curve. It works by constructing very thin trapezoids that extend from the $$x$$-axis and meet the curve at that point. The above animation does a pretty good job of explaining this, and how using thinner and thinner trapezoids improves the accuracy of the resulting area.
@@ -205,7 +207,7 @@ $ python pi.py
 3.145650416957449
 ```
 
-![Hey, that's pretty good!](/assets/css/images/posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/pretty-good.webp)
+{% include img.html src="posts/2021/03/16/calculating-pi-by-finding-the-area-under-a-bell-curve/pretty-good.webp" alt="Hey, that's pretty good!" %}
 
 <p class="sparkle"></p>
 

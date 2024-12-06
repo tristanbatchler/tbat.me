@@ -293,7 +293,7 @@ The first two are pretty self-explanatory. The third has the effect that, when c
 > If you receive a complaint from Godot saying `Only arrays can specify collection element types`, you are probably using Godot 4.3 or below. You can fix this by either upgrading to Godot 4.4+, or changing the type of `_states_scenes` to simply `Dictionary` (without specifying the type of the keys and values in the square brackets). <small>*If you opt for the latter, there will be other complaints from Godot about not being able to infer the type of certain variables which are defined to be keys or values from the dictionary. If this happens, you'll need to explicitly cast the values to the correct type when you access them. Since this will probably get in the way of the tutorial, I highly recommend upgrading to Godot 4.4+.*</small>
 
 The way we've set up this script this means is if we register it as a global autoload called `GameManager` and create some scenes for the different states of the game, we can simply call `GameManager.set_state(GameManager.State.ENTERED)` from `main.gd`, for instance, to instance our `entered.tscn` scene and add it to the scene tree. It would end up looking like this in the remote scene tree:
-![Godot scene tree](/assets/css/images/posts/2024/11/10/godot_scene_tree.png)
+{% include img.html src="posts/2024/11/10/godot_scene_tree.png" alt="Godot scene tree" %}
 
 This is a very powerful pattern, and it will allow us to keep our game's logic organized and maintainable.
 
@@ -302,7 +302,7 @@ By the way, the **Entered** state will be the initial state of the game, and wil
 So let's go ahead and register our new script as an autoload. We've done this before with the `websocket_client.gd` script, but as a reminder, you can do this by going to **Project > Project Settings > Gloabls**, ensuring you are on the **Autoload** tab, and entering `res://game_manager.gd` into the **Path** field, and **GameManager** into the **Node Name** field. Then click **Add** and **Close**.
 
 Now let's actually create the scenes for the different states of the game. Create a new folder called `states` in the root of the project, and inside that folder create two new folders called `entered` and `ingame`. Inside each of these folders, create a new scene called `entered.tscn` and `ingame.tscn`, respectively, both of which should have a root type of **Node** called **Entered** and **InGame** respectively.
-![Godot scene tree](/assets/css/images/posts/2024/11/10/godot_states.png)
+{% include img.html src="posts/2024/11/10/godot_states.png" alt="Godot scene tree" %}
 
 For now, let's just add a **CanvasLayer** node to each scene called **UI**, and our custom **Log** node as a child of each canvas layer, making sure to let it take up the full size of the screen with the **Full Rect** anchor preset.
 

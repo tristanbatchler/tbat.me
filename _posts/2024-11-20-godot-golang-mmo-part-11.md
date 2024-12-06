@@ -127,7 +127,7 @@ Now, we need to reorganize a few things.
 4. Set the **Text** property of the logout and send buttons to "Logout" and "Send", respectively.
 
 When all is said and done, the scene should look something like this:
-![InGame UI](/assets/css/images/posts/2024/11/20/ingame_ui.png)
+{% include img.html src="posts/2024/11/20/ingame_ui.png" alt="InGame UI" %}
 
 
 Now, because we restructured, all of our `@onready var ...` lines in the `ingame.gd` script are going to be wrong. We need to update them to reflect the new structure. Here's what they should look like once fixed (I have also included the new buttons and hooked them up to their respective signals and implemented methods):
@@ -164,7 +164,7 @@ This shouldn't need much explaining. The only notable aspect here is we are send
 Go ahead and try it out! You should now be able to send messages on mobile and log out from the game. The chat should also look a lot nicer with the margin container.
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/20/logout_demo.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/logout_demo.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -178,7 +178,7 @@ Let's get everything centered and away from the top edge of the screen. We can d
 
 We should center the buttons as well, though, so set the HBoxContainer's **Alignment** property to **Center** too.
 
-![Centered Login Screen](/assets/css/images/posts/2024/11/20/centered_login_screen.png)
+{% include img.html src="posts/2024/11/20/centered_login_screen.png" alt="Centered Login Screen" %}
 
 We should add a cool title to the login screen! Add a **RichTextLabel** node to the top of the VBoxContainer and set its **Text** property to whatever you want to call your game. I'm going with "Radius Rumble". Make sure to check the **Fit Content** property, so the text doesn't get cut off.
 
@@ -190,7 +190,7 @@ There's [a lot of cool stuff](https://docs.godotengine.org/en/stable/tutorials/u
 
 You can also make the text bigger by using the **Theme Overrides > Font Sizes > Bold Font Size** property.
 
-![Login Screen](/assets/css/images/posts/2024/11/20/login_screen.png)
+{% include img.html src="posts/2024/11/20/login_screen.png" alt="Login Screen" %}
 
 You can really go wild with this, so feel free to experiment!
 
@@ -221,11 +221,11 @@ Now make the following edits to the `Background` sprite:
 4. Set the **Rect**'s **w** and **h** to the size of your viewport (found under **Project Settings > Display > Window > Size**)
 5. Choose **Enabled** for the **Repeat** property under **Texture**
 
-![Background Sprite](/assets/css/images/posts/2024/11/20/background_sprite.png)
+{% include img.html src="posts/2024/11/20/background_sprite.png" alt="Background Sprite" %}
 
 It looks pretty good already, but we can make it look even better with a shader. With the `Background` sprite still selected, expand the **Material** property in the inspector, click the dropdown next to **Material** and choose **New ShaderMaterial**. This will assign a new, blank shader material to the sprite. If you click on the shader material, it will expand to show a **Shader** dropdown which you can open and choose **New Shader**. This will prompt you to create a new script, which you can save under `res://resources/background_effect.gdshader`.
 
-![Shader Material](/assets/css/images/posts/2024/11/20/shader_material.png)
+{% include img.html src="posts/2024/11/20/shader_material.png" alt="Shader Material" %}
 
 If you open up the shader script, you can paste whatever cool shader code you want in there. I have never worked with shaders before, so I went to [Godot Shaders](https://godotshaders.com) and found this cool [Sine Morphing](https://godotshaders.com/shader/sine-morphing) one. I copied the code and pasted it into my shader script. It looks like this:
 
@@ -245,7 +245,7 @@ void fragment() {
 ```
 
 <video controls loop>
-  <source src="/assets/css/images/posts/2024/11/20/background_demo.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/background_demo.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -268,7 +268,7 @@ There's a lot more we could do here, like letting users press Enter to log in, o
 Finally, let's pretty much do the same thing to the hiscores screen. We'll be adding the same title and the same background image and shader effect. You can also add a margin container like we did with the in-game UI. I will leave this as an exercise for the reader (hint: you can copy and paste the `Background` sprite and RichTextLabel from the `Connected` scene and all the properties will be the same).
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/20/copypaste.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/copypaste.webm" type="video/webm">
     Your browser does not support the video tag.
 </video>
 
@@ -285,12 +285,12 @@ When you double-click on the theme from the scene editor, you will see a ton of 
 I will just be making a few simple changes though, so I will walk you through them. First, let's change the font size for buttons.
 
 1. Click on the **`+`** button at the top-right of the **Theme** panel
-   ![Add Style](/assets/css/images/posts/2024/11/20/add_style.png)
+   {% include img.html src="posts/2024/11/20/add_style.png" alt="Add Style" %}
 
 2. Choose Button and click **Add Type**
 3. Click on the **Font Size** tab and click the **`+`** button to override the default font size
 4. Choose **24** and click **Save**
-   ![Button Font Size](/assets/css/images/posts/2024/11/20/button_font_size.png)
+   {% include img.html src="posts/2024/11/20/button_font_size.png" alt="Button Font Size" %}
 
 You won't see the changes in our scenes yet, because we haven't applied the theme to them. We can do this by selecting the `VBoxContainer` nodes in the `Connected` and `BrowsingHiscores` scenes and setting the **Theme** property to `res://resources/game_theme.tres`.
 
@@ -299,7 +299,7 @@ Let's give the same treatment to the line edits, labels, and rich text labels. J
 Let's also give a bit more contrast to your labels and rich text labels by changing the **font_shadow_color** to something darker that will stand out against the background. I went with `#30170872`.
 
 So now our game looks like this:
-![Connected Screen](/assets/css/images/posts/2024/11/20/connected_screen.png)
+{% include img.html src="posts/2024/11/20/connected_screen.png" alt="Connected Screen" %}
 
 ## Making the window resizable
 
@@ -340,7 +340,7 @@ At the moment, your `Connected` scene should look like this:
         - **LoginForm (instanced login_form.tscn)**
         - **Log (log.gd)**
 
-![Half refactored Connected scene](/assets/css/images/posts/2024/11/20/half_refactored_connected.png)
+{% include img.html src="posts/2024/11/20/half_refactored_connected.png" alt="Half refactored Connected scene" %}
 
 
 Now, we need our `connected.gd` script to know whenever the login form has been submitted. The best way to achieve this is through a custom signal on the login form. Attach a new script to the `LoginForm` node and add the following code.
@@ -483,7 +483,7 @@ Let's create new folder called `res://classes/register_form/` and duplicate the 
 2. Rename the `LoginButton` to `ConfirmButton` and change the text to "Confirm".
 3. Rename the `HiscoresButton` to `CancelButton` and change the text to "Cancel".
 4. Detach the `login_form.gd` script from the root `RegisterForm` node (right-click on the root node and choose **Detach Script**).
-   ![Detach Script](/assets/css/images/posts/2024/11/20/detach_script.png)
+   {% include img.html src="posts/2024/11/20/detach_script.png" alt="Detach Script" %}
 
 Now, we need to attach a new script which will be similar to the login script we made before, in that it will emit a `form_submitted` signal containing the registration data. Here's what the script should look like:
 
@@ -522,7 +522,7 @@ Let's get this new form into the `Connected` scene. Drag the `register_form.tscn
 Our solution to this is to hide the registration form by default, and when a registration button is pressed, we will hide the login form and show the registration form. When the `form_cancelled` signal is emitted, we will do the opposite.
 
 Let's get started by clicking the 👁️ button to the right of the `RegisterForm` node in the `Connected` scene:
-![Hide Register Form](/assets/css/images/posts/2024/11/20/hide_register_form.png)
+{% include img.html src="posts/2024/11/20/hide_register_form.png" alt="Hide Register Form" %}
 
 Now, let's add the logic to the `connected.gd` script to handle the new registration form.
 
@@ -593,7 +593,7 @@ func _on_register_prompt_meta_clicked(meta) -> void:
 Now, when you run the game, you should be able to click on the link in the `Connected` scene and reveal the registration form. You can also click the cancel button to go back to the login form. Everything should be looking great now!
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/20/registration_screen_demo.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/registration_screen_demo.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -722,7 +722,7 @@ Now, we're ready to add the color picker to our registration form in Godot, and 
 Open up the `res://classes/register_form/register_form.tscn` scene and add a new **ColorPicker** node under the root `RegisterForm` (VBoxContainer) node, just underneath the `ConfirmPassword` line edit. Disable the **Edit Alpha** property, so players can't easily choose a transparent color, and also disable the **Can Add Swatches** property, since we don't need that.
 
 For the **Picker Shape**, choose whichever shape you like. Also disable everything under the **Customization** section in the inspector, since most of these are unnecessary and take up space.
-![Color Picker](/assets/css/images/posts/2024/11/20/color_picker.png)
+{% include img.html src="posts/2024/11/20/color_picker.png" alt="Color Picker" %}
 
 Now, we just need to hook this up to our `register_form.gd` script, include the color in our `form_submitted` signal, and handle it in the `connected.gd` script.
 
@@ -799,7 +799,7 @@ func _add_actor(actor_id: int, actor_name: String, x: float, y: float, radius: f
 Now, when you run the game, you should see players with different colors. You can also test this by registering a new account with a different color.
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/20/registration_demo_2.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/registration_demo_2.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -898,7 +898,7 @@ func _update_zoom() -> void:
 There, now as the player grows, users won't have to squint to read their nameplate.
 
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/20/autozoom.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/autozoom.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -926,7 +926,7 @@ You may not have noticed if you are just playing the game on your own machine, b
 
 To demonstrate this, I've simulated a bad sync by forcing the client's speed to be 10% faster than what the server thinks it is. I've drawn the server's version of the player as a blue ghost, so you can see the difference.
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/20/raw-snap.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/raw-snap.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
@@ -960,13 +960,13 @@ Note that we are simultaneously updating our true position, but also the `server
 
 For example, here's what happens when we **don't** add our velocity to the server position every frame:
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/20/no-added-vel.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/no-added-vel.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 
 And this is what it looks like when we **do**:
 <video controls>
-  <source src="/assets/css/images/posts/2024/11/20/added-vel.webm" type="video/webm">
+  <source src="/assets/images/posts/2024/11/20/added-vel.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
 

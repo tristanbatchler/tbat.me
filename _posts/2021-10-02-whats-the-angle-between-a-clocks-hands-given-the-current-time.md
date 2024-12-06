@@ -4,11 +4,13 @@ description: A clock shows the current time as, say, 4:20. What is the angle bet
 redditurl: https://www.reddit.com/r/learnmath/comments/q0wuju/i_was_inspired_by_a_post_in_rpasstimemath_to_have
 ---
 
+{% include math.html %}
+
 Here's kind of a fun and interesting question.
 
 A clock shows the current time as, say, 4:20. What is the angle between the hour and minute hands? What about in general? Is there a nice formula we can use to get this angle given any time? And does this have any applications?
 
-![Clock showing 4:20](/assets/css/images/posts/2021/10/02/what-is-the-angle-between-a-clocks-hands-given-the-current-time/Clock_04-20.svg)
+{% include img.html src="posts/2021/10/02/what-is-the-angle-between-a-clocks-hands-given-the-current-time/Clock_04-20.svg" alt="Clock showing 4:20" %}
 *Figure 1: Oh would you look at the time*
 
 ## Worked example

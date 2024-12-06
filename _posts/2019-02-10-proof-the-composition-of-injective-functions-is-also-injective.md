@@ -3,6 +3,8 @@ title: Proof the composition of injective functions is also injective
 description: This mathematical proof shows the composition of two injective functions is also injective. The definition of function injectivity and composition is also covered.
 ---
 
+{% include math.html %}
+
 We are aiming in this proof to show that the composition of two injective functions is also injective. We will also go over the definition of function injectivity and composition.
 
 Much of real and complex analysis and linear algebra are concerned with showing various functions have certain properties. This can enable you to jump to proven conclusions about these functions and use them to solve problems. Here is an example of how we can take two *injective* functions, call them $$f$$ and $$g$$ and show that their composition, $$f \circ g$$ is also injective.
@@ -10,10 +12,10 @@ Much of real and complex analysis and linear algebra are concerned with showing 
 ## Injective?
 An injective function is such that each element in the codomain is mapped to by no more than one element from the domain. To demonstrate this, suppose our function $$f$$ has a domain $$\{ 1, 2, 3 \}$$ and codomain $$\{ 4, 5, 6, 7, 8 \}$$. The following images demonstrate two hypothetical mappings performed by $$f$$, the first one being injective and the next one *not* being injective.
 
-![Injective function](/assets/css/images/posts/2019/02/10/proof-the-composition-of-injective-functions-is-also-injective/injective-function.svg)
+{% include img.html src="posts/2019/02/10/proof-the-composition-of-injective-functions-is-also-injective/injective-function.svg" alt="Injective function" %}
 *Figure 1: Here $$f$$ is injective because each element in the codomain is mapped to by only either one or no element from the domain.*
 
-![Non-injective function](/assets/css/images/posts/2019/02/10/proof-the-composition-of-injective-functions-is-also-injective/non-injective-function.svg)
+{% include img.html src="posts/2019/02/10/proof-the-composition-of-injective-functions-is-also-injective/non-injective-function.svg" alt="Non-injective function" %}
 *Figure 2: Here $$f$$ is not injective because the element $$5$$ in the codomain is being mapped to by two elements from the domain.*
 
 Let’s try to formalise this definition of injectivity so that we can have something tangible to work with in the proof.
