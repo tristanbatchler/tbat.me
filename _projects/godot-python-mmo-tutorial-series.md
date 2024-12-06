@@ -1,12 +1,12 @@
 ---
 layout: project
 title: Godot Python MMO Tutorial Series
-description: A course intended for intermediate-to-advanced users of Python and beginners of Godot / networking. This five-lesson course introduces my unique framework for an authoritative websockets MMO server, and shows how to create a highly cross-platform game client with the Godot engine. Videos which follow these posts are also published on YouTube.
+description: A course intended for intermediate users of Python and beginners of Godot / networking. This five-lesson course introduces my unique framework for an authoritative websockets MMO server, and shows how to create a highly cross-platform game client with the Godot engine. Videos which follow these posts are also published on YouTube.
 start_date: 2022-11-20T00:00:00.000Z
 finished: true
 finish_date: 2022-12-11T00:00:00.000Z
 ---
-This is a completely free, five-lesson course intended for intermediate-to-advanced users of Python and beginners of Godot / networking. 
+This is a completely free, five-lesson course intended for intermediate users of Python and beginners of Godot / networking. 
 
 I introduce my unique framework for an authoritative websockets MMO server, and teach how to integrate it with a relational database with [Django](https://www.djangoproject.com/), and a highly cross-platform game client with [the Godot engine](https://godotengine.org/). 
 
