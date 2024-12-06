@@ -423,7 +423,7 @@ If you made it to the end of this series, give yourself a pat on the back. Serio
 If you want to download the final, finished project, you can download the [v1.0 release from the official GitHub repository](https://github.com/tristanbatchler/official-godot-python-mmo/releases/tag/v1.0). 
 
 Finally, I just wanted to say thank you so much for following along. This has been the biggest project I've undertaken so far and a lot of work has gone into this. If this series has helped you out and you would like to give something back to me feel free to buy me a coffee (or a beer) 🙂
-<center><a href="https://www.buymeacoffee.com/tristanbatchler" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a></center>
+<center><a href="https://www.buymeacoffee.com/tristanbatchler" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" loading="lazy" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a></center>
 
 ## Get in touch / connect with community
 **If you have any questions or feedback, I'd love to hear from you! Either drop a comment on the YouTube video, email me (my contact information is in the footer below), or [join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other students!**

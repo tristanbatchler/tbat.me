@@ -4,7 +4,7 @@ layout: default
 
 <h1>{{ page.title }}</h1>
 <hr class="post-hr">
-<class="timestamp">{{ page.start_date | date: "%d %b %y" }}&#8212;{% if page.finished %}{{ page.finish_date | date: "%d %b %y" }}{% else %}Ongoing{% endif %}</p>
+<p class="timestamp">{{ page.start_date | date: "%d %b %y" }}&#8212;{% if page.finished %}{{ page.finish_date | date: "%d %b %y" }}{% else %}Ongoing{% endif %}</p>
 <a href="{{ page.external_link }}" target="_blank">{{ page.external_link }}</a>
 
 {{ content }}
