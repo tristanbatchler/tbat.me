@@ -416,7 +416,7 @@ Now, when you run the server and connect to it, you should see a new player appe
 ## Adding a background
 
 Create a new folder at `res://resources/` and import the following image into the folder as `floor.svg` (or you can make your own):
-{% include img.html src="posts/2024/11/11/floor.svg" alt="floor.svg" %}
+![floor.svg](/assets/images/posts/2024/11/11/floor.svg)
 > You can download the image by right-clicking on it and selecting **Save image as** and save it to `/client/resources`.
 
 Now, in the **InGame** scene, under the **World** Node2D, add a new **Sprite2D** node called `Floor`. Now make the following edits to the `Floor` sprite:
