@@ -194,6 +194,7 @@ body {
 
         &.current {
             color: $header;
+            font-weight: bold;
         }
 
         font-size: larger;

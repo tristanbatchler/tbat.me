@@ -26,4 +26,4 @@ If you have any questions or feedback, I'd love to hear from you! [Join the Disc
 
 ## Thanks
 Finally, I just wanted to say thank you so much for taking the time to read this. This is my biggest personal project to date, and hundreds upon hundreds of hours have gone into creating this. If these posts or videos have helped you out and you would like to give something back to me feel free to buy me a coffee (or a beer) 🙂
-<center><a href="https://www.buymeacoffee.com/tristanbatchler" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a></center>
+<center><a href="https://www.buymeacoffee.com/tristanbatchler" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" loading="lazy" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a></center>
