@@ -7,6 +7,8 @@ project: godot4golang
 
 Nice to see you again! In [the last post](/2024/11/11/godot-golang-mmo-part-6), we finally got some gameplay down, and we left off in a pretty good spot. We have a basic space where players can move around and spot each other, but it is very unpolished, and I wouldn't really call it a "game" since it lacks objectives! Let's fix that today by adding some spores to collect and let the player grow. We will also be making the movement more fluid and restoring the chat functionality we kinda lost in the last post. Let's get right into it!
 
+As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.06](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.06) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
+
 ## Bringing back the chat
 Low-hanging fruit, let's quickly restore our chatroom logic we got rid of in <a href="/2024/11/10/godot-golang-mmo-part-5#get-rid-of-chat-handling" target="_blank">§05</a>. All we need to do here is add a new case to the `HandleMessage` method in our `InGame` state handler:
 
