@@ -3,7 +3,7 @@
 @import "comments";
 
 body {
-    background: linear-gradient(to bottom, $void, $void2);
+    background: $void linear-gradient(to bottom, $void, $void2);
     background-attachment: fixed;
     font-family: 'Montserrat', sans-serif;
     line-height: 1.5;
