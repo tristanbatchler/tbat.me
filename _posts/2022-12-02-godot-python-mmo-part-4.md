@@ -326,7 +326,7 @@ ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}
 ```
 
 ### Windows
-```powershell
+```shell
 (Get-NetIPAddress | Where-Object {$_.AddressState -eq "Preferred" -and $_.ValidLifetime -lt "24:00:00"}).IPAddress
 ```
 Either command should print your local IP address.
@@ -341,7 +341,7 @@ Now, in Godot, go to **Project > Export** and this time, be sure to check the **
 When you click **Export Project**, and it asks you to save the file, make sure you call it `index.html` and save it inside a folder you will remember. I would recommend saving it inside your project folder under `client/HTML5/`.
 
 Next, open a terminal window inside the folder you saved `index.html` to and run the following command:
-```powershell
+```shell
 python -m http.server 80
 ```
 

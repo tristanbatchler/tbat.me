@@ -41,21 +41,21 @@ Without further ado, let's begin setting up the back end! For this, we will need
 We are going to set up a virtual environment to make it easier to manage all our dependencies. To do this, the instructions are slightly different for Windows users so read carefully.
 
 Open a terminal (if you are using Windows, make sure it is PowerShell and not CMD) in the `server` folder and run the following commands (note you may need to use `python3` rather than `python` especially if you are running a Unix-based OS):
-```powershell
+```shell
 python -m venv ./venv
 ```
 
 If you are using Windows, the next command will be
-```powershell
+```shell
 ./venv/Scripts/activate
 ```
 For everyone else, this is
-```powershell
+```shell
 source ./venv/bin/activate
 ```
 
 If done properly, you will see your terminal has a green `(venv)` prompt. Now you are free to install all the dependencies with the following commands one at a time (if you are using a Unix-based OS, you may need to type `pip3` instead of `pip`):
-```powershell
+```shell
 pip install autobahn[twisted]
 pip install Django
 ```
@@ -472,7 +472,7 @@ Now is probably a good idea to test our server and client to make sure there's n
 Open up your terminal again and ensure you still have the green `(venv)` prompt showing. If not, or if you closed your terminal, just open a new terminal in the `server/` folder, and run `./venv/bin/activate` (`source ./venv/Scripts/activate` on Windows PowerShell).
 
 Now run the following command (again, you may need to use `python3` if you are running a Unix-based OS):
-```powershell
+```shell
 python .
 ```
 

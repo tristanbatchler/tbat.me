@@ -99,13 +99,13 @@ class User(models.Model):
 `models.py` is unsurprisingly where we will define all the data, and relationships between things in our game. We start with the most basic thing we need right now—the concept of a user. Note we do not need to specify some kind of ID for our user, because Django will take care of that for us. We are indicating the username needs to be unique, and its max length is 20, however.
 
 Let's use our `manage.py` tool to create the database now. Run the following commands:
-```powershell
+```shell
 python manage.py makemigrations
 python manage.py migrate
 ```
 
 You should see the following output:
-```powershell
+```shell
 (venv) python manage.py makemigrations
 Migrations for 'server':
   migrations\0001_initial.py
