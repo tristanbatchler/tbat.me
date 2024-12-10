@@ -294,7 +294,7 @@ Now, let's attach a new script, `res://objects/actor/actor.gd`, to the **Actor**
 ```gd
 extends Area2D
 
-const packets = preload("res://packets.gd")
+const packets := preload("res://packets.gd")
 
 const Scene := preload("res://objects/actor/actor.tscn")
 const Actor := preload("res://objects/actor/actor.gd")
@@ -343,13 +343,13 @@ func _physics_process(delta) -> void:
         return
     # Player-specific stuff below here
         
-    var mouse_pos = get_global_mouse_position()
+    var mouse_pos := get_global_mouse_position()
     
     var input_vec = position.direction_to(mouse_pos).normalized()
     if abs(velocity.angle_to(input_vec)) > TAU / 15: # 12 degrees
         velocity = input_vec * speed
-        var packet = packets.Packet.new()
-        var player_direction_message = packet.new_player_direction()
+        var packet := packets.Packet.new()
+        var player_direction_message := packet.new_player_direction()
         player_direction_message.set_direction(velocity.angle())
         WS.send(packet)
 

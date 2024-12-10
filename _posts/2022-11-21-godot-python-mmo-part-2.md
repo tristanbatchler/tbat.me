@@ -301,7 +301,7 @@ var _chatbox = null
 
 Since we removed the Chatbox node, we will need a way to instance it again in code, so add this import and we will use it later:
 ```gdscript
-const Chatbox = preload("res://Chatbox.tscn")
+const Chatbox := preload("res://Chatbox.tscn")
 ```
 
 Next, change the last line in the `_ready` function to tell Godot the first state is not yet determined (because we will load up the game without knowing what we are doing yet). We will also connect the login screen's signals to some handler functions:
