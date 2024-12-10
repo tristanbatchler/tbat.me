@@ -418,7 +418,7 @@ So this is the function that gets called whenever we receive a ModelData packet 
 
 If we don't have this actor's information stored already, first we need to determine whether it's the main player or not. We determine this by checking for a variable called `_player_actor`, which should initially be set to `null` (so add `var _player_actor = null` to the beginning of `Main.gd`). 
 
-* If this variable **is** `null`, it means we haven't received our own player model yet, since that is the very first model we should ever receive from the server. In this case, we simply make a new `Actor` instance (you will need to import this at the top of the file: `const Actor = preload("res://Actor.tscn")`) and set the `is_player` flag accordingly.
+* If this variable **is** `null`, it means we haven't received our own player model yet, since that is the very first model we should ever receive from the server. In this case, we simply make a new `Actor` instance (you will need to import this at the top of the file: `const Actor := preload("res://Actor.tscn")`) and set the `is_player` flag accordingly.
 
 * On the other hand, if we already have our player actor, then we know we are receiving new information about another actor, so we just initialise it as such.
 

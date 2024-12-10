@@ -328,7 +328,7 @@ Moving on, create another script in `res://websockets_client.gd` with the follow
 ```gdscript
 extends Node
 
-const Packet = preload("res://packet.gd")
+const Packet := preload("res://packet.gd")
 
 signal connected
 signal data
@@ -412,8 +412,8 @@ Open up your new `res://Main.gd` script, clear out the pre-generated code, and r
 extends Node
 
 # Imports
-const NetworkClient = preload("res://websockets_client.gd")
-const Packet = preload("res://packet.gd")
+const NetworkClient := preload("res://websockets_client.gd")
+const Packet := preload("res://packet.gd")
 
 onready var _network_client = NetworkClient.new()
 var state: FuncRef
