@@ -329,13 +329,13 @@ elif p.action == packet.Action.Register:
 The main difference here is we are unpacking the `avatar_id` from the `RegisterPacket` payloads, and inserting it into our `player` model.
 
 Let's run a new database migration, since we have updated our Actor model (make sure you've saved the changes to all your Python files):
-```powershell
+```shell
 python manage.py makemigrations
 python manage.py migrate
 ```
 
 You should see the following output in the terminal window:
-```powershell
+```shell
 (venv) python manage.py makemigrations
 Migrations for 'server':
   migrations\0002_actor_avatar_id.py

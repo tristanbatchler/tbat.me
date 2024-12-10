@@ -84,7 +84,7 @@ def LOGIN(self, sender: 'GameServerProtocol', p: packet.Packet):
 You'll notice we slightly change the registration logic too, making sure we don't allow empty usernames or passwords, and that we check if the username is already taken.
 
 Because we have drastically changed the structure of our `User` model, we need to delete the database and create a new one. To do this, delete the `db.sqlite3` file, and everything inside the `migrations/` folder except `__init__.py`. Now we can create the database again by running a new initial migration:
-```powershell
+```shell
 python manage.py makemigrations
 python manage.py migrate
 ```
@@ -122,13 +122,13 @@ if __name__ == '__main__':
 Notice we are expecting the server key and certificate to be in a `certs/` folder in `server/` directory. These files are used to encrypt and decrypt our network traffic. When we deploy our server, we will need to generate these files properly, but for now we can just generate some self-signed certificates. Also note that the `server.key` file should be kept secret, as it is used to decrypt the traffic and should **only** be used by the server.
 
 Note that, in order to run our server with these new TLS settings, we need to install two new packages, so go ahead and install these now:
-```powershell
+```shell
 pip install pyOpenSSL
 pip install service-identity
 ```
 
 In order to continue testing our game locally, can generate some self-signed certificates using OpenSSL. If you don't have OpenSSL installed, you can download it [here](https://slproweb.com/products/Win32OpenSSL.html). Once you have it installed, open a terminal and navigate to the `certs/` folder. Then run the following commands:
-```powershell
+```shell
 openssl genrsa -out server.key 2048 # Generate a private key
 openssl req -new -x509 -key server.key -out server.crt -days 3650 # Generate a self-signed certificate
 ```
@@ -179,7 +179,7 @@ client/HTML5/
 ```
 
 Now let's get our project into GitHub. Open a terminal inside your project folder on your machine and run the following commands:
-```powershell
+```shell
 git init
 git add .
 git commit -m "Initial commit"

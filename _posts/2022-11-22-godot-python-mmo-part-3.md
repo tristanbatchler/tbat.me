@@ -67,7 +67,7 @@ For example, suppose I had an entity called `Book`, and perhaps multiple instanc
 Let's run our first database migration! It's very easy with our `manage.py` script.
 
 Simply run the following commands:
-```powershell
+```shell
 python manage.py makemigrations
 python manage.py migrate
 ```
