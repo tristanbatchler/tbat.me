@@ -133,7 +133,7 @@ func (g *InGame) SetClient(client server.ClientInterfacer) {
 }
 
 func (g *InGame) OnEnter() {
-    log.Printf("Adding player %s to the shared collection", g.player.Name)
+    g.logger.Printf("Adding player %s to the shared collection", g.player.Name)
     go g.client.SharedGameObjects().Players.Add(g.player, g.client.Id())
 }
 
