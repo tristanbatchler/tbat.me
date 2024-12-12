@@ -448,7 +448,12 @@ services:
 
 This is a [Docker compose](https://docs.docker.com/compose/) file, which is a convenient way to define the configuration for our Docker container, and run it with a simple command. You will need to create a folder on your computer to store the database file, and set a new environment variable in the `.env` file:
 
+```directory
+/server/.env
+```
+
 ```ini
+# ...
 DATA_PATH=/path/to/your/data/folder
 ```
 
@@ -573,7 +578,11 @@ You can open the **Logs** tab to see the server output and check the game data d
 
 {% include img.html src="posts/2024/11/22/logs.png" alt="Logs" %}
 
-By default, the container maps the container port to the host port 443 and serves it over HTTPS. What this means for us is we need to use the `wss://` scheme, and port 443 in our client code. So, in `res://states/entered/entered.gd`, change the `WS.connect_to_url` call to:
+By default, the container maps the container port to the host port 443 and serves it over HTTPS. What this means for us is we need to use the `wss://` scheme, and port 443 in our client code. So, in the entered state, change the `WS.connect_to_url` call to:
+
+```directory
+/client/states/entered/entered.gd
+```
 
 ```gd
 func _ready() -> void:
@@ -655,6 +664,7 @@ acme-dns-certbot.py
 
 ```python
 #!/usr/bin/env python3
+# ...
 ```
 
 Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it:
@@ -728,6 +738,10 @@ Depending on whether you are using Docker or not, you will need to run the serve
 #### Using Docker
 If you followed along with the [Containerizing the server](#containerizing-the-server) section, you should have a Docker container image ready to go. You can run the container on your server by copying the `compose.yaml` file to your server, and making one slight adjustment to the `volumes` section:
 
+```directory
+/server/compose.yaml
+```
+
 ```yaml
 services:
   gameserver:
@@ -743,6 +757,10 @@ services:
 The `:ro` at the end of the volume mount for the certificates means that the files will be read-only inside the container. This is a good security practice, as it means that the container cannot modify the certificates.
 
 You will also need to create the `.env` file next to the `compose.yaml` file, and add the following lines:
+
+```directory
+/server/.env
+```
 
 ```ini
 PORT=8080
@@ -768,6 +786,10 @@ docker push yourdockerhubusername/gameserver:latest
 
 #### Without Docker
 If you don't want to use Docker, you can run the server directly on your server by copying the `server/` directory to your server, and creating the `.env` file inside:
+
+```directory
+/server/.env
+```
 
 ```ini
 PORT=8080
@@ -818,7 +840,11 @@ Just replace 8080 with your port number, and `<PID>` with the number in the `PID
 
 On Windows, you can look at making the server a service, which I am sure you can find a guide for online.
 
-You should be able to connect to your server from the client by changing the `WS.connect_to_url` call in `res://states/entered/entered.gd` to the following (be sure to replace `yourdomain.com` with your actual domain name, and `8080` with the port you set in the `.env` file):
+You should be able to connect to your server from the client by changing the `WS.connect_to_url` call in the entered state to the following (be sure to replace `yourdomain.com` with your actual domain name, and `8080` with the port you set in the `.env` file):
+
+```directory
+/client/states/entered/entered.gd
+```
 
 ```gd
 func _ready() -> void:

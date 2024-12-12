@@ -100,7 +100,7 @@ Now, we can create a new player when the user logs in successfully, and use it t
 
 ## InGame state
 
-Create a new file called `ingame.go` in the `/server/internal/server/states` directory. It needs to implement our `ClientState` interface, so add the following code to the file:
+Create a new file called `ingame.go` in the `/server/internal/server/states` directory. It needs to implement our `ClientStateHandler` interface, so add the following code to the file:
 
 ```directory
 /server/internal/server/states/ingame.go
