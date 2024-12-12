@@ -1,12 +1,12 @@
 <mark id="{{ include.anchor | default: 'highlighted-section' }}">
     {{ include.text | default: 'Default highlight text' }}
-  </mark>
-  
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      if (window.location.hash === "#{{ include.anchor | default: 'highlighted-section' }}") {
-        document.getElementById("{{ include.anchor | default: 'highlighted-section' }}").classList.add("highlight");
-      }
-    });
-  </script>
-  
+</mark>
+<span>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    if (window.location.hash === "#{{ include.anchor | default: 'highlighted-section' }}") {
+      document.getElementById("{{ include.anchor | default: 'highlighted-section' }}").classList.add("highlight");
+    }
+  });
+</script>
+</span>
