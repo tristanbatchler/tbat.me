@@ -115,7 +115,9 @@ Now, let's create our debug configuration and install the debugger.
 
 The `output` field is highly recommended if you are on Windows, as without specifying this, the debugger will create a uniquely named executable each time you run the program, resulting in the firewall asking you to allow it every time. This way, you can simply add `debug_executable.exe` to your firewall exceptions.
 
-Now you should be able to simply press **F5** to run your program, and look at the output in the **Debug console** tab at the bottom.
+Now you should be able to simply press **F5** to run your program, and look at the output in the **Debug console** tab at the bottom <small>(not the Terminal or Output tab)</small>.
+
+{% include img.html src="posts/2024/11/09/vscode-debug.png" alt="VS Code debug" %}
 
 If you see an error saying `dlv` is not installed, you can simply press the **Install** button that appears in the error message. If you don't see this, you can install it manually: 
 ```shell
