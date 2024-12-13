@@ -276,13 +276,13 @@ Open up your Godot project and create a new folder at `res://objects/`. Inside t
 
 Open up the `res://objects/actor/actor.tscn` scene and add a **CollisionShape2D** node as a child of the **Actor** node. Set the shape of the **CollisionShape2D** to a new **CircleShape2D**. This will represent the player's hitbox.
 
+>❗Important: set the **Local to Scene** property of the **CollisionShape2D**'s **Shape** property to `true`. You can click on the CircleShape2D in the inspector to open its properties, and you'll find the option under **Resources**. This will allow the hitbox's radius to change on a per-instance basis. {% include highlight.html anchor="local-to-scene-note" text="If you don't do this, changing one player's radius will change <strong>all</strong> player's radii, making for a very frustrating debugging experience <small><em>don't ask me how I know</em></small>." %}
+
+{% include img.html src="posts/2024/11/11/local_to_scene.png" alt="Local to Scene" %}
+
 Add another child node to the **Actor** node so that it is a sibling of the **CollisionShape2D** node. This new node should be a **Label** node. This will represent the player's name. Set the **Horizontal Alignment** and **Vertical Alignment** properties of the **Label** node to **Center** and then choose the **Center** anchor preset to position the label in the center of the player.
 
 {% include img.html src="posts/2024/11/11/actor_scene_2.png" alt="Actor Scene" %}
-
-> ⚠️ **Note**: it is very important to set the **Local to Scene** property of the **CollisionShape2D**'s **Shape** property to `true`. You can click on the CircleShape2D in the inspector to open its properties, and you'll find the option under **Resources**. This will allow the hitbox's radius to change on a per-instance basis. {% include highlight.html anchor="local-to-scene-note" text="If you don't do this, changing one player's radius will change <strong>all</strong> player's radii, making for a very frustrating debugging experience <small><em>don't ask me how I know</em></small>." %}
-
-{% include img.html src="posts/2024/11/11/local_to_scene.png" alt="Local to Scene" %}
 
 Finally, add a **Camera2D** sibling. This is what we can use to follow the player around the screen and change the zoom level as we grow.
 
