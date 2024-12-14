@@ -7,9 +7,8 @@ module ImageSizeFilter
     # Check if the source is a URL
     is_url = source.start_with?('http://', 'https://')
 
-    # If the URL starts with site.url/.netlify/images?url=/assets/images/..., replace it with the local path
-    if is_url && source.start_with?('{{ site.url }}/.netlify/images?url=')
-      source = source.sub('{{ site.url }}/.netlify/images?url=', '')
+    if is_url && source.start_with?('{{ site.url }}')
+      source = source.sub('{{ site.url }}', '')
       is_url = false
     end
 
