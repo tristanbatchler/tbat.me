@@ -1,5 +1,5 @@
 {%- assign original_width = '/assets/images/' | append: include.src | image_size: 'w' | times: 1.0 -%}
-{%- assign original_width = '/assets/images/' | append: include.src | image_size: 'h' | times: 1.0 -%}
+{%- assign original_height = '/assets/images/' | append: include.src | image_size: 'h' | times: 1.0 -%}
 
 {%- assign max_width = include.max_width | default: 512 | times: 1.0 -%}
 

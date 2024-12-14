@@ -2,22 +2,7 @@ require 'fastimage'
 
 module ImageSizeFilter
   def image_size(source, dimension = nil)
-    # puts "supplied source: #{source}"
-
-    # Check if the source is a URL
-    is_url = source.start_with?('http://', 'https://')
-
-    if is_url && source.start_with?('{{ site.url }}')
-      source = source.sub('{{ site.url }}', '')
-      is_url = false
-    end
-
-    # If it's not a URL, resolve it to a local file path
-    unless is_url
-      # For local development, use the `_site` folder as the base
-      source = File.join(Dir.pwd, '_site', source.sub(/^\//, ''))
-      # puts "was not a url, so updated source: #{source}"
-    end
+    source = File.join(Dir.pwd, source.sub(/^\//, ''))
 
     # Get image dimensions using FastImage
     begin
