@@ -7,6 +7,8 @@ project: godot4golang
 
 We’re nearing the end of this series, having just wrapped up [allowing players to eat each other and grow](/2024/11/15/godot-golang-mmo-part-8). But one thing we’re missing is a way for players to track their progress and see how they rank against others. It’s time to add a hiscore leaderboard! Let’s dive in and set it up.
 
+As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.08](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.08) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
+
 ## The plan
 
 Our goal by the end of this part is to have a hiscore leaderboard that players can access from the main menu. It will look something like this (though the design will be a bit rough until we get a chance to polish everything in an upcoming part):
