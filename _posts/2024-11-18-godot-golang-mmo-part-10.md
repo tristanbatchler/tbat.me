@@ -301,7 +301,7 @@ func (g *InGame) handleSporeConsumed(senderId uint64, message *packets.Packet_Sp
 
 func (g *InGame) validatePlayerDropCooldown(spore *objects.Spore, buffer float64) error {
     minAcceptableDistance := spore.Radius + g.player.Radius - buffer
-    minAcceptableTime := time.Duration(minAcceptableDistance/g.player.Speed) * time.Second
+    minAcceptableTime := time.Duration(minAcceptableDistance/g.player.Speed*1000) * time.Millisecond
     if spore.DroppedBy == g.player && time.Since(spore.DroppedAt) < minAcceptableTime {
         return fmt.Errorf("player dropped the spore too recently (time since drop: %v, min acceptable time: %v)", time.Since(spore.DroppedAt), minAcceptableTime)
     }
@@ -389,11 +389,11 @@ func (b *BrowsingHiscores) HandleMessage(senderId uint64, message packets.Msg) {
     switch message := message.(type) {
     // ...
     case *packets.Packet_SearchHiscore:
-        b.handleSearchHiscores(senderId, message)
+        b.handleSearchHiscore(senderId, message)
     }
 }
 
-func (b *BrowsingHiscores) handleSearchHiscores(_ uint64, message *packets.Packet_SearchHiscore) {
+func (b *BrowsingHiscores) handleSearchHiscore(_ uint64, message *packets.Packet_SearchHiscore) {
     player, err := b.queries.GetPlayerByName(b.dbCtx, message.SearchHiscore.Name)
 
     if err != nil {
