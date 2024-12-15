@@ -326,7 +326,7 @@ func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_Regi
     })
 
     if err != nil {
-        c.logger.Printf("Failed to create player for user %s: %v\n", username, err)
+        c.logger.Printf("Failed to create player for user %s: %v", username, err)
         c.client.SocketSend(genericFailMessage)
         return
     }
@@ -387,7 +387,7 @@ func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRe
     player, err := c.queries.GetPlayerByUserID(c.dbCtx, user.ID)
 
     if err != nil {
-        c.logger.Printf("Error getting player for user %s: %v\n", username, err)
+        c.logger.Printf("Error getting player for user %s: %v", username, err)
         c.client.SocketSend(genericFailMessage)
         return
     }
@@ -433,7 +433,7 @@ func (g *InGame) syncPlayerBestScore() {
             BestScore: g.player.BestScore,
         })
         if err != nil {
-            g.logger.Printf("Error updating player best score: %v\n", err)
+            g.logger.Printf("Error updating player best score: %v", err)
         }
     }
 }
@@ -752,7 +752,7 @@ func (b *BrowsingHiscores) OnEnter() {
         Offset: offset,
     })
     if err != nil {
-        b.logger.Printf("Error getting top %d scores from rank %d: %v\n", limit, offset+1, err)
+        b.logger.Printf("Error getting top %d scores from rank %d: %v", limit, offset+1, err)
         b.client.SocketSend(packets.NewDenyResponse("Failed to get top scores - please try again later"))
         return
     }

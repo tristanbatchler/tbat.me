@@ -390,10 +390,10 @@ func (g *InGame) handlePlayerConsumed(senderId uint64, message *packets.Packet_P
     errMsg := "Could not verify player consumption: "
 
     // First, check the other player's radius is smaller than our player's
-	if g.player.Radius <= other.Radius*1.5 {
-		g.logger.Println(errMsg + "player's radius not big enough")
-		return
-	}
+    if g.player.Radius <= other.Radius*1.5 {
+        g.logger.Println(errMsg + "player's radius not big enough")
+        return
+    }
 
     // Next, check if the player exists
     otherId := message.PlayerConsumed.PlayerId
@@ -585,7 +585,7 @@ func (h *Hub) replenishSporesLoop(rate time.Duration) {
             continue
         }
 
-        log.Printf("%d spores remain - going to replenish %d spores\n", sporesRemaining, diff)
+        log.Printf("%d spores remain - going to replenish %d spores", sporesRemaining, diff)
 
         // Don't really want to spawn too many at a time, otherwise it can cause a lag spike
         for i := 0; i < min(diff, 10); i++ {

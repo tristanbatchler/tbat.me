@@ -397,14 +397,14 @@ func (b *BrowsingHiscores) handleSearchHiscore(_ uint64, message *packets.Packet
     player, err := b.queries.GetPlayerByName(b.dbCtx, message.SearchHiscore.Name)
 
     if err != nil {
-        b.logger.Printf("Error getting player %s: %v\n", message.SearchHiscore.Name, err)
+        b.logger.Printf("Error getting player %s: %v", message.SearchHiscore.Name, err)
         b.client.SocketSend(packets.NewDenyResponse("No player found with that name"))
         return
     }
 
     playerRank, err := b.queries.GetPlayerRank(b.dbCtx, player.ID)
     if err != nil {
-        b.logger.Printf("Error getting rank for player %s: %v\n", message.SearchHiscore.Name, err)
+        b.logger.Printf("Error getting rank for player %s: %v", message.SearchHiscore.Name, err)
         b.client.SocketSend(packets.NewDenyResponse("Player is unranked"))
         return
     }
@@ -442,7 +442,7 @@ func (b *BrowsingHiscores) sendTopScores(limit int64, offset int64) {
         Offset: offset,
     })
     if err != nil {
-        b.logger.Printf("Error getting top %d scores from rank %d: %v\n", limit, offset+1, err)
+        b.logger.Printf("Error getting top %d scores from rank %d: %v", limit, offset+1, err)
         b.client.SocketSend(packets.NewDenyResponse("Failed to get top scores - please try again later"))
         return
     }

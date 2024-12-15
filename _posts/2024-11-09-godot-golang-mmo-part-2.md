@@ -123,7 +123,7 @@ func (h *Hub) Serve(getNewClient func(*Hub, http.ResponseWriter, *http.Request) 
     client, err := getNewClient(h, writer, request)
 
     if err != nil {
-        log.Printf("Error obtaining client for new connection: %v\n", err)
+        log.Printf("Error obtaining client for new connection: %v", err)
         return
     }
 
