@@ -340,17 +340,17 @@ func _consume_actor(actor: Actor) -> void:
     var player_consumed_msg := packet.new_player_consumed()
     player_consumed_msg.set_player_id(actor.actor_id)
     WS.send(packet)
-    _remove_player(actor)
+    _remove_actor(actor)
 ```
 
-This is almost identical to the `_consume_spore` method, so nothing should be very shocking here. We are sending new information to the server which we need to remember to handle, but for now, we also need to define the `_remove_player` method, which shouldn't need any explanation either.
+This is almost identical to the `_consume_spore` method, so nothing should be very shocking here. We are sending new information to the server which we need to remember to handle, but for now, we also need to define the `_remove_actor` method, which shouldn't need any explanation either.
 
 ```directory
 /client/states/ingame/ingame.gd
 ```
 
 ```gd
-func _remove_player(actor: Actor) -> void:
+func _remove_actor(actor: Actor) -> void:
     _players.erase(actor.actor_id)
     actor.queue_free()
 ```

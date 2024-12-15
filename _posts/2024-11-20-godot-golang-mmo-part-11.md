@@ -98,7 +98,7 @@ func _handle_disconnect_msg(sender_id: int, disconnect_msg: packets.DisconnectMe
         var player := _players[sender_id]
         var reason := disconnect_msg.get_reason()
         _log.info("%s disconnected because %s" % [player.actor_name, reason])
-        _remove_player(player)
+        _remove_actor(player)
 ```
 
 That's all we need to do to handle disconnects as it stands, although it would be nice to have a "Logout" button in the in-game state scene. While we're at it, we could definitely polish a few other things too.
