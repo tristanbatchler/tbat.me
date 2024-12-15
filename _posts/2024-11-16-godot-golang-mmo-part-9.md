@@ -31,7 +31,7 @@ Similar to the `Log` class we created back in <a href="/2024/11/09/godot-golang-
 
 1. Create a new folder at `res://classes/hiscores/`
 2. Right-click the new `hiscores` folder and select **Create new...** and then **Scene**
-3. Enter *hiscores** as the name of the scene
+3. Enter **hiscores** as the name of the scene
 4. Choose **ScrollContainer** as the root node
 5. Click **OK**
 
@@ -115,8 +115,8 @@ This function will remove any existing hiscore entry for the given name, then ad
 ```gdscript
 func remove_hiscore(name: String) -> void:
     for i in range(len(_scores)):
-        var entry := _vbox.get_child(i)
-        var name_label := entry.get_child(0)
+        var entry: VBoxContainer = _vbox.get_child(i)
+        var name_label: Label = entry.get_child(0)
         
         if name_label.text == name:
             _scores.remove_at(len(_scores) - i - 1)
@@ -208,14 +208,14 @@ func _set_actor_mass(actor: Actor, new_mass: float) -> void:
     _hiscores.set_hiscore(actor.actor_name, roundi(new_mass))
 ```
 
-Now, whenever an actor's mass changes, the hiscore list will update accordingly. But we also need to remove the actor from the hiscores when they are removed from the game, so go ahead and add a similar line to the `_remove_player` function:
+Now, whenever an actor's mass changes, the hiscore list will update accordingly. But we also need to remove the actor from the hiscores when they are removed from the game, so go ahead and add a similar line to the `_remove_actor` function:
 
 ```directory
 /client/states/ingame/ingame.gd
 ```
 
 ```gdscript
-func _remove_player(actor: Actor) -> void:
+func _remove_actor(actor: Actor) -> void:
     # ...
     _hiscores.remove_hiscore(actor.actor_name)
 ```
@@ -465,6 +465,7 @@ The only time we really care about the result of the query is when the player le
 
 ```go
 func (g *InGame) OnExit() {
+    // ...
     g.syncPlayerBestScore()
 }
 ```
@@ -555,7 +556,7 @@ import (
 type BrowsingHiscores struct {
     client  server.ClientInterfacer
     logger  *log.Logger
-    queries db.Queries
+    queries *db.Queries
     dbCtx   context.Context
 }
 
@@ -567,7 +568,7 @@ func (b *BrowsingHiscores) SetClient(client server.ClientInterfacer) {
     b.client = client
     loggingPrefix := fmt.Sprintf("Client %d [%s]: ", client.Id(), b.Name())
     b.logger = log.New(log.Writer(), loggingPrefix, log.LstdFlags)
-    b.queries = *client.DbTx().Queries
+    b.queries = client.DbTx().Queries
     b.dbCtx = client.DbTx().Ctx
 }
 
@@ -627,7 +628,7 @@ That should be enough to get us started and test that the client can request and
 
 We will need a new state in the client to handle browsing the hiscore leaderboard. This is where it will be able to do things like display the leaderboard, search for a player, etc.
 
-First, create a new directory at `res://states/browsing_hiscores/` and create a new scene called `browsing_hiscores.tscn` of type `Node2D`.
+First, create a new directory at `res://states/browsing_hiscores/` and create a new scene called `browsing_hiscores.tscn` of type `Node`.
 
 Before we forget, let's go ahead and register the new state with the game manager:
 
@@ -701,7 +702,7 @@ func _handle_hiscore_board_msg(hiscore_board_msg: packets.HiscoreBoardMessage) -
     for hiscore_msg: packets.HiscoreMessage in hiscore_board_msg.get_hiscores():
         var name := hiscore_msg.get_name()
         var rank_and_name := "%d. %s" % [hiscore_msg.get_rank(), name]
-        var score: int = hiscore_msg.get_score()
+        var score := hiscore_msg.get_score()
         _hiscores.set_hiscore(rank_and_name, score)
 ```
 
@@ -726,9 +727,9 @@ Let's add a new query to the `queries.sql` file to get the top hiscores from the
 
 ```sql
 -- name: GetTopScores :many
-SELECT p.name, p.best_score
-FROM players p
-ORDER BY p.best_score DESC
+SELECT name, best_score
+FROM players
+ORDER BY best_score DESC
 LIMIT ?
 OFFSET ?;
 ```
