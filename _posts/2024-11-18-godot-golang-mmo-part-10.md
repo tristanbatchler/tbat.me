@@ -9,6 +9,8 @@ project: godot4golang
 
 This is the last part of the series we will concern ourselves with adding new features to the game. We just have two more features to add, and then we will move on to polishing everything up and deploying the game over the next two parts.
 
+As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.09](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.09) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
+
 As a reminder, in the [last part](/2024/11/16/godot-golang-mmo-part-9/), we added a hiscores and a leaderboard to the game. In this part, we want to:
 1. Give players a random chance to drop a spore and lose mass over time, giving them a reason to keep eating as much as possible
 2. Allow players to search the leaderboard for themselves or their friends
