@@ -481,7 +481,7 @@ Now it will be a bit easier to implement the `handleLogin` and `handleRegister` 
 ```go
 func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
     if senderId != c.client.Id() {
-        c.logger.Printf("Received login message from another client (Id %d)\n", senderId)
+        c.logger.Printf("Received login message from another client (Id %d)", senderId)
         return
     }
 
@@ -491,19 +491,19 @@ func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRe
 
     user, err := c.queries.GetUserByUsername(c.dbCtx, strings.ToLower(username))
     if err != nil {
-        c.logger.Printf("Error getting user %s: %v\n", username, err)
+        c.logger.Printf("Error getting user %s: %v", username, err)
         c.client.SocketSend(genericFailMessage)
         return
     }
 
     err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(message.LoginRequest.Password))
     if err != nil {
-        c.logger.Printf("User entered wrong password: %s\n", username)
+        c.logger.Printf("User entered wrong password: %s", username)
         c.client.SocketSend(genericFailMessage)
         return
     }
 
-    c.logger.Printf("User %s logged in successfully\n", username)
+    c.logger.Printf("User %s logged in successfully", username)
     c.client.SocketSend(packets.NewOkResponse())
 }
 ```
@@ -525,7 +525,7 @@ Now, let's implement the `handleRegister` method:
 ```go
 func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_RegisterRequest) {
     if senderId != c.client.Id() {
-        c.logger.Printf("Received register message from another client (Id %d)\n", senderId)
+        c.logger.Printf("Received register message from another client (Id %d)", senderId)
         return
     }
 
@@ -540,7 +540,7 @@ func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_Regi
 
     _, err = c.queries.GetUserByUsername(c.dbCtx, username)
     if err == nil {
-        c.logger.Printf("User already exists: %s\n", username)
+        c.logger.Printf("User already exists: %s", username)
         c.client.SocketSend(packets.NewDenyResponse("User already exists"))
         return
     }
@@ -550,7 +550,7 @@ func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_Regi
     // Add new user
     passwordHash, err := bcrypt.GenerateFromPassword([]byte(message.RegisterRequest.Password), bcrypt.DefaultCost)
     if err != nil {
-        c.logger.Printf("Failed to hash password: %s\n", username)
+        c.logger.Printf("Failed to hash password: %s", username)
         c.client.SocketSend(genericFailMessage)
         return
     }
@@ -561,14 +561,14 @@ func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_Regi
     })
 
     if err != nil {
-        c.logger.Printf("Failed to create user %s: %v\n", username, err)
+        c.logger.Printf("Failed to create user %s: %v", username, err)
         c.client.SocketSend(genericFailMessage)
         return
     }
 
     c.client.SocketSend(packets.NewOkResponse())
 
-    c.logger.Printf("User %s registered successfully\n", username)
+    c.logger.Printf("User %s registered successfully", username)
 }
 ```
 
