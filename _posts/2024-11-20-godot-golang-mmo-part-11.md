@@ -951,8 +951,8 @@ func _ready():
 
 func _physics_process(delta) -> void:
     position += velocity * delta
-    target_pos += velocity * delta
-    position += (target_pos - position) * 0.05
+    server_position += velocity * delta
+    position += (server_position - position) * 0.05
     # ...
 ```
 
@@ -985,7 +985,7 @@ func _update_actor(actor_id: int, x: float, y: float, direction: float, speed: f
     # ...
     var server_position := Vector2(x, y)
     if actor.position.distance_squared_to(server_position) > 50:
-        actor.server_position = Vector2(x, y)
+        actor.server_position = server_position
 ```
 
 Note that we still won't update the `server_position` if the position mismatch is small enough, since we can still allow the player to live in their local version of the world if the difference is negligible. This will just help things feel a bit better for the player, because we've built our server to be slightly forgiving when it comes to validation checks anyway.
