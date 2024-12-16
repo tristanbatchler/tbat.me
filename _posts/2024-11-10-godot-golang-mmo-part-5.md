@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS users (
 The idea is each user will have a row in this table, with their information stored even if the server is restarted. It is a bad idea to store passwords in plaintext, so we will be storing a hashed version of the password. We will be using the `bcrypt` package to hash the passwords, which is a secure and widely-used hashing algorithm, but we'll get to that later.
 
 ```directory
-/server/internal/server/db/queries.sql
+/server/internal/server/db/config/queries.sql
 ```
 ```sql
 -- name: GetUserByUsername :one
