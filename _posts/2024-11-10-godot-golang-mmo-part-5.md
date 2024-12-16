@@ -439,9 +439,9 @@ import (
 func (c *Connected) HandleMessage(senderId uint64, message packets.Msg) {
     switch message := message.(type) {
     case *packets.Packet_LoginRequest:
-        c.handleLogin(senderId, message)
+        c.handleLoginRequest(senderId, message)
     case *packets.Packet_RegisterRequest:
-        c.handleRegister(senderId, message)
+        c.handleRegisterRequest(senderId, message)
     }
 }
 ```
@@ -473,13 +473,13 @@ func (c *Connected) SetClient(client server.ClientInterfacer) {
 }
 ```
 
-Now it will be a bit easier to implement the `handleLogin` and `handleRegister` methods. Let's start with the `handleLogin` method:
+Now it will be a bit easier to implement the `handleLoginRequest` and `handleRegisterRequest` methods. Let's start with the `handleLoginRequest` method:
 
 ```directory
 /server/internal/server/states/connected.go
 ```
 ```go
-func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
+func (c *Connected) handleLoginRequest(senderId uint64, message *packets.Packet_LoginRequest) {
     if senderId != c.client.Id() {
         c.logger.Printf("Received login message from another client (Id %d)", senderId)
         return
@@ -517,13 +517,13 @@ The reason we are using a generic failure message is to prevent attackers from k
 
 Finally, notice we are using `strings.ToLower` when querying the database. This is because we will be storing the usernames in lowercase in the database, to avoid case-sensitivity issues. 
 
-Now, let's implement the `handleRegister` method:
+Now, let's implement the `handleRegisterRequest` method:
 
 ```directory
 /server/internal/server/states/connected.go
 ```
 ```go
-func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_RegisterRequest) {
+func (c *Connected) handleRegisterRequest(senderId uint64, message *packets.Packet_RegisterRequest) {
     if senderId != c.client.Id() {
         c.logger.Printf("Received register message from another client (Id %d)", senderId)
         return
@@ -572,7 +572,7 @@ func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_Regi
 }
 ```
 
-This one's a little longer, but no more complicated than the `handleLogin` method. We are first doing the same sanity check to ensure the message originated from our client, and then we are validating the username with a helper function we will define in a moment. If the username is invalid, we send a failure message back to the client.
+This one's a little longer, but no more complicated than the `handleLoginRequest` method. We are first doing the same sanity check to ensure the message originated from our client, and then we are validating the username with a helper function we will define in a moment. If the username is invalid, we send a failure message back to the client.
 
 Next, we are checking if the user already exists in the database. If they do, we send a failure message back to the client.
 

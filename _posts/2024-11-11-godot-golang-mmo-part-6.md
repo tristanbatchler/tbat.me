@@ -151,7 +151,7 @@ Remember this is a shared collection owned by the hub, so any state from any cli
 
 It is also important to remove the player from the collection when the state is exited. This is to ensure that the collection is kept clean and up-to-date.
 
-We can transition to this state when the client logs in successfully in the `Connected` state. Let's add that logic now, to the end of the `handleLogin` method:
+We can transition to this state when the client logs in successfully in the `Connected` state. Let's add that logic now, to the end of the `handleLoginRequest` method:
 
 ```directory
 /server/internal/server/states/connected.go
@@ -163,7 +163,7 @@ import (
     // ...
 )
 
-func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
+func (c *Connected) handleLoginRequest(senderId uint64, message *packets.Packet_LoginRequest) {
     // ...  
     c.client.SetState(&InGame{
         player: &objects.Player{

@@ -310,14 +310,14 @@ Run the following command from the root of the project to generate a new Go func
 sqlc generate -f server/internal/server/db/config/sqlc.yml
 ```
 
-Now, we can actually use this query to create a new player when a new user registers. Let's revisit the `Connected` state and find the `handleRegister` function. We will create the player right near the end of the function, after we create the user and immediately before we send the `Ok` packet back to the client.
+Now, we can actually use this query to create a new player when a new user registers. Let's revisit the `Connected` state and find the `handleRegisterRequest` function. We will create the player right near the end of the function, after we create the user and immediately before we send the `Ok` packet back to the client.
 
 ```directory
 /server/internal/server/states/connected.go
 ```
 
 ```go
-func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_RegisterRequest) {
+func (c *Connected) handleRegisterRequest(senderId uint64, message *packets.Packet_RegisterRequest) {
     // ...
 
     _, err = c.queries.CreatePlayer(c.dbCtx, db.CreatePlayerParams{
@@ -375,14 +375,14 @@ WHERE user_id = ? LIMIT 1;
 
 Remember to compile the queries again as we did above, before moving on to the next step.
 
-Now, when we handle the login request in the `Connected` state, let's retrieve the player's best score from the database and store it in the `Player` struct we pass to the `InGame` state. So enter the following code at the end of the `handleLogin` function, after we send the `Ok` response to the client.
+Now, when we handle the login request in the `Connected` state, let's retrieve the player's best score from the database and store it in the `Player` struct we pass to the `InGame` state. So enter the following code at the end of the `handleLoginRequest` function, after we send the `Ok` response to the client.
 
 ```directory
 /server/internal/server/states/connected.go
 ```
 
 ```go
-func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
+func (c *Connected) handleLoginRequest(senderId uint64, message *packets.Packet_LoginRequest) {
     // ...
     player, err := c.queries.GetPlayerByUserID(c.dbCtx, user.ID)
 

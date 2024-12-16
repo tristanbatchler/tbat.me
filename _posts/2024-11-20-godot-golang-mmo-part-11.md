@@ -687,7 +687,7 @@ Now after recompiling the SQL with `sqlc` and deleting the old database <small>(
 ```
 
 ```go
-func (c *Connected) handleRegister(senderId uint64, message *packets.Packet_RegisterRequest) {
+func (c *Connected) handleRegisterRequest(senderId uint64, message *packets.Packet_RegisterRequest) {
     // ...
     _, err = c.queries.CreatePlayer(c.dbCtx, db.CreatePlayerParams{
         // ...
@@ -705,7 +705,7 @@ Now, just update the login request handler to include the color field when it cr
 ```
 
 ```go
-func (c *Connected) handleLogin(senderId uint64, message *packets.Packet_LoginRequest) {
+func (c *Connected) handleLoginRequest(senderId uint64, message *packets.Packet_LoginRequest) {
     // ...
     c.client.SetState(&InGame{
         player: &objects.Player{
