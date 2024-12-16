@@ -389,9 +389,11 @@ func (g *InGame) handlePlayerConsumed(senderId uint64, message *packets.Packet_P
     // If the other player was supposedly consumed by our own player, we need to verify the plausibility of the event
     errMsg := "Could not verify player consumption: "
 
-    // First, check the other player's radius is smaller than our player's
-    if g.player.Radius <= other.Radius*1.5 {
-        g.logger.Println(errMsg + "player's radius not big enough")
+    // First, check the other player's mass is smaller than our player's
+    ourMass := radToMass(g.player.Radius)
+    otherMass := radToMass(other.Radius)
+    if ourMass <= otherMass*1.5 {
+        g.logger.Printf(errMsg+"player not massive enough to consume the other player (our radius: %f, other radius: %f)", g.player.Radius, other.Radius)
         return
     }
 
@@ -411,7 +413,6 @@ func (g *InGame) handlePlayerConsumed(senderId uint64, message *packets.Packet_P
     }
 
     // If we made it this far, the player consumption is valid, so grow the player, remove the consumed other, and broadcast the event
-    otherMass := radToMass(other.Radius)
     g.player.Radius = g.nextRadius(otherMass)
 
     go g.client.SharedGameObjects().Players.Remove(otherId)

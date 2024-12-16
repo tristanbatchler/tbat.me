@@ -7,6 +7,8 @@ project: godot4golang
 
 Welcome to the final part of our Godot 4 Go MMO series! In [the last part](/2024/11/20/godot-golang-mmo-part-11), we finalized our game. In this post, we’ll take your game from development to launch. We’ll cover how to deploy your server to the cloud using Google Cloud Platform or self-hosting, set up secure WebSockets, and explore containerization. Additionally, we’ll walk through hosting the client on platforms like itch.io or your own website.
 
+As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.11](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.11) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
+
 ## How to follow this part
 
 We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be fairly flexible, so you can switch between the two with minimal code changes. That being said, it is recommended to choose one of the paths below.
