@@ -667,9 +667,10 @@ acme-dns-certbot.py
 # ...
 ```
 
-Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it:
+Save and close the file when you are finished. Finally, move the script to the Let's Encrypt directory so that Certbot can find it (you may need to create the Let's Encrypt directory first):
 
 ```shell
+sudo mdkdir /etc/letsencrypt
 sudo mv acme-dns-auth.py /etc/letsencrypt/
 ```
 
@@ -826,7 +827,7 @@ If you see the following output, then you have successfully started your server:
 To run the server in the background on Linux, so you can close your terminal and the server will keep running, you can use the `nohup` command:
 
 ```shell
-nohup ./main --config .env &
+sudo nohup ./main --config .env &
 ```
 
 To stop the server, you will have to kill the process with these commands.
