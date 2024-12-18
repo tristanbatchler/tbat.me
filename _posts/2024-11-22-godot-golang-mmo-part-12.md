@@ -161,10 +161,8 @@ var (
 )
 
 func loadConfig() *config {
-    cfg := &config{
-        Port:     defaultConfig.Port,
-        DataPath: os.Getenv("DATA_PATH"),
-    }
+    cfg := defaultConfig
+    cfg.DataPath = os.Getenv("DATA_PATH")
 
     port, err := strconv.Atoi(os.Getenv("PORT"))
     if err != nil {
@@ -197,7 +195,7 @@ func main() {
     err := godotenv.Load(*configPath)
     cfg := defaultConfig
     if err != nil {
-        log.Printf("Error loading .env file, defaulting config to %+v", defaultConfig)
+        log.Printf("Error loading config file, defaulting to %+v", defaultConfig)
     } else {
         cfg = loadConfig()
     }
