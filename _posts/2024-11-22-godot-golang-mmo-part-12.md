@@ -999,5 +999,7 @@ You should be able to visit your server in your web browser at [https://your-clo
 
 I would love to see your finished product, so please share them with the community on [the Discord server](https://discord.gg/tzUpXtTPRd). If you have any questions, or if you get stuck at any point, please don't hesitate to ask for help. I am always happy to help out where I can.
 
+If you would like a reference of the completed project, you can find the source code on [GitHub](https://github.com/tristanbatchler/Godot4Go_MMO), particularly in the [v0.12 release](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.12).
+
 If this series has helped you out, and you would like to give something back to me feel free to buy me a coffee (or a beer) 🙂
 <center><a href="https://www.buymeacoffee.com/tristanbatchler" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" loading="lazy" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a></center>
