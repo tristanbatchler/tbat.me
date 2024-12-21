@@ -11,6 +11,9 @@ Unfortunately, timing was a challenge for the original project. I started in lat
 
 Over the last couple of years, I have been tinkering, trying to address some issues with the original project, big and small. After lots of trial and error, and waiting for certain Godot 4 features to become available, I've landed on a great structure that I am excited to share with you all <small>*and, hopefully it will be relevant for a little while longer this time*</small>.
 
+[If you prefer, you can view this lesson on YouTube](https://youtu.be/n0fVLEAdmW8).
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/n0fVLEAdmW8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></center>
+
 ## Introducing "Radius Rumble"
 For this series, we’ll develop Radius Rumble, a Godot-4-and-Golang-powered clone of the popular game [agar.io](https://agar.io).
 
