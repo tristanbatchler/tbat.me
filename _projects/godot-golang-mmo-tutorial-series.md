@@ -21,6 +21,11 @@ This is a completely free, thirteen-part course intended for people with some pr
   {% endfor %}
 </ul>
 
+## YouTube playlist
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHAU2ISi_aMjSyZr-Ay7UTJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+
 ## Community
 If you have any questions or feedback, I'd love to hear from you! [Join the Discord](https://discord.gg/tzUpXtTPRd) to chat with me and other game devs.
 

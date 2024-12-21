@@ -7,6 +7,9 @@ project: godot4golang
 
 Ready to dive in? In [the introduction](/2024/11/08/godot-golang-mmo-intro), we explored the motivations behind this project, the technology stack, and what to expect from the series. Now, we’ll start building. In this post, we’ll install the necessary tools, set up a basic packet system, and establish a simple communication flow between the server and the client to lay the groundwork for our MMO.
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/lnQkkTufAIk).
+<center><iframe width="560" height="315" src="https://www.youtube.com/embed/lnQkkTufAIk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></center>
+
 ## Installing essential tools
 
 Let's quickly install Golang and Godot, and then we will get to the fun stuff!

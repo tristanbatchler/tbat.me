@@ -13,4 +13,4 @@ description: Tristan Batchler's home page. Find all the information you need to 
 
 **📰 Godot 4 Go MMO tutorials**
 
-I am currently working on a series of tutorials for creating a Go MMO in Godot 4. You can check them out <strong><a class="sparkle-less" href="/projects/godot-golang-mmo-tutorial-series">in the projects section</a></strong>.
+I have just finished up a series of tutorials for creating a Go MMO in Godot 4. You can check them out <strong><a class="sparkle-less" href="/projects/godot-golang-mmo-tutorial-series">in the projects section</a></strong>. Here's a link to the <strong><a class="sparkle-less" href="https://www.youtube.com/playlist?list=PLA1tuaTAYPbHAU2ISi_aMjSyZr-Ay7UTJ">YouTube playlist</a></strong> for the series.
