@@ -583,7 +583,7 @@ func _ready() -> void:
 
 func _on_register_form_cancelled() -> void:
     # ...
-    _register_prompt.hide()
+    _register_prompt.show()
 
 func _on_register_prompt_meta_clicked(meta) -> void:
     if meta is String and meta == "register":
