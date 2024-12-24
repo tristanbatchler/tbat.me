@@ -23,7 +23,7 @@ This is a completely free, thirteen-part course intended for people with some pr
 
 ## YouTube playlist
 <center>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHAU2ISi_aMjSyZr-Ay7UTJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLA1tuaTAYPbHAU2ISi_aMjSyZr-Ay7UTJ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </center>
 
 ## Community
