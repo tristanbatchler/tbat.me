@@ -9,6 +9,9 @@ Let's send some packets! In [the last post](/2024/11/09/godot-golang-mmo-part-1)
 
 I highly recommend you go through the first lesson if you haven't already. If do you want to start here without viewing the previous lesson, however, you can visit [the **Releases** section of the official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO/releases), and download the **[v0.01](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.01)** code by expanding **Assets** and downloading [Source code (zip)](https://github.com/tristanbatchler/official-godot-python-mmo/archive/refs/tags/v0.1.zip).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/JwbB18G2E0w).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/JwbB18G2E0w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## Introducing the server architecture
 
 ### WebSockets
