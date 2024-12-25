@@ -11,6 +11,9 @@ In this tutorial, we’ll set up the client, connect it to the server, and creat
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.02](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.02) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/D2dl9Bo8dOs).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/D2dl9Bo8dOs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## The WebSocket client in Godot
 
 We will be lifting a lot of code from the [Godot documentation](https://docs.godotengine.org/en/stable/tutorials/networking/websocket.html#minimal-client-example) for this part. Create a new script called `websocket_client.gd` and paste the following code:
