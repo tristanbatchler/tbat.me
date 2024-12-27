@@ -192,7 +192,8 @@ That should appease the compiler, but we still have some work to do. Now that we
 ```
 ```go
 func (c *WebSocketClient) Initialize(id uint64) {
-    // ...
+	c.id = id
+	c.logger.SetPrefix(fmt.Sprintf("Client %d: ", c.id))
     c.SetState(&states.Connected{})
 }
 ```
