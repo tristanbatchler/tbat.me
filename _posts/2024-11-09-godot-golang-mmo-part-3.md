@@ -99,7 +99,7 @@ The purpose of this script is to simply wrap the built-in `WebSocketPeer` class,
 1. Go to **Project > Project Settings > Globals**
 2. Select the **AutoLoad** tab
 3. Enter `res://websocket_client.gd` in the **Path** field
-4. Enter `WS` in the **Node Name** field. This is what will allow us to access the WebSocket client instance from any script, e.g. `WS.connect_to_url("ws://localhost:8080")`
+4. Enter `WS` in the **Node Name** field. This is what will allow us to access the WebSocket client instance from any script, e.g. `WS.connect_to_url("ws://127.0.0.1:8080")`
 5. Click **Add** to save the settings and close the window
 {% include img.html src="posts/2024/11/09/autoload.png" alt="Godot Autoload WebSocket Client" %}
 
@@ -121,7 +121,7 @@ func _ready() -> void:
     WS.packet_received.connect(_on_ws_packet_received)
     
     print("Connecting to server...")
-    WS.connect_to_url("ws://localhost:8080/ws")
+    WS.connect_to_url("ws://127.0.0.1:8080/ws")
 
 func _on_ws_connected_to_server() -> void:
     var packet := packets.Packet.new()
@@ -525,7 +525,7 @@ func _ready() -> void:
     WS.packet_received.connect(_on_ws_packet_received)
     
     _log.info("Connecting to server...")
-    WS.connect_to_url("ws://localhost:8080/ws")
+    WS.connect_to_url("ws://127.0.0.1:8080/ws")
 
 func _on_ws_connected_to_server() -> void:
     var packet := packets.Packet.new()
