@@ -346,7 +346,7 @@ func _physics_process(delta) -> void:
     var mouse_pos := get_global_mouse_position()
     
     var input_vec = position.direction_to(mouse_pos).normalized()
-    if abs(velocity.angle_to(input_vec)) > TAU / 15: # 12 degrees
+    if abs(velocity.angle_to(input_vec)) > TAU / 15: # 24 degrees
         velocity = input_vec * speed
         var packet := packets.Packet.new()
         var player_direction_message := packet.new_player_direction()
@@ -362,7 +362,7 @@ There is quite a lot happening here, so let's break it down:
 - All the fields we need to keep track of the player's state are declared at the top of the script.
 - The `instantiate` function is a static function that we can use to create a new instance of the `Actor` scene. This will be called in our state machine when we receive a new player message from the server. It takes all the player's properties as arguments, but it also takes a boolean `is_player` argument. This is so we can differentiate between the player and other players in the game. This is what we can check before accepting input or sending messages to the server.
 - The `_ready` function is called when the scene is ready to be used. This is where we actually set the properties of the scene nodes, like the `position` property of the `Area2D` node from which we inherit.
-- The `_physics_process` function is called every frame, and this is where we can update the player's position based on input. If the angle between the player's current velocity and the input vector is greater than 12 degrees, we will update the player's velocity and send an updated direction message to the server.
+- The `_physics_process` function is called every frame, and this is where we can update the player's position based on input. If the angle between the player's current velocity and the input vector is greater than 24 degrees, we will update the player's velocity and send an updated direction message to the server.
 - The `_draw` function is called just once, after `_ready`, and this is where we can draw the player's hitbox. Whenever we update the player's radius, we will need to remember to call `queue_redraw()` to force the `_draw` function to be called again.
 
 Now that we have a way to add a new player to the game, let's go ahead and get the `InGame` state to listen for a new player message from the server and do just that. But first, where will we add the player to, exactly? We need to create a new **Node2D** to the **InGame** scene called **World**. The `res://states/ingame/ingame.tscn` scene should look like this:
