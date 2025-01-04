@@ -13,6 +13,9 @@ We have made the choice to **not** use an ORM (Object-Relational Mapping) librar
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.04](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.04) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/M__viodzggc).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/M__viodzggc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## Installing sqlc
 
 Before we can get started, we need to install the tool that will compile our SQL queries into Go code. Simply run the following command in your terminal to install the binary to your Go bin directory, which should be in your PATH:
