@@ -17,6 +17,9 @@ We'll start by adding a new state to our server called `InGame`, and expand our 
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.05](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.05) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/VnOnObiyHBE).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/VnOnObiyHBE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## Players
 
 Before we do any of that, we will need to create a new struct to represent our players. It will need to hold a player's name, position, speed, direction, and radius. Keeping track of these players can be done using the `SharedCollection` data structure we created in [part 3](/2024/11/09/godot-golang-mmo-part-3#making-a-custom-data-structure).
