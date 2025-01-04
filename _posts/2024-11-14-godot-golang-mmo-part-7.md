@@ -9,6 +9,9 @@ Nice to see you again! In [the last post](/2024/11/11/godot-golang-mmo-part-6), 
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.06](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.06) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/DcbSvXogZbA).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/DcbSvXogZbA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## Bringing back the chat
 Low-hanging fruit, let's quickly restore our chatroom logic we got rid of in <a href="/2024/11/10/godot-golang-mmo-part-5#get-rid-of-chat-handling" target="_blank">§05</a>. All we need to do here is add a new case to the `HandleMessage` method in our `InGame` state handler:
 
