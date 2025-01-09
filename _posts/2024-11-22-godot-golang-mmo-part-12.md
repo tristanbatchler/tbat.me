@@ -544,7 +544,7 @@ If you get a message asking to confirm the bucket's public access prevention, ju
 
 ### Deploying a container to Google Cloud Run
 
-[Google Cloud Run](https://cloud.google.com/run) is a managed compute platform that enables you to run stateless containers that are invocable via HTTP requests (in our case, these will translate to websocket requests). This is a great option for deploying our server, as it is a fully managed service, meaning we don't have to worry about the underlying infrastructure. It also scales automatically, so you don't have to worry about your server crashing if you get a sudden influx of players.
+[Google Cloud Run](https://cloud.google.com/run) is a managed compute platform that enables you to run stateless containers that are invocable via HTTP requests (in our case, these will translate to websocket requests). This is a great option for deploying our server, as it is a fully managed service, meaning we don't have to worry about the underlying infrastructure. 
 
 To deploy our server, simply visit the [Google Cloud Run page](https://console.cloud.google.com/run), and click the "Create Service" button. 
 
