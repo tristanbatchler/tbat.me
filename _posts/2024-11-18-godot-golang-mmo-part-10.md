@@ -11,8 +11,8 @@ This is the last part of the series we will concern ourselves with adding new fe
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.09](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.09) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
-[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/F9tSNoYjtyA).
-<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/F9tSNoYjtyA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/95hZnTdpaUM).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/95hZnTdpaUM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
 
 As a reminder, in the [last part](/2024/11/16/godot-golang-mmo-part-9/), we added a hiscores and a leaderboard to the game. In this part, we want to:
 1. Give players a random chance to drop a spore and lose mass over time, giving them a reason to keep eating as much as possible
