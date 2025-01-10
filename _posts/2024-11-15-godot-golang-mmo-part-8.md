@@ -19,6 +19,9 @@ Here is a sneak peek of what we will achieve today:
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.07](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.07) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/V1rL6LfRXQo).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/V1rL6LfRXQo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## Growing the player
 
 First, we left off with the player eating spores and telling the server about it, but the server isn't doing anything with that information. It would be great if the server could validate the player's actions, and either accept or reject them. This way, we can prevent cheating, and make sure that the game is fair for everyone. If the changes are accepted, the server will then broadcast the changes to all other players, for other clients to interpret and display.
