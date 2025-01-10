@@ -9,6 +9,9 @@ We’re nearing the end of this series, having just wrapped up [allowing players
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.08](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.08) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/F9tSNoYjtyA).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/F9tSNoYjtyA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## The plan
 
 Our goal by the end of this part is to have a hiscore leaderboard that players can access from the main menu. It will look something like this (though the design will be a bit rough until we get a chance to polish everything in an upcoming part):
