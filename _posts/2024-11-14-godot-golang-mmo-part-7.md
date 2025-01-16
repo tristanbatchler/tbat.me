@@ -667,7 +667,7 @@ func NewSpore(id uint64, spore *objects.Spore) Msg {
 }
 
 func NewSporesBatch(spores map[uint64]*objects.Spore) Msg {
-    sporesMessages := make([]*SporeMessage, len(spores))
+    sporesMessages := make([]*SporeMessage, 0, len(spores))
     for id, spore := range spores {
         sporesMessages = append(sporesMessages, newSporeMessage(id, spore))
     }
