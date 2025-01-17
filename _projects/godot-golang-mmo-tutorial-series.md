@@ -1,7 +1,7 @@
 ---
 layout: project
 title: Godot 4 + Golang MMO Tutorial Series
-description: Another course intended for people with some programming experience. This free course will show you how to use modern frameworks and tools to create an authoritative websockets MMO server, and take advantage of the latest Godot 4.4 features to deploy your game to the cloud. Accompanying videos which follow these posts will also be published on YouTube.
+description: Another course intended for people with some programming experience. This free course will show you how to use modern frameworks and tools to create an authoritative websockets MMO server, and take advantage of the latest Godot 4.4 features to deploy your game to the cloud. Accompanying videos which follow these posts are also on YouTube.
 start_date: 2024-11-08T00:00:00.000Z
 finished: true
 finish_date: 2022-11-30T00:00:00.000Z
