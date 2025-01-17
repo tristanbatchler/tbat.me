@@ -11,6 +11,9 @@ Each one of these sections could be technically be considered optional, and none
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.10](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.10) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/a8BMzfkp4f4).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/a8BMzfkp4f4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## Disconnecting players
 
 You may have noticed that when a player disconnects, the other players are never notified. This is because we never bothered to implement a disconnect packet... until now. Let's go ahead and add that.
