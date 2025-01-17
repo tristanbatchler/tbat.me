@@ -9,6 +9,9 @@ Welcome to the final part of our Godot 4 Go MMO series! In [the last part](/2024
 
 As always, if do you want to start here without viewing the previous lesson, feel free to download the source code for release [v0.11](https://github.com/tristanbatchler/Godot4Go_MMO/releases/tag/v0.11) in the [official GitHub repository](https://github.com/tristanbatchler/Godot4Go_MMO).
 
+[If you prefer, you can view this lesson on YouTube](https://www.youtube.com/embed/QFixMYrok1o).
+<center><iframe style="max-width: 750px; width: 100%;" width="560" height="315" src="https://www.youtube.com/embed/QFixMYrok1o" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></center>
+
 ## How to follow this part
 
 We will explore two options for deploying the server to the cloud: Google Cloud Platform and self-hosting; I have designed the process to be fairly flexible, so you can switch between the two with minimal code changes. That being said, it is recommended to choose one of the paths below.
