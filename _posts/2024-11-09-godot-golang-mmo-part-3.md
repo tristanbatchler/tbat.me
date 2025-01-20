@@ -643,7 +643,7 @@ We need to define the two helper functions `_handle_id_msg` and `_handle_chat_ms
 ```
 ```gd
 func _handle_id_msg(sender_id: int, id_msg: packets.IdMessage) -> void:
-    var client_id = id_msg.get_id()
+    client_id = id_msg.get_id()
     _log.info("Received client ID: %d" % client_id)
 ```
 
