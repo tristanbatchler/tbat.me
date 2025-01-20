@@ -372,8 +372,8 @@ First, let's install the Godobuf plugin.
     /
     ├───.vscode/
     ├───client/
-    ├───addons/
-    │   └───protobuf/
+    │   └───addons/
+    │       └───protobuf/
     ├───server/
     └───shared/
     ```
