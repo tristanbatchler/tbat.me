@@ -643,7 +643,7 @@ We need to define the two helper functions `_handle_id_msg` and `_handle_chat_ms
 ```
 ```gd
 func _handle_id_msg(sender_id: int, id_msg: packets.IdMessage) -> void:
-    client_id = id_msg.get_id()
+    var client_id := id_msg.get_id()
     _log.info("Received client ID: %d" % client_id)
 ```
 
@@ -657,13 +657,13 @@ func _handle_chat_msg(sender_id: int, chat_msg: packets.ChatMessage) -> void:
     _log.chat("Client %d" % sender_id, chat_msg.get_msg())
 ```
 
-Finally, we just need a way to send messages. We can connect to our `LineEdit` node's `text_entered` signal to a new method called `_on_line_edit_text_entered`. Add the following line to the `_ready` method, just under where we connect the signals for the WebSocket client:
+Finally, we just need a way to send messages. We can connect to our `LineEdit` node's `text_submitted` signal to a new method called `_on_line_edit_text_submitted`. Add the following line to the `_ready` method, just under where we connect the signals for the WebSocket client:
 
 ```directory
 /client/main.gd
 ```
 ```gd
-_line_edit.text_submitted.connect(_on_line_edit_text_entered)
+_line_edit.text_submitted.connect(_on_line_edit_text_submitted)
 ```
 
 The `text_submitted` signal takes a single argument: the new text as a string (you can verify this by holding `Ctrl` and clicking on the signal's name in the script editor). We now know the signature of the method we need to create:
@@ -672,7 +672,7 @@ The `text_submitted` signal takes a single argument: the new text as a string (y
 /client/main.gd
 ```
 ```gd
-func _on_line_edit_text_entered(text: String) -> void:
+func _on_line_edit_text_submitted(text: String) -> void:
     var packet := packets.Packet.new()
     var chat_msg := packet.new_chat()
     chat_msg.set_msg(text)
@@ -704,73 +704,50 @@ extends Node
 
 const packets := preload("res://packets.gd")
 
-var socket := WebSocketPeer.new()
-var last_state := WebSocketPeer.STATE_CLOSED
+@onready var _log := $Log as Log
+@onready var _line_edit := $LineEdit as LineEdit
 
-signal connected_to_server()
-signal connection_closed()
-signal packet_received(packet: packets.Packet)
+func _ready() -> void:
+	WS.connected_to_server.connect(_on_ws_connected_to_server)
+	WS.connection_closed.connect(_on_ws_connection_closed)
+	WS.packet_received.connect(_on_ws_packet_received)
+	
+	_line_edit.text_submitted.connect(_on_line_edit_text_submitted)
+	
+	_log.info("Connecting to server...")
+	WS.connect_to_url("ws://localhost:8080/ws")
+	
+func _on_ws_connected_to_server() -> void:
+	_log.success("Connected successfully")
+	
+func _on_ws_connection_closed() -> void:
+	_log.warning("Connection closed")
+	
+func _on_ws_packet_received(packet: packets.Packet) -> void:
+	var sender_id := packet.get_sender_id()
+	if packet.has_id():
+		_handle_id_msg(sender_id, packet.get_id())
+	elif packet.has_chat():
+		_handle_chat_msg(sender_id, packet.get_chat())
 
-func connect_to_url(url: String, tls_options: TLSOptions = null) -> int:
-    var err := socket.connect_to_url(url, tls_options)
-    if err != OK:
-        return err
-
-    last_state = socket.get_ready_state()
-    return OK
-
-
-func send(packet: packets.Packet) -> int:
-    packet.set_sender_id(0)
-    var data := packet.to_bytes()
-    return socket.send(data)
-
-
-func get_packet() -> packets.Packet:
-    if socket.get_available_packet_count() < 1:
-        return null
-    
-    var data := socket.get_packet()
-    
+func _handle_id_msg(sender_id: int, id_msg: packets.IdMessage) -> void:
+	var client_id := id_msg.get_id()
+	_log.info("Received client ID: %d" % client_id)
+	
+func _handle_chat_msg(sender_id: int, chat_msg: packets.ChatMessage) -> void:
+    _log.chat("Client %d" % sender_id, chat_msg.get_msg())
+	
+func _on_line_edit_text_submitted(text: String) -> void:
     var packet := packets.Packet.new()
-    var result := packet.from_bytes(data)
-    if result != OK:
-        printerr("Error forming packet from data %s" % data.get_string_from_utf8())
+    var chat_msg := packet.new_chat()
+    chat_msg.set_msg(text)
     
-    return packet
-
-func close(code: int = 1000, reason: String = "") -> void:
-    socket.close(code, reason)
-    last_state = socket.get_ready_state()
-
-
-func clear() -> void:
-    socket = WebSocketPeer.new()
-    last_state = socket.get_ready_state()
-
-
-func get_socket() -> WebSocketPeer:
-    return socket
-
-
-func poll() -> void:
-    if socket.get_ready_state() != socket.STATE_CLOSED:
-        socket.poll()
-
-    var state := socket.get_ready_state()
-
-    if last_state != state:
-        last_state = state
-        if state == socket.STATE_OPEN:
-            connected_to_server.emit()
-        elif state == socket.STATE_CLOSED:
-            connection_closed.emit()
-    while socket.get_ready_state() == socket.STATE_OPEN and socket.get_available_packet_count():
-        packet_received.emit(get_packet())
-
-
-func _process(_delta: float) -> void:
-    poll()
+    var err := WS.send(packet)
+    if err:
+        _log.error("Error sending chat message")
+    else:
+        _log.chat("You", text)
+    _line_edit.text = ""
 ```
 
 </details>
