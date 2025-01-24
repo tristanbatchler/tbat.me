@@ -387,7 +387,7 @@ message Packet {
 
 <small>*You should be used to recompiling the proto file by now, so this might be the last time I mention it: don't forget to compile your Golang and GDScript code using `protoc` and Godobuf! Instructions for the Golang code compilation can be found in <a href="/2024/11/09/godot-golang-mmo-part-1#protoc-usage" target="_blank">§01</a>, and the Godobuf instructions are in <a href="/2024/11/09/godot-golang-mmo-part-1#godobuf-usage" target="_blank">the same post, a bit further down</a>.*</small>
 
-Now, since both the actor and spore are **Area2D** nodes, we can use the `body_entered` signal to detect when they collide. It will be much more efficient to listen to the player actor's signal, rather than to every spore in the game, so let's connect this signal up to a handler in the `InGame` state script, just after we instantiate the player. 
+Now, since both the actor and spore are **Area2D** nodes, we can use the `area_entered` signal to detect when they collide. It will be much more efficient to listen to the player actor's signal, rather than to every spore in the game, so let's connect this signal up to a handler in the `InGame` state script, just after we instantiate the player. 
 
 But that section of the code is getting a bit long, so let's move it to its own method called `_add_actor`. The update logic can also be extracted into its own method called `_update_actor`, so let's do that as well:
 
