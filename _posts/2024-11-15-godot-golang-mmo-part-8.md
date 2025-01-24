@@ -392,19 +392,19 @@ func (g *InGame) handlePlayerConsumed(senderId uint64, message *packets.Packet_P
     // If the other player was supposedly consumed by our own player, we need to verify the plausibility of the event
     errMsg := "Could not verify player consumption: "
 
-    // First, check the other player's mass is smaller than our player's
-    ourMass := radToMass(g.player.Radius)
-    otherMass := radToMass(other.Radius)
-    if ourMass <= otherMass*1.5 {
-        g.logger.Printf(errMsg+"player not massive enough to consume the other player (our radius: %f, other radius: %f)", g.player.Radius, other.Radius)
-        return
-    }
-
-    // Next, check if the player exists
+    // First, check if the player exists
     otherId := message.PlayerConsumed.PlayerId
     other, err := g.getOtherPlayer(otherId)
     if err != nil {
         g.logger.Println(errMsg + err.Error())
+        return
+    }
+
+    // Next, check the other player's mass is smaller than our player's
+    ourMass := radToMass(g.player.Radius)
+    otherMass := radToMass(other.Radius)
+    if ourMass <= otherMass*1.5 {
+        g.logger.Printf(errMsg+"player not massive enough to consume the other player (our radius: %f, other radius: %f)", g.player.Radius, other.Radius)
         return
     }
 
@@ -434,7 +434,7 @@ func (g *InGame) getOtherPlayer(otherId uint64) (*objects.Player, error) {
 
 So the player consumption logic is pretty much the same as that for the spores, except we have a check to see if the player being eaten is our own player. If that's the case, we simply restart the state, which will respawn the player at a random location with a smaller mass. We don't need to remove the player from the shared collection, because that will be done by the client whose player ate us, plus we will be added back with the same ID when we respawn anyway.
 
-In the spirit of checking the easiest things first, we are also ensuring that the player's radius is big enough to eat the other player before we check if the other player exists or is close enough to be eaten. This way, we can avoid unnecessary calculations if the player is too small to eat the other player.
+In the spirit of checking the easiest things first, we are also ensuring that the player's radius is big enough to eat the other player before we check if it is close enough to be eaten. This way, we can avoid unnecessary calculations if the player is too small to eat the other player.
 
 If we run the game now, everything should be working as expected. You can eat spores to grow, and eat other players to grow even more. If you are eaten, you will respawn at a random location with the original starting mass. The game is starting to look like a competitive MMO!
 
