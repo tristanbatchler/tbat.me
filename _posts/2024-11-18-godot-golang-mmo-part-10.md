@@ -75,8 +75,8 @@ Now, let's edit the script for this scene to send the `FinishedBrowsingHiscoresM
 ```
 
 ```gdscript
-@onready var _back_button := $UI/VBoxContainer/BackButton as Button
-@onready var _hiscores := $UI/VBoxContainer/Hiscores as Hiscores
+@onready var _back_button: Button = $UI/VBoxContainer/BackButton
+@onready var _hiscores: Hiscores = $UI/VBoxContainer/Hiscores
 
 func _ready() -> void:
     _back_button.pressed.connect(_on_back_button_pressed)
@@ -492,9 +492,9 @@ Now, we will have knocked loose the reference to the `BackButton` node in the sc
 ```
 
 ```gdscript
-@onready var _back_button := $UI/VBoxContainer/HBoxContainer/BackButton as Button
-@onready var _line_edit := $UI/VBoxContainer/HBoxContainer/LineEdit as LineEdit
-@onready var _search_button := $UI/VBoxContainer/HBoxContainer/SearchButton as Button
+@onready var _back_button: Button = $UI/VBoxContainer/HBoxContainer/BackButton
+@onready var _line_edit: LineEdit = $UI/VBoxContainer/HBoxContainer/LineEdit
+@onready var _search_button: Button = $UI/VBoxContainer/HBoxContainer/SearchButton
 
 func _ready() -> void:
     _line_edit.text_submitted.connect(_on_line_edit_text_submitted)
@@ -523,7 +523,7 @@ We will also need to add a new method to handle this response:
 ```
 
 ```gdscript
-@onready var _log := $UI/VBoxContainer/Log as Log
+@onready var _log: Log = $UI/VBoxContainer/Log
 
 func _handle_deny_response(deny_response_msg: packets.DenyResponseMessage) -> void:
     _log.error(deny_response_msg.get_reason())

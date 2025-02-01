@@ -81,8 +81,8 @@ extends ScrollContainer
 
 var _scores: Array[int]
 
-@onready var _vbox := $VBoxContainer as VBoxContainer
-@onready var _entry_template := $VBoxContainer/HBoxContainer as HBoxContainer
+@onready var _vbox: VBoxContainer = $VBoxContainer
+@onready var _entry_template: HBoxContainer = $VBoxContainer/HBoxContainer
 
 func _add_hiscore(name: String, score: int) -> void:
     _scores.append(score)
@@ -194,9 +194,9 @@ Now, we will have broken our `ingame.gd` script by moving the LineEdit and Log n
 ```
 
 ```gdscript
-@onready var _line_edit := $UI/VBoxContainer/LineEdit as LineEdit
-@onready var _log := $UI/VBoxContainer/Log as Log
-@onready var _hiscores := $UI/VBoxContainer/Hiscores as Hiscores
+@onready var _line_edit: LineEdit = $UI/VBoxContainer/LineEdit
+@onready var _log: Log = $UI/VBoxContainer/Log
+@onready var _hiscores: Hiscores = $UI/VBoxContainer/Hiscores
 ```
 
 Now, whenever we update an actor's mass, we should also update the hiscore list. Luckily we have a function called `_set_actor_mass` already, so let's add to that:
@@ -663,7 +663,7 @@ Now, let's hook the button up to switch to the `BrowsingHiscores` state when it 
 ```
 
 ```gdscript
-@onready var _hiscores_button := $UI/VBoxContainer/HBoxContainer/HiscoresButton as Button
+@onready var _hiscores_button: Button = $UI/VBoxContainer/HBoxContainer/HiscoresButton
 
 func _ready() -> void:
     # ...
@@ -688,7 +688,7 @@ extends Node
 
 const packets := preload("res://packets.gd")
 
-@onready var _hiscores := $UI/Hiscores as Hiscores
+@onready var _hiscores: Hiscores = $UI/Hiscores
 
 func _ready() -> void:
     WS.packet_received.connect(_on_ws_packet_received)

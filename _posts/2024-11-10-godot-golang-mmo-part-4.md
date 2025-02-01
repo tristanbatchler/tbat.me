@@ -320,7 +320,7 @@ extends Node
 
 const packets := preload("res://packets.gd")
 
-@onready var _log := $UI/Log as Log
+@onready var _log: Log = $UI/Log
 
 func _ready() -> void:
     WS.connected_to_server.connect(_on_ws_connected_to_server)
@@ -359,8 +359,8 @@ extends Node
 
 const packets := preload("res://packets.gd")
 
-@onready var _line_edit := $UI/LineEdit as LineEdit
-@onready var _log := $UI/Log as Log
+@onready var _line_edit: LineEdit = $UI/LineEdit
+@onready var _log: Log = $UI/Log
 
 func _ready() -> void:
     WS.connection_closed.connect(_on_ws_connection_closed)

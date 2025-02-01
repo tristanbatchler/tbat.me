@@ -313,9 +313,9 @@ var is_player: bool
 var velocity: Vector2
 var radius: float
 
-@onready var _nameplate := $Label as Label
-@onready var _camera := $Camera2D as Camera2D
-@onready var _collision_shape := $CollisionShape2D.shape as CircleShape2D
+@onready var _nameplate: Label = $Label
+@onready var _camera: Camera2D = $Camera2D
+@onready var _collision_shape: CircleShape2D = $CollisionShape2D.shape
 
 static func instantiate(actor_id: int, actor_name: String, x: float, y: float, radius: float, speed: float, is_player: bool) -> Actor:
     var actor := Scene.instantiate()
@@ -387,7 +387,7 @@ const Actor := preload("res://objects/actor/actor.gd")
 
 # ...
 
-@onready var _world := $World as Node2D
+@onready var _world: Node2D = $World
 
 # ...
 

@@ -142,11 +142,11 @@ Now, because we restructured, all of our `@onready var ...` lines in the `ingame
 ```
 
 ```gdscript
-@onready var _logout_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/LogoutButton as Button
-@onready var _line_edit := $UI/MarginContainer/VBoxContainer/HBoxContainer/LineEdit as LineEdit
-@onready var _send_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/SendButton as Button
-@onready var _log := $UI/MarginContainer/VBoxContainer/Log as Log
-@onready var _hiscores := $UI/MarginContainer/VBoxContainer/Hiscores as Hiscores
+@onready var _logout_button: Button = $UI/MarginContainer/VBoxContainer/HBoxContainer/LogoutButton
+@onready var _line_edit: LineEdit = $UI/MarginContainer/VBoxContainer/HBoxContainer/LineEdit
+@onready var _send_button: Button = $UI/MarginContainer/VBoxContainer/HBoxContainer/SendButton
+@onready var _log: Log = $UI/MarginContainer/VBoxContainer/Log
+@onready var _hiscores: Hiscores = $UI/MarginContainer/VBoxContainer/Hiscores
 
 func _ready() -> void:
     # ...
@@ -358,10 +358,10 @@ Now, we need our `connected.gd` script to know whenever the login form has been 
 class_name LoginForm
 extends VBoxContainer
 
-@onready var _username_field := $Username as LineEdit
-@onready var _password_field := $Password as LineEdit
-@onready var _login_button := $HBoxContainer/LoginButton as Button
-@onready var _hiscores_button := $HBoxContainer/HiscoresButton as Button
+@onready var _username_field: LineEdit = $Username
+@onready var _password_field: LineEdit = $Password
+@onready var _login_button: Button = $HBoxContainer/LoginButton
+@onready var _hiscores_button: Button = $HBoxContainer/HiscoresButton
 
 signal form_submitted(username: String, password: String)
 
@@ -388,11 +388,11 @@ Let's head back to the `connected.gd` script to fix up the references to nodes t
 
     ```gdscript
     # Remove these four references
-    @onready var _username_field := $UI/MarginContainer/VBoxContainer/Username as LineEdit
-    @onready var _password_field := $UI/MarginContainer/VBoxContainer/Password as LineEdit
-    @onready var _login_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/LoginButton as Button
-    @onready var _register_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/RegisterButton as Button
-    @onready var _hiscores_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/HiscoresButton as Button
+    @onready var _username_field: LineEdit = $UI/MarginContainer/VBoxContainer/Username
+    @onready var _password_field: LineEdit = $UI/MarginContainer/VBoxContainer/Password
+    @onready var _login_button: Button = $UI/MarginContainer/VBoxContainer/HBoxContainer/LoginButton
+    @onready var _register_button: Button = $UI/MarginContainer/VBoxContainer/HBoxContainer/RegisterButton
+    @onready var _hiscores_button: Button = $UI/MarginContainer/VBoxContainer/HBoxContainer/HiscoresButton
 
     func _ready() -> void: # Don't actually remove *this* line
         _login_button.pressed.connect(_on_login_button_pressed) # Remove this
@@ -417,7 +417,7 @@ Let's head back to the `connected.gd` script to fix up the references to nodes t
     ```
 
     ```gdscript
-    @onready var _login_form := $UI/MarginContainer/VBoxContainer/LoginForm as LoginForm
+    @onready var _login_form: LoginForm = $UI/MarginContainer/VBoxContainer/LoginForm
 
     func _ready() -> void:
         # ...
@@ -448,9 +448,9 @@ const packets := preload("res://packets.gd")
 
 var _action_on_ok_received: Callable
 
-@onready var _register_button := $UI/MarginContainer/VBoxContainer/HBoxContainer/RegisterButton as Button
-@onready var _log := $UI/MarginContainer/VBoxContainer/Log as Log
-@onready var _login_form := $UI/MarginContainer/VBoxContainer/LoginForm as LoginForm
+@onready var _register_button: Button = $UI/MarginContainer/VBoxContainer/HBoxContainer/RegisterButton
+@onready var _log: Log = $UI/MarginContainer/VBoxContainer/Log
+@onready var _login_form: LoginForm = $UI/MarginContainer/VBoxContainer/LoginForm
 
 func _ready() -> void:
     WS.packet_received.connect(_on_ws_packet_received)
@@ -500,11 +500,11 @@ Now, we need to attach a new script which will be similar to the login script we
 class_name RegisterForm
 extends VBoxContainer
 
-@onready var _username_field := $Username as LineEdit
-@onready var _password_field := $Password as LineEdit
-@onready var _confirm_password_field := $ConfirmPassword as LineEdit
-@onready var _confirm_button := $HBoxContainer/ConfirmButton as Button
-@onready var _cancel_button := $HBoxContainer/CancelButton as Button
+@onready var _username_field: LineEdit = $Username
+@onready var _password_field: LineEdit = $Password
+@onready var _confirm_password_field: LineEdit = $ConfirmPassword
+@onready var _confirm_button: Button = $HBoxContainer/ConfirmButton
+@onready var _cancel_button: Button = $HBoxContainer/CancelButton
 
 signal form_submitted(username: String, password: String, confirm_password: String)
 signal form_cancelled()
@@ -536,7 +536,7 @@ Now, let's add the logic to the `connected.gd` script to handle the new registra
 ```
 
 ```gdscript
-@onready var _register_form := $UI/MarginContainer/VBoxContainer/RegisterForm as RegisterForm
+@onready var _register_form: RegisterForm = $UI/MarginContainer/VBoxContainer/RegisterForm
 
 func _ready() -> void:
     # ...
@@ -578,7 +578,7 @@ We are going to take advantage of the [`url` BBCode tag](https://docs.godotengin
 ```
 
 ```gdscript
-@onready var _register_prompt := $UI/MarginContainer/VBoxContainer/RegisterPrompt as RichTextLabel
+@onready var _register_prompt: RichTextLabel = $UI/MarginContainer/VBoxContainer/RegisterPrompt
 
 func _ready() -> void:
     # ...
@@ -736,7 +736,7 @@ Now, we just need to hook this up to our `register_form.gd` script, include the 
 ```
 
 ```gdscript
-@onready var _color_picker := $ColorPicker as ColorPicker
+@onready var _color_picker: ColorPicker = $ColorPicker
 
 signal form_submitted(username: String, password: String, confirm_password: String, color: Color)
 
