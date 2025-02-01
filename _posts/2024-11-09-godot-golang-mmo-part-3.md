@@ -517,7 +517,7 @@ extends Node
 
 const packets := preload("res://packets.gd")
 
-@onready var _log := $Log as Log
+@onready var _log: Log = $Log
 
 func _ready() -> void:
     WS.connected_to_server.connect(_on_ws_connected_to_server)
@@ -609,7 +609,7 @@ Now we can add some logic to the main script to handle the user input. Edit `mai
 ```
 ```gd
 var client_id: int
-@onready var _line_edit := $LineEdit as LineEdit
+@onready var _line_edit: LineEdit = $LineEdit
 ```
 
 You can remove the test message we were sending to the server in the `_on_ws_connected_to_server` method, and replace it with a simple log message to indicate the connection was successful:
@@ -704,8 +704,8 @@ extends Node
 
 const packets := preload("res://packets.gd")
 
-@onready var _log := $Log as Log
-@onready var _line_edit := $LineEdit as LineEdit
+@onready var _log: Log = $Log
+@onready var _line_edit: LineEdit = $LineEdit
 
 func _ready() -> void:
 	WS.connected_to_server.connect(_on_ws_connected_to_server)

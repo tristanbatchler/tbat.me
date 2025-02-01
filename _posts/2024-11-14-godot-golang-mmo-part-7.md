@@ -302,7 +302,7 @@ var y: float
 var radius: float
 var color: Color
 
-@onready var _collision_shape := $CollisionShape2D.shape as CircleShape2D
+@onready var _collision_shape: CircleShape2D = $CollisionShape2D.shape
 
 static func instantiate(spore_id: int, x: float, y: float, radius: float) -> Spore:
     var spore := Scene.instantiate() as Spore

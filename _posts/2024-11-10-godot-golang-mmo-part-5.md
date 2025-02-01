@@ -640,11 +640,11 @@ const packets := preload("res://packets.gd")
 
 var _action_on_ok_received: Callable
 
-@onready var _username_field := $UI/VBoxContainer/Username as LineEdit
-@onready var _password_field := $UI/VBoxContainer/Password as LineEdit
-@onready var _login_button := $UI/VBoxContainer/HBoxContainer/LoginButton as Button
-@onready var _register_button := $UI/VBoxContainer/HBoxContainer/RegisterButton as Button
-@onready var _log := $UI/VBoxContainer/Log as Log
+@onready var _username_field: LineEdit = $UI/VBoxContainer/Username
+@onready var _password_field: LineEdit = $UI/VBoxContainer/Password
+@onready var _login_button: Button = $UI/VBoxContainer/HBoxContainer/LoginButton
+@onready var _register_button: Button = $UI/VBoxContainer/HBoxContainer/RegisterButton
+@onready var _log: Log = $UI/VBoxContainer/Log
 
 func _ready() -> void:
     WS.packet_received.connect(_on_ws_packet_received)
