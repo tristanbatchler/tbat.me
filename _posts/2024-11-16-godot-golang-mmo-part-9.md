@@ -258,10 +258,10 @@ We are going to need a new table in the database to store player information, in
 
 It's been a while since we've done this; we first set up the database in <a href="/2024/11/10/godot-golang-mmo-part-5#schema-setup" target="_blank">§05</a>, so let's refresh our memory on how to do this.
 
-Open up the `schema.sql` config file in our `/server/internal/db/config/` directory. Recall this is where we give the definition of all the tables we want to create in our database. Add the following to the bottom of the file:
+Open up the `schema.sql` config file in our `/server/internal/server/db/config/` directory. Recall this is where we give the definition of all the tables we want to create in our database. Add the following to the bottom of the file:
 
 ```directory
-/server/internal/db/config/schema.sql
+/server/internal/server/db/config/schema.sql
 ```
 
 ```sql
@@ -289,10 +289,10 @@ Now, if we simply re-run the server, it will automatically create the table for 
 
 To delete the database, simply remove the `db.sqlite` file in the `/server/cmd/` directory, then re-run the server. This will create a new, empty database for us to work with.
 
-To save a player to the database, we will need to add a new SQL query to the `queries.sql` file in the `/server/internal/db/` directory. This query will insert a new player into the `players` table, and return the new player to us. 
+To save a player to the database, we will need to add a new SQL query to the `queries.sql` file in the `/server/internal/server/db/` directory. This query will insert a new player into the `players` table, and return the new player to us. 
 
 ```directory
-/server/internal/db/queries.sql
+/server/internal/server/db/queries.sql
 ```
 
 ```sql
@@ -367,7 +367,7 @@ We are adding a new field called `DbId`, which will store the player's ID in the
 We will also need a new query to get a player based on their ID (we limited the query to one result, since we are only ever going to get one player with a given ID). 
 
 ```directory
-/server/internal/db/queries.go
+/server/internal/server/db/config/queries.sql
 ```
 
 ```sql
@@ -408,7 +408,7 @@ func (c *Connected) handleLoginRequest(senderId uint64, message *packets.Packet_
 Now, onto actually updating the player's best score. We will need a new query to update the player's best score, and we will need to call this query whenever a player's mass changes. 
 
 ```directory
-/server/internal/db/queries.go
+/server/internal/server/db/config/queries.sql
 ```
 
 ```sql
@@ -725,7 +725,7 @@ Great, we are almost there! Now we just need to actually fetch the top 10 hiscor
 Let's add a new query to the `queries.sql` file to get the top hiscores from the database.
 
 ```directory
-/server/internal/db/config/queries.sql
+/server/internal/server/db/config/queries.sql
 ```
 
 ```sql
