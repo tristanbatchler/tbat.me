@@ -88,7 +88,7 @@ it into a bunch of skinny rectangles and calculate the area under the
 curve to be the sum of the areas of those rectangles, right?
 
 Well, doesn't $$\ln(n!)$$ look like an approximation of
-$$\int_1^n \ln{x} dx$$ to you? Just rectangles of width $$1$$.
+$$\int_1^n \ln{x} dx$$ to you? Just rectangles of demoWidth $$1$$.
 
 Re-familiarising myself with some of the most boring calculus I forgot,
 we can solve this integral using integration by parts:
@@ -246,8 +246,15 @@ If you prefer, we can write this in concrete C code. This is exactly how
 I implemented it, and my $$K$$ was 320 which is obtained by multiplying my
 number of CPU cores (16) by the number of trials I wanted to run on each
 core (20). I parallelised the code to squeeze as much bogosort out of my
-CPU as I could, but for the sake of simplicity, here is a
-single-threaded version of the code:
+CPU as I could. Here's a visualisation of the process (for reference, 
+$$10! = 3,628,800$$):
+
+<div id="demo" style="margin-left: auto; margin-right: auto; width: 100%; overflow-x: auto; padding-top: 1rem;">
+    <main></main>
+</div>
+
+
+But for the sake of simplicity, here is a single-threaded version of the code:
 
 ```c
 #include <stdio.h>
@@ -278,7 +285,7 @@ int main() {
     double e = exp(1.0);
     double pi = (S * S) / (2 * N) * pow(e / N, 2 * N);
 
-    printf("Empirical S (average shuffles): %f\n", S);
+    printf("Empirical S (Average shuffles): %f\n", S);
     printf("Estimated value of pi: %f\n", pi);
 
     return 0;
@@ -309,9 +316,6 @@ Hey, that's pretty good! Especially considering our bogosorts did their
 job on average in 3,611,139 shuffles, and we know the *real* $$10!$$ is
 3,628,800. Being within 0.49% of the true factorial is a fantastic
 result.
-
-For the visual-minded, here's a little animation I whipped up in 
-[Manim](https://www.manim.community/) to show the process.
 
 <video controls video muted playsinline>
   <source src="/assets/images/posts/2026/02/23/BogoSortGrid.webm" type="video/webm">
@@ -415,3 +419,282 @@ offsetting errors.
 Even so, the fact that 320 instances of an algorithm that sorts by pure
 random chance can even semi-consistently produce a number that starts
 with the digit $$3$$ should be celebrated. Happy Pi Day!
+
+<script src="https://cdn.jsdelivr.net/npm/p5@2.1.2/lib/p5.min.js"></script>
+<script>
+let bogosortVisualisations = [];
+let shuffleCountLabelPositions = [];
+let shuffleCountLabelTexts = [];
+let resetTimer = 0;
+let global_label_padding = 35;
+let local_label_padding = 10;
+let labelsFlying = false;
+let labelsTarget = [0, global_label_padding];
+let globalEstimate = 0;
+let globalEstimateLabelPosition = [0, global_label_padding];
+let globalEstimateLabelText = `${globalEstimate}`;
+let flightDoneCheckThreshold = 1; // px
+let bottomGridPadding = 24; // space to leave below grid so bottom labels don't overlap
+let n = 10;
+let rows = 4;
+let cols = 4;
+let shuffleCountLabelAlphas = [];
+let local_label_font_size = 16;
+var demoWidth;
+var demoHeight;
+
+function setup() {
+    let demo = document.getElementById("demo");
+    const rect = demo.getBoundingClientRect();
+    demoWidth = demo.offsetWidth;
+    demoHeight = demoWidth;
+
+    console.log(`demoWidth: ${demoWidth}, demoHeight: ${demoHeight}`);
+
+    createCanvas(demoWidth, demoHeight);
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+            let minShuffles = 5 * n;
+            let maxShuffles = 20 * n;
+            bogosortVisualisations.push(new BogosortVis(n, minShuffles, maxShuffles));
+            shuffleCountLabelPositions.push([0, 0]);
+            shuffleCountLabelAlphas.push(255);
+        }
+    }
+
+    globalEstimateLabelPosition = [demoWidth / 2, global_label_padding];
+    labelsTarget = [demoWidth / 2, global_label_padding];
+}
+
+function draw() {
+    background("#0b0b0f");
+    // Leave top quarter empty
+    let usableHeight = demoHeight * 0.75;
+    // Grid is square anchored to bottom center
+    let gridSide = Math.min(demoWidth, usableHeight);
+    let gridX = (demoWidth - gridSide) / 2;
+    let gridY = demoHeight - gridSide - bottomGridPadding;
+    if (gridY < 0) gridY = 0;
+    // Add vertical gap between rows so labels don't overlap visuals
+    let rowGap = 50; // px between rows
+    let totalRowGaps = rowGap * (rows - 1);
+    let cellWidth = gridSide / cols;
+    let cellHeight = (gridSide - totalRowGaps) / rows;
+    // reserve a small label area per cell so labels don't overlap bars
+    let perCellLabelArea = 20;
+    let allSorted = true;
+    for (let i = 0; i < bogosortVisualisations.length; i++) {
+        let x = gridX + (i % cols) * cellWidth;
+        let y = gridY + Math.floor(i / cols) * (cellHeight + rowGap);
+        let [shuffle_count, sorted] = bogosortVisualisations[i].update();
+        // draw bars leaving room at bottom of each cell for the label
+        let barsHeight = cellHeight - 20 - perCellLabelArea;
+        bogosortVisualisations[i].draw(
+            x + 10,
+            y + 10,
+            cellWidth - 20,
+            barsHeight
+        );
+        // Draw shuffle count
+        if (sorted) {
+            fill(60, 200, 80);
+        } else {
+            fill(255);
+            allSorted = false;
+        }
+        textSize(local_label_font_size);
+        textAlign(CENTER, TOP);
+
+        // Only overwrite label positions when not flying
+        if (!labelsFlying) {
+            let labelPosX = x + cellWidth / 2;
+            // place label below the bars area (bars are drawn in demoHeight = barsHeight)
+            let labelPosY = y + 10 + barsHeight + local_label_padding;
+            // Clamp so labels never go off the bottom of the canvas (textSize ~12)
+            const maxLabelY = demoHeight - bottomGridPadding - Math.ceil(local_label_font_size * 1.2);
+            if (labelPosY > maxLabelY) labelPosY = maxLabelY;
+            shuffleCountLabelPositions[i][0] = labelPosX;
+            shuffleCountLabelPositions[i][1] = labelPosY;
+        }
+        shuffleCountLabelTexts[i] = `${shuffle_count}`;
+    }
+    // Draw labels at their current positions
+    for (let i = 0; i < shuffleCountLabelPositions.length; i++) {
+        let [labelPosX, labelPosY] = shuffleCountLabelPositions[i];
+        let sorted = bogosortVisualisations[i].isSorted();
+        let alpha = shuffleCountLabelAlphas[i] !== undefined ? shuffleCountLabelAlphas[i] : 255;
+        if (sorted) {
+            fill(60, 200, 80, alpha);
+            textStyle(BOLD);
+        } else {
+            fill(255, alpha);
+            textStyle(NORMAL);
+        }
+        text(shuffleCountLabelTexts[i], labelPosX, labelPosY);
+    }
+
+    // Draw global estimate label at its current position
+    fill(60, 200, 80);
+    textStyle(BOLD);
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text(globalEstimateLabelText, globalEstimateLabelPosition[0], globalEstimateLabelPosition[1]);
+
+    // Draw a label saying "average shuffles" above the global estimate
+    // in a smaller, more transparent font
+    fill(60, 200, 80, 200);
+    textStyle(NORMAL);
+    textSize(16);
+    text("average shuffles", globalEstimateLabelPosition[0], globalEstimateLabelPosition[1] - 25);
+
+
+    if (allSorted && resetTimer === 0 && !labelsFlying) {
+        resetTimer = 30; // 0.5s at 60fps
+    }
+    if (resetTimer > 0) {
+        resetTimer--;
+        if (resetTimer === 1) {
+            labelsFlying = true;
+            resetTimer = 0;
+        }
+    }
+
+    // If labels are flying, perform per-frame flight step and check completion
+    if (labelsFlying) {
+        flyLabelsTo(labelsTarget[0], labelsTarget[1]);
+        // check if all labels have faded out (alpha near zero)
+        let allFaded = shuffleCountLabelAlphas.every(a => a <= 5);
+        if (allFaded) {
+            // finish flight and reset visualisers together
+            labelsFlying = false;
+
+            updateGlobalEstimate();
+
+            for (let i = 0; i < bogosortVisualisations.length; i++) {
+                bogosortVisualisations[i]._reset();
+                shuffleCountLabelAlphas[i] = 255;
+            }
+        }
+    }
+}
+
+function flyLabelsTo(targetX, targetY) {
+    const fadeRadius = 80; // px where fading starts
+    for (let i = 0; i < shuffleCountLabelPositions.length; i++) {
+        let [labelPosX, labelPosY] = shuffleCountLabelPositions[i];
+        let dx = targetX - labelPosX;
+        let dy = targetY - labelPosY;
+        shuffleCountLabelPositions[i][0] += dx * 0.1;
+        shuffleCountLabelPositions[i][1] += dy * 0.1;
+        // update alpha based on distance to target
+        let dist = Math.hypot(targetX - shuffleCountLabelPositions[i][0], targetY - shuffleCountLabelPositions[i][1]);
+        let alpha = 255;
+        if (dist < fadeRadius) {
+            alpha = Math.max(0, Math.round((dist / fadeRadius) * 255));
+        }
+        shuffleCountLabelAlphas[i] = alpha;
+    }
+}
+
+function updateGlobalEstimate() {
+    let totalShuffles = 0;
+    for (let i = 0; i < shuffleCountLabelTexts.length; i++) {
+        totalShuffles += parseInt(shuffleCountLabelTexts[i]);
+    }
+    globalEstimate = Math.round(totalShuffles / bogosortVisualisations.length);
+    globalEstimateLabelText = globalEstimate.toLocaleString();
+}
+
+class BogosortVis {
+    constructor(n) {
+        this.n = n;
+        this._reset();
+        // No green_timer needed; stays green when sorted
+    }
+
+    _reset() {
+        this.list = this._randomList(this.n);
+        this.sorted = false;
+        this.shuffle_count = 0;
+        this.frames = 0;
+        this.fact = this._factorial(this.n);
+        // Pick a random target shuffle count within 5% of n!
+        const minFact = Math.floor(0.95 * this.fact);
+        const maxFact = Math.floor(1.05 * this.fact);
+        this.target_shuffle_count = Math.floor(Math.random() * (maxFact - minFact + 1)) + minFact;
+        // How many frames to finish in (set to a small constant for speed)
+        this.target_frames = Math.floor(Math.random() * 45) + 90;
+        // How much to increment per frame
+        this.increment = this.target_shuffle_count / this.target_frames;
+    }
+
+
+    _factorial(num) {
+        let res = 1;
+        for (let i = 2; i <= num; i++) res *= i;
+        return res;
+    }
+
+    _randomList(n) {
+        let arr = Array.from({ length: n }, (_, i) => i + 1);
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    _isSorted() {
+        for (let i = 1; i < this.list.length; i++) {
+            if (this.list[i - 1] > this.list[i]) return false;
+        }
+        return true;
+    }
+
+    update() {
+        if (!this.sorted) {
+            if (this.frames >= this.target_frames || this.shuffle_count + this.increment >= this.target_shuffle_count) {
+                // Artificially finish: sort the list
+                this.list.sort((a, b) => a - b);
+                this.sorted = true;
+                this.shuffle_count = Math.round(this.target_shuffle_count);
+            } else {
+                // Shuffle the list visually
+                for (let i = this.list.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.list[i], this.list[j]] = [this.list[j], this.list[i]];
+                }
+                this.shuffle_count += this.increment;
+                this.frames++;
+            }
+        }
+        // Clamp to target so it never exceeds
+        return [Math.min(Math.round(this.shuffle_count), Math.round(this.target_shuffle_count)), this.sorted];
+    }
+
+    draw(x, y, w, h) {
+        // Draw the list as a bar chart
+        let barWidth = w / this.n;
+        for (let i = 0; i < this.n; i++) {
+            let barHeight = (this.list[i] / this.n) * h;
+            if (this.sorted) {
+                fill(60, 200, 80);
+            } else {
+                fill(120, 120, 220);
+            }
+            rect(x + i * barWidth, y + h - barHeight, barWidth, barHeight);
+        }
+    }
+
+    // Optionally, expose shuffle count and target for UI
+    getShuffleCount() {
+        return this.shuffle_count;
+    }
+    getTargetShuffles() {
+        return this.target_shuffle_count;
+    }
+    isSorted() {
+        return this.sorted;
+    }
+}
+</script>
