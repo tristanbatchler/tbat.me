@@ -13,3 +13,6 @@ group :jekyll_plugins do
     gem 'jekyll-minifier'
   end
 gem "webrick", "~> 1.7"
+
+gem "csv"
+gem "logger"
