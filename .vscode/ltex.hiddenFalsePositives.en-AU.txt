@@ -68,3 +68,5 @@
 {"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QIf you are still stuck, feel free to join the Discord and ask for help!\\E$"}
 {"rule":"MORFOLOGIK_RULE_EN_AU","sentence":"^\\QI think the best way to do this is via itch.io.\\E$"}
 {"rule":"ENGLISH_WORD_REPEAT_BEGINNING_RULE","sentence":"^\\QOnce your address is confirmed, go back to itch.io and click the dropdown list at the top-right and select Upload new project.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QThe expected number of swaps required to sort this once with our good friend bogosort is on the order of \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q, which comes out to 40 quintillion, or 40 billion billion (fun fact: this is roughly the number of configurations of the Rubik's cube).\\E$"}
+{"rule":"PRP_VBG","sentence":"^\\QThanks to that eye-watering \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q time complexity, choosing an appropriate \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q could mean the difference between our CPU finishing the task in a reasonable amount of time, and it dwarfing the age of the universe.\\E$"}

@@ -17,5 +17,6 @@
         "sqlc",
         "tscn",
         "Unmarshal"
-    ]
+    ],
+    "ltex.language": "en-AU"
 }

@@ -44,3 +44,8 @@ gatesweb
 ubuntu
 Certbot
 io
+Bogosort
+bogosort
+Ryzen
+bogosorts
+exponentiate
