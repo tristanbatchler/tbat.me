@@ -596,12 +596,19 @@ function flyLabelsTo(targetX, targetY) {
     }
 }
 
+// Accumulate global estimate across all batches
+let globalEstimateAccum = 0; // running sum of all batch means
+let globalEstimateBatches = 0; // number of batches
+
 function updateGlobalEstimate() {
     let totalShuffles = 0;
     for (let i = 0; i < shuffleCountLabelTexts.length; i++) {
         totalShuffles += parseInt(shuffleCountLabelTexts[i]);
     }
-    globalEstimate = Math.round(totalShuffles / bogosortVisualisations.length);
+    let thisBatch = totalShuffles / bogosortVisualisations.length;
+    globalEstimateAccum += thisBatch;
+    globalEstimateBatches++;
+    globalEstimate = Math.round(globalEstimateAccum / globalEstimateBatches);
     globalEstimateLabelText = globalEstimate.toLocaleString();
 }
 
