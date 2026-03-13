@@ -1,7 +1,7 @@
 ---
 title: Hiring hundreds of bogosorts to help me calculate pi
-description: Happy Pi Day! This fine morning I woke up and felt the sudden urge to torture my CPU. And what batter way to do that than run hundreds of instances of one of the most notoriously inefficient sorting algorithms at once?
-redditurl: https://www.reddit.com/r/math/comments/m6obwp/this_year_i_calculated_pi_by_finding_the_area
+description: Happy Pi Day! This fine morning I woke up and felt the sudden urge to torture my CPU. And what better way to do that than run hundreds of instances of one of the most notoriously inefficient sorting algorithms at once?
+# redditurl: TODO: Post to Reddit
 hero: posts/2026/03/14/hero.webp
 ---
 
@@ -158,7 +158,7 @@ $$
 
 It turns out, when you make this connection and continue to solve the 
 integral using some clever observations about logarithms and Taylor series, 
-you'll find $$\pi$$ emerge in the final steps of the proof. If you're interested, 
+you'll find $$\pi$$ emerge in the final steps of the proof. If you're interested 
 in the details, I'd recommend checking out 
 [this question on Math Stack Exchange](https://math.stackexchange.com/questions/2965792/is-there-an-intuitive-explanation-for-the-occurrence-of-e-and-pi-in-stirlings-a).
 
@@ -211,7 +211,7 @@ $$
 $$
 
 The plan is as follows: pick a huge $$n$$, run bogosort millions of
-times to get a rock-solid average $$S$$, and calculate $$\pi$$ to a glorious
+times to get a rock-solid average $$S$$ and calculate $$\pi$$ to a glorious
 number of decimal places just in time to celebrate March 14, <small>I wonder 
 what [Matt Parker](https://www.youtube.com/standupmaths)'s up to this year...</small>.
 
