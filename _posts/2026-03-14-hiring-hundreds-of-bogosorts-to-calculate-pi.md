@@ -30,22 +30,25 @@ it *is* a way to sort a list.
 Love it or hate it, this bad boy can sort a list in a quite frankly
 impressive $$n!$$ shuffles on average.
 
-Recall the *factorial* of $$n$$, written as $$n!$$ is the simple product
+Recall the *factorial* of $$n$$, written as $$n!$$, is the simple product
 $$n (n-1) (n-2) \cdots (2) (1)$$. The reason we can expect bogosort to do
 its job in $$n!$$ shuffles is the same reason a list can be organised in
 $$n!$$ ways. We wouldn't expect bogosort to need to perform more or less
 than the total possible number of ways to arrange the items in the list,
-within a reasonable margin of good/back luck of course.
+within a reasonable margin of good/back luck of course. <small>Of course, 
+if you have *really bad luck*, there is no upper bound on the runtime of 
+bogosort, but let's pretend that's not a thing.</small>
 
 For the nerds, since a shuffle requires $$n$$ moves, and we need $$n!$$ of
 these, bogosort's time complexity is an eye-watering
 $$\mathcal{O}(n \cdot n!)$$. So yeah, it's impressive in the same way one
-might be impressed with a monkey on a typewriter producing anything
-legible.
+might be impressed with a monkey on a typewriter producing a page of 
+Shakespeare. It's cool that it can happen, but you're probably not going to 
+stick around to see it for yourself.
 
 All this yapping and we're not any closer to seeing what any of this has
-to do with pi, are we? Fine, let me cut to the chase and introduce our
-smoking gun; our key to unlocking the digits of pi (hopefully).
+to do with pi, are we? Fine, let me cut to the chase and introduce today's
+weapon of choice.
 
 ## Stirling's Approximation 
 
@@ -56,15 +59,18 @@ $$
 $$
 
 You might be able to guess we can obtain $$\pi$$ as long as we have access
-to $$n$$ and $$n!$$, but let's not get ahead of ourselves. We should talk
-about this formula.
+to $$n$$ and $$n!$$, but let's not get ahead of ourselves. Do you think I'm 
+in the mood to calculate $$n!$$ like a chump? No, that's what bogosort is for. 
+
+But before we get to that, we should unpack Stirling's approximation.
 
 First, let's look at that squiggly little guy ($$\sim$$). In this case, we
 use this to denote that the two sides are *asymptotically equivalent*:
 essentially as $$n$$ grows arbitrarily large, the right-hand side becomes
 a better and better approximation for the left. So just think for large
-$$n$$, we can think of $$\sim$$ as $$\approx$$ (this is probably an abuse of
-notation and for legal reasons I cannot recommend this).
+$$n$$, we can think of $$\sim$$ as $$\approx$$. <small>(for legal reasons, I do 
+not condone this abuse of notation and am not responsible for any miscalculations 
+that may occur).</small>
 
 ## Why on earth does this formula work? 
 
@@ -75,8 +81,8 @@ proof, but want to at least see if I can convince you that this is
 reasonable enough to believe.
 
 First, let's look at the natural logarithm of $$n!$$ so we can work with
-sum of terms, rather than a product. It'll make it easier to work with
-that way.
+a sum of terms, rather than a product. Smarter people than me say this is 
+a decent play, so I won't question it.
 
 $$
     \ln(n!) = \ln(1) + \ln(2) + \dots + \ln{n} = \sum_{x=1}^{n} \ln{x}
@@ -88,8 +94,12 @@ you might have seen in high school. You approximate a curve but slicing
 it into a bunch of skinny rectangles and calculate the area under the
 curve to be the sum of the areas of those rectangles, right?
 
+If you don't believe me, witness proof by shoddy p5.js sketch! You can adjust the slider under the curve to see how the integral approaches the actual area under the curve as we add more and more rectangles.
+
+<div id="riemann-demo" class="math-demo"></div>
+
 Well, doesn't $$\ln(n!)$$ look like an approximation of
-$$\int_1^n \ln{x} dx$$ to you? Just rectangles of demoWidth $$1$$.
+$$\int_1^n \ln{x} dx$$ to you? Just rectangles of width $$1$$.
 
 Re-familiarising myself with some of the most boring calculus I forgot,
 we can solve this integral using integration by parts:
@@ -114,7 +124,7 @@ formula. The only difference is that we have a factor of $$e$$ in front of
 the $$\left( \frac{n}{e} \right)^n$$ term, whereas Stirling's formula has
 $$\sqrt{2 \pi n}$$ instead.
 
-But if we observe that $$\sqrt{2 \pi} \approx e$$, we see our calculation
+But if we observe that $$\sqrt{2 \pi} \approx 2.507 \approx e$$, we see our calculation
 is accurate up to a factor of $$\sqrt{n}$$ which isn't bad considering we
 just approximated a sum with an integral.
 
@@ -126,10 +136,15 @@ do. Speaking of which, let's get to the good stuff.
 
 Let's just forget I totally hand-waved the $$\pi$$ out of Stirling's formula 
 in my crude explanation above. It's really there, but it's quite tricky to 
-derive it. In fact, Stirling didn't even come up with the idea for this 
-formula, he simply decided the constant in front of the 
-$$\left( \frac{n}{e} \right)^n$$ term was indeed $$\sqrt{2 \pi n}$$. It was 
-originally derived by [De Moivre](https://en.wikipedia.org/wiki/Abraham_de_Moivre).
+derive it. In fact, Stirling didn't even come up with the idea for his 
+formula, but he did identify the correct constant to put in front of the
+$$\left( \frac{n}{e} \right)^n$$ term was indeed $$\sqrt{2 \pi n}$$. The 
+asymptotic formula was originally discovered by 
+[De Moivre](https://en.wikipedia.org/wiki/Abraham_de_Moivre).
+
+{% include img.html src="/posts/2026/03/14/demoivre.jpg" alt="Portrait of Abraham de Moivre" %}
+
+{% include img.html src="/posts/2026/03/14/stirling.jpeg" alt="Portrait of James Stirling" %}
 
 To give a very rough idea of how $$\pi$$ snaked its way into this formula, 
 we can thank how the Gamma function connects factorials to integrals.
@@ -318,11 +333,6 @@ job on average in 3,611,139 shuffles, and we know the *real* $$10!$$ is
 3,628,800. Being within 0.49% of the true factorial is a fantastic
 result.
 
-<video controls video muted playsinline>
-  <source src="/assets/images/posts/2026/02/23/BogoSortGrid.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
 So now we can all go home and rest easy knowing that
 $$\pi \approx 3.163356$$ according to the consensus of 320 bogosorts...
 right?
@@ -422,6 +432,129 @@ random chance can even semi-consistently produce a number that starts
 with the digit $$3$$ should be celebrated. Happy Pi Day!
 
 <script src="https://cdn.jsdelivr.net/npm/p5@2.1.2/lib/p5.min.js"></script>
+<script>
+new p5((p) => {
+
+let rectSlider;
+let rectLabel;
+
+const N = 20;
+
+p.setup = function() {
+
+  const container = document.getElementById("riemann-demo");
+  const w = container.offsetWidth;
+
+  const canvas = p.createCanvas(w, 400);
+  canvas.parent(container);
+
+  const controls = p.createDiv();
+  controls.class("controls");
+  controls.parent(container);
+
+  rectLabel = p.createDiv();
+  rectLabel.parent(controls);
+
+  rectSlider = p.createSlider(2, 21, 8, 1);
+  rectSlider.parent(controls);
+};
+
+function ln(x){
+  return Math.log(x);
+}
+
+p.draw = function(){
+
+  p.background("#0b0b0f");
+
+  const margin = 60;
+  const w = p.width - margin*2;
+  const h = p.height - margin*2;
+
+  const rects = rectSlider.value();
+
+  const xmin = 1;
+  const xmax = N;
+
+  const ymin = 0;
+  const ymax = ln(N);
+
+  function X(x){
+    return margin + (x-xmin)/(xmax-xmin)*w;
+  }
+
+  function Y(y){
+    return p.height - margin - (y-ymin)/(ymax-ymin)*h;
+  }
+
+  // axes
+  p.stroke(120);
+  p.line(margin, Y(0), margin+w, Y(0));
+  p.line(margin, margin, margin, margin+h);
+
+  // curve
+  p.noFill();
+  p.stroke(150,150,255);
+
+  p.beginShape();
+  for(let x=1; x<=N; x+=0.05){
+    p.vertex(X(x),Y(ln(x)));
+  }
+  p.endShape();
+
+  // label the curve
+  p.noStroke();
+  p.fill(150,150,255);
+  p.textSize(16);
+  p.textStyle(p.ITALIC);
+  
+  let labelX = N - 3;
+  p.text("y = ln(x)", X(labelX), Y(ln(labelX)) - 8);
+
+  const dx = (N-1)/rects;
+
+  let sum = 0;
+
+  for(let i=0;i<rects;i++){
+
+    const x = 1 + i*dx;
+    const y = ln(x);
+
+    sum += y*dx;
+
+    const xPixel = X(x);
+    const widthPixel = X(x+dx)-X(x);
+
+    p.noStroke();
+    p.fill(60,180,90,140);
+
+    p.rect(xPixel,Y(y),widthPixel,Y(0)-Y(y));
+  }
+
+  const actual = N*Math.log(N)-N+1;
+
+  // math text in canvas
+  p.noStroke();
+  p.fill(255);
+  p.textSize(15);
+
+  p.text(
+    `∫₁ⁿ ln(x) dx ≈ ${sum.toFixed(3)}`,
+    margin+5,
+    margin+10
+  );
+
+  p.text(
+    `actual value = ${actual.toFixed(3)}`,
+    margin+5,
+    margin+30
+  );
+
+  rectLabel.html(`Rectangles = <b>${rects - 1}</b>`);
+};
+
+}, "riemann-demo");
+</script>
 <script>
 let bogosortVisualisations = [];
 let shuffleCountLabelPositions = [];
