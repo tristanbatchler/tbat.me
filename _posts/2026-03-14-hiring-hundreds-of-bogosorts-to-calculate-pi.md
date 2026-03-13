@@ -396,7 +396,7 @@ to 0.33%, and at $$n = 100$$ it's 0.17%. But as we've already established,
 we can't *use* large $$n$$ because bogosort won't finish before the heat
 death of the universe.
 
-## Error propagation (why $$S^2$$ is our unpredictable "friend") 
+## Error propagation a.k.a. $$S^2$$ does us a solid
 
 To make matters worse, notice that our formula squares the bogosort
 average ($$S$$):
@@ -404,7 +404,8 @@ average ($$S$$):
 $$
     \pi \approx \frac{S^2}{2n} \left( \frac{e}{n} \right)^{2n}
 $$
-By the standard rules of error propagation, when a measured quantity is
+
+By [the standard rules of error propagation](https://en.wikipedia.org/wiki/Propagation_of_uncertainty), when a measured quantity is
 squared, the relative error in the result is doubled.
 
 So if bogosort underestimates $$10!$$ by 0.5%, our $$\pi$$ estimate shifts
@@ -415,7 +416,7 @@ This could work in our favour, however, if bogosort *underestimates*. In
 that case, it would actually be nudging our estimate closer to the true
 value of $$\pi$$, potentially cancelling out Stirling's floor.
 
-Turns out two wrongs *can* make a right, but I don't feel good about it.
+{% include img.html src="/posts/2026/03/14/modern_problems.jpeg" alt="It turns out two wrongs *can* make a right" %}
 
 ## It's time for me to come clean 
 
