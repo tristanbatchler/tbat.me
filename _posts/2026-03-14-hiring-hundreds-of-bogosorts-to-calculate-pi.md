@@ -497,7 +497,7 @@ function ln(x){
 
 p.draw = function(){
 
-  p.background("#0b0b0f");
+  p.background("#2d2d33");
 
   const margin = 60;
   const w = p.width - margin*2;
@@ -624,7 +624,7 @@ p.setup = function(){
 
 p.draw = function(){
 
-  p.background("#0b0b0f");
+  p.background("#2d2d33");
 
   const margin = 60;
   const w = p.width - margin*2;
@@ -730,7 +730,7 @@ function setup() {
 }
 
 function draw() {
-    background("#0b0b0f");
+    background("#2d2d33");
     // Leave top quarter empty
     let usableHeight = demoHeight * 0.75;
     // Grid is square anchored to bottom center
@@ -996,7 +996,7 @@ p.setup = function(){
 };
 
 p.draw = function(){
-  p.background("#0b0b0f");
+  p.background("#2d2d33");
 
   let pi_val = piSlider.value();
   
