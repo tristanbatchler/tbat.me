@@ -275,7 +275,7 @@ $$19!$$ and $$20!$$.
 Anyway, I believe I'm yapping again. Let's summarise the plan for
 approximating $$10!$$ and then using that to estimate $$\pi$$:
 
-> Repeat the following $$K$$ times (where $$K$$ is as many as you have the
+> Set $$S := 0$$ and repeat the following $$K$$ times (where $$K$$ is as many as you have the
 > patience for):
 > -   run bogosort on a list of size 10, keeping track of the number of
 >     shuffles required, let's call this $$s$$;
@@ -288,7 +288,7 @@ core (20). I parallelised the code to squeeze as much bogosort out of my
 CPU as I could. Here's a visualisation of the process (for reference, 
 $$10! = 3,628,800$$):
 
-<div id="demo" style="margin-left: auto; margin-right: auto; width: 100%; overflow-x: auto; padding-top: 1rem;">
+<div id="demo" class="math-demo">
     <main></main>
 </div>
 
@@ -331,9 +331,6 @@ int main() {
 }
 ```
 
-If you're interested everything in this write-up, including the code, is
-available on the GitHub repository.
-
 ## The moment of truth 
 
 Running the above C code, and depending on your luck...
@@ -351,14 +348,25 @@ Running the above C code, and depending on your luck...
     Empirical S (average shuffles): 3611139.253125
     Estimated value of pi: 3.163356
 
+{% include img.html src="/posts/2026/03/14/thats_pretty_good.gif" alt="Hey, that's pretty good!" %}
+
 Hey, that's pretty good! Especially considering our bogosorts did their
-job on average in 3,611,139 shuffles, and we know the *real* $$10!$$ is
+job on average in 3,611,139 shuffles, and we know the **real** $$10!$$ is
 3,628,800. Being within 0.49% of the true factorial is a fantastic
 result.
 
 So now we can all go home and rest easy knowing that
 $$\pi \approx 3.163356$$ according to the consensus of 320 bogosorts...
 right?
+
+<small>Fun fact, here's **an** interpretation of a circle if $$\pi = 3.163356$$. I'm 
+choosing to use [$$L^p$$ space](https://en.wikipedia.org/wiki/Lp_space) to define our 
+geometry. Read more about it and play with the slider to see other "circles" (squircles?)</small>
+
+<div id="circle-demo" class="math-demo">
+    <div class="controls"></div>
+    <div class="canvas-holder"></div>
+</div>
 
 ## The ceiling 
 
@@ -958,4 +966,77 @@ class BogosortVis {
         return this.sorted;
     }
 }
+</script>
+<script>
+new p5((p) => {
+
+let piSlider;
+let pLabel;
+
+// Our target constants
+const BOGO_PI = 3.163356;
+const TRUE_PI = Math.PI;
+
+p.setup = function(){
+  const container = document.getElementById("circle-demo");
+  const w = container.offsetWidth;
+  
+  const canvasHolder = container.querySelector(".canvas-holder");
+  const canvas = p.createCanvas(w, 400);
+  canvas.parent(canvasHolder);
+
+  const controls = container.querySelector(".controls");
+
+  pLabel = p.createDiv();
+  pLabel.parent(controls);
+
+  piSlider = p.createSlider(1, 4, BOGO_PI, 0.001);
+  piSlider.parent(controls);
+};
+
+p.draw = function(){
+  p.background("#0b0b0f");
+
+  let pi_val = piSlider.value();
+  
+  // Linear mapping interpretation:
+  // Map the chosen Pi value to the mathematical p-norm exponent
+  let p_math;
+  if (pi_val <= TRUE_PI) {
+    // Map Pi from [2, 3.14159] to p from [1, 2]
+    p_math = p.map(pi_val, 2, TRUE_PI, 1, 2);
+  } else {
+    // Map Pi from [3.14159, 4] to p from [2, 10] 
+    // (Using 10 as a visual ceiling so it looks appropriately square)
+    p_math = p.map(pi_val, TRUE_PI, 4, 2, 10);
+  }
+
+  // Center the drawing
+  p.translate(p.width / 2, p.height / 2);
+  
+  // Style to match your other graphs
+  p.noFill();
+  p.stroke(150, 150, 255); 
+  p.strokeWeight(3);
+
+  p.beginShape();
+  const r = 130; 
+  
+  for (let t = 0; t < p.TWO_PI; t += 0.05) {
+    const na = 2 / p_math;
+    const x = Math.pow(Math.abs(Math.cos(t)), na) * r * Math.sign(Math.cos(t));
+    const y = Math.pow(Math.abs(Math.sin(t)), na) * r * Math.sign(Math.sin(t));
+    p.vertex(x, y);
+  }
+  p.endShape(p.CLOSE);
+
+
+  
+  
+  // Update the HTML controls label to show both values
+  pLabel.html(`π = <b>${pi_val.toFixed(3)}</b>`);
+  
+};
+
+}, "circle-demo");
 </script>
