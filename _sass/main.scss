@@ -11,6 +11,7 @@
     box-shadow: none !important;
     cursor: default !important;
 }
+
 @import "mixins";
 @import "syntax";
 @import "comments";
@@ -302,4 +303,111 @@ pre.highlight {
 .sparkle {
     position: relative;
     display: inline-block;
+}
+
+.math-demo .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+
+.math-demo input[type="range"] {
+    width: 100%;
+    max-width: 500px;
+    background: linear-gradient(90deg, $accent, $header, $foreground);
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
+    transition: box-shadow 0.2s;
+}
+
+.math-demo input[type="range"]:hover,
+.math-demo input[type="range"]:focus {
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+}
+
+.math-demo input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: $accent;
+    border: 2px solid $header;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s;
+}
+
+.math-demo input[type="range"]:hover::-webkit-slider-thumb {
+    background: $header;
+    border: 2px solid $accent;
+}
+
+.math-demo input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: $accent;
+    border: 2px solid $header;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s;
+}
+
+.math-demo input[type="range"]:hover::-moz-range-thumb {
+    background: $header;
+    border: 2px solid $accent;
+}
+
+.math-demo input[type="range"]::-ms-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: $accent;
+    border: 2px solid $header;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s;
+}
+
+.math-demo input[type="range"]:hover::-ms-thumb {
+    background: $header;
+    border: 2px solid $accent;
+}
+
+.math-demo input[type="range"]::-ms-fill-lower {
+    background: $accent;
+}
+.math-demo input[type="range"]::-ms-fill-upper {
+    background: $header;
+}
+
+.math-demo input[type="range"]:focus {
+    outline: none;
+}
+
+.math-demo input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, $accent, $header, $foreground);
+}
+
+.math-demo input[type="range"]::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, $accent, $header, $foreground);
+}
+
+.math-demo input[type="range"]::-ms-fill-lower {
+    background: $accent;
+}
+.math-demo input[type="range"]::-ms-fill-upper {
+    background: $header;
+}
+
+.math-demo .controls div {
+    margin-bottom: 5px;
 }

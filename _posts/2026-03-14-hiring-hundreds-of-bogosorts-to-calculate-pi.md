@@ -62,7 +62,7 @@ You might be able to guess we can obtain $$\pi$$ as long as we have access
 to $$n$$ and $$n!$$, but let's not get ahead of ourselves. Do you think I'm 
 in the mood to calculate $$n!$$ like a chump? No, that's what bogosort is for. 
 
-But before we get to that, we should unpack Stirling's approximation.
+But before we get to that, we should unpack [Stirling](https://en.wikipedia.org/wiki/James_Stirling_(mathematician))'s approximation.
 
 First, let's look at that squiggly little guy ($$\sim$$). In this case, we
 use this to denote that the two sides are *asymptotically equivalent*:
@@ -96,7 +96,10 @@ curve to be the sum of the areas of those rectangles, right?
 
 If you don't believe me, witness proof by shoddy p5.js sketch! You can adjust the slider under the curve to see how the integral approaches the actual area under the curve as we add more and more rectangles.
 
-<div id="riemann-demo" class="math-demo"></div>
+<div id="riemann-demo" class="math-demo">
+  <div class="controls"></div>
+  <div class="canvas-holder"></div>
+</div>
 
 Well, doesn't $$\ln(n!)$$ look like an approximation of
 $$\int_1^n \ln{x} dx$$ to you? Just rectangles of width $$1$$.
@@ -142,12 +145,12 @@ $$\left( \frac{n}{e} \right)^n$$ term was indeed $$\sqrt{2 \pi n}$$. The
 asymptotic formula was originally discovered by 
 [De Moivre](https://en.wikipedia.org/wiki/Abraham_de_Moivre).
 
-{% include img.html src="/posts/2026/03/14/demoivre.jpg" alt="Portrait of Abraham de Moivre" %}
-
-{% include img.html src="/posts/2026/03/14/stirling.jpeg" alt="Portrait of James Stirling" %}
+{% include img.html src="/posts/2026/03/14/the_boys.webp" alt="The boys, 
+from left to right: Abraham de Moivre and James Stirling" %}
+*The boys, from left to right: [Abraham de Moivre](https://en.wikipedia.org/wiki/Abraham_de_Moivre) and [James Stirling](https://en.wikipedia.org/wiki/James_Stirling_(mathematician))*
 
 To give a very rough idea of how $$\pi$$ snaked its way into this formula, 
-we can thank how the Gamma function connects factorials to integrals.
+we can thank how the [Gamma function](https://en.wikipedia.org/wiki/Gamma_function) connects factorials to integrals.
 
 $$
     n! = \Gamma(n+1) = \int_0^\infty t^n e^{-t} dt
@@ -159,7 +162,7 @@ you'll find $$\pi$$ emerge in the final steps of the proof. If you're interested
 in the details, I'd recommend checking out 
 [this question on Math Stack Exchange](https://math.stackexchange.com/questions/2965792/is-there-an-intuitive-explanation-for-the-occurrence-of-e-and-pi-in-stirlings-a).
 
-## A hand-wavy approximation of $$\pi$$ 
+## All this hand waving, and suddenly $$\pi$$ emerges!
 
 Now, let's just dust off some high school algebra and isolate $$\pi$$, and
 I'll use the $$\approx$$ sign here because we can assume we are talking
@@ -175,9 +178,11 @@ $$
     \end{align*} 
 $$
 
-Here's where my evil plan gets legs. I'm too lazy to calculate $$n!$$ directly, 
-so I'll just coerce my CPU into fetching it for me, and then I'll *that* value 
-to estimate $$\pi$$.
+Here's what itches the whip-cracking part of my brain: I'm far too lazy to 
+calculate $$n!$$ directly, so I'll just coerce my CPU into fetching it for 
+me, and then I'll use *that* value to estimate $$\pi$$.
+
+{% include img.html src="/posts/2026/03/14/this_is_pi.webp" alt="..." %}
 
 ## Exercising free will by obtaining $$n!$$ empirically, for some reason 
 
@@ -195,11 +200,11 @@ Why would we do that when instead we could just calculate directly
 $$n (n-1) \cdots (2) (1)$$? It's a free country, I can make my CPU do
 whatever I want!
 
-Anyway, suppose we do this, and obtain an average number of shuffles for
+Anyways, *suppose* we do this, and obtain an average number of shuffles for
 a list of size $$n$$. We'll call this $$S$$.
 
-Plugging our hard-earned $$S$$ back into our beautiful, Frankenstein's
-monster of an equation, we get our official Bogosort-$$\pi$$ estimator:
+Plugging our hard-earned $$S$$ back into our beautiful, Frankensteinian 
+equation, we get our official Bogosort-$$\pi$$ estimator:
 
 $$
 	\pi \approx \frac{S^2}{2n} \left( \frac{e}{n} \right)^{2n}
@@ -207,16 +212,22 @@ $$
 
 The plan is as follows: pick a huge $$n$$, run bogosort millions of
 times to get a rock-solid average $$S$$, and calculate $$\pi$$ to a glorious
-number of decimal places just in time to eat some pie and celebrate
-March 14.
+number of decimal places just in time to celebrate March 14, <small>I wonder 
+what [Matt Parker](https://www.youtube.com/standupmaths)'s up to this year...</small>.
 
 And obviously the accuracy of our result relies on choosing a
 sufficiently large $$n$$ to satisfy the gods of asymptotic analysis.
 
-Except...wait. The larger $$n$$ is, the longer bogosort will take to
-complete. At a worse-than-exponential rate.
+Nothing could possibly be wrong with this plan. Ever. Nope.
+
+...wait. The larger $$n$$ is, the longer bogosort will take to
+complete. 
+
+At what turns out to be a **worse-than-exponential** rate.
 
 ## Competing objectives 
+
+{% include img.html src="/posts/2026/03/14/squiddy.png" alt="Ruh-roh Raggy" %}
 
 Thanks to that eye-watering $$\mathcal{O}(n \cdot n!)$$ time complexity,
 choosing an appropriate $$n$$ could mean the difference between our CPU
@@ -228,13 +239,13 @@ experiment. The expected number of swaps required to sort this once with
 our good friend bogosort is on the order of $$20 \cdot 20!$$, which comes
 out to 40 quintillion, or 40 billion billion (fun fact: this is roughly
 the number of configurations of the Rubik's cube). Let's be generous and
-suppose our CPU can perform 40 billion swaps per second (my best attempt
+suppose our CPU can perform 40 billion swaps per second <small>(my best attempt
 at benchmarking this on a Ryzen 7 9700X was about 4 billion swaps per
-second, but let's be optimistic). This means that we'd be looking at 1
+second, but let's be optimistic)</small>. This means that we'd be looking at 1
 billion seconds, or 32 years, to sort a single list. And that's assuming
 we get the average case scenario, which is completely at the mercy of
-the random number generator. Hmm...maybe I could schedule this post to
-be published in time for Pi Day 2058?
+the random number generator. <small>*Wait, would it be easier if I just call 
+it a day and schedule this post for Pi Day 2058?*</small>
 
 No, let's see what happens if we choose $$n := 10$$ instead. Remember when
 I said $$n$$ should be "sufficiently large"? If you ask me, 10 is pretty 
@@ -247,7 +258,19 @@ again comfortably to get a good average for our $$S \approx 10!$$. I like
 this as a testament to the growth of the factorial function, how
 dramatically different the output is from just $$n := 10$$ to $$n := 20$$.
 
-## The plan 
+In fact, go ahead and try changing the value of $$n$$ in the interactive 
+visualisation below. You might have even thought the sketch was broken at 
+first glance, because 90% of the bars look like they're straight up missing. 
+
+But no, they're just *that* small compared to the last two bars, representing 
+$$19!$$ and $$20!$$.
+
+<div id="factorial-demo" class="math-demo">
+  <div class="controls"></div>
+  <div class="canvas-holder"></div>
+</div>
+
+## The plan?
 
 Anyway, I believe I'm yapping again. Let's summarise the plan for
 approximating $$10!$$ and then using that to estimate $$\pi$$:
@@ -445,12 +468,12 @@ p.setup = function() {
   const container = document.getElementById("riemann-demo");
   const w = container.offsetWidth;
 
-  const canvas = p.createCanvas(w, 400);
-  canvas.parent(container);
+  const canvasHolder = container.querySelector(".canvas-holder");
 
-  const controls = p.createDiv();
-  controls.class("controls");
-  controls.parent(container);
+  const canvas = p.createCanvas(w, 400);
+  canvas.parent(canvasHolder);
+
+  const controls = container.querySelector(".controls");
 
   rectLabel = p.createDiv();
   rectLabel.parent(controls);
@@ -554,6 +577,103 @@ p.draw = function(){
 };
 
 }, "riemann-demo");
+</script>
+<script>
+new p5((p) => {
+
+let slider;
+let label;
+
+const MAX_N = 20;
+
+function factorial(n){
+  let f = 1;
+  for(let i=2;i<=n;i++) f *= i;
+  return f;
+}
+
+const MAX_FACT = factorial(MAX_N);
+
+p.setup = function(){
+
+  const container = document.getElementById("factorial-demo");
+  const w = container.offsetWidth;
+
+  const canvasHolder = container.querySelector(".canvas-holder");
+
+  const canvas = p.createCanvas(w, 400);
+  canvas.parent(canvasHolder);
+
+  const controls = container.querySelector(".controls");
+
+  label = p.createDiv();
+  label.parent(controls);
+
+  slider = p.createSlider(1,20,10,1);
+  slider.parent(controls);
+};
+
+p.draw = function(){
+
+  p.background("#0b0b0f");
+
+  const margin = 60;
+  const w = p.width - margin*2;
+  const h = p.height - margin*2;
+
+  const n = slider.value();
+
+  function X(x){
+    return margin + (x-1)/(MAX_N-1)*w;
+  }
+
+  function Y(y){
+    return p.height - margin - y*h;
+  }
+
+  // axes
+  p.stroke(120);
+  p.line(margin, p.height-margin, margin+w, p.height-margin);
+  p.line(margin, margin, margin, margin+h);
+
+  // draw factorial bars
+  for(let i=1;i<=MAX_N;i++){
+
+    const f = factorial(i);
+    const scaled = f / MAX_FACT;
+
+    const x = X(i);
+    const barWidth = w/(MAX_N);
+
+    if(i <= n){
+      p.fill(60,180,90,180);
+    } else {
+      p.fill(80,80,80,120);
+    }
+
+    p.noStroke();
+    p.rect(x-barWidth/2, Y(scaled), barWidth, Y(0)-Y(scaled));
+  }
+
+  // highlight selected point
+  const f = factorial(n);
+  const scaled = f / MAX_FACT;
+
+  p.fill(150,150,255);
+  p.circle(X(n), Y(scaled), 8);
+
+  // labels
+  p.noStroke();
+  p.fill(255);
+  p.textSize(15);
+
+  p.text(`n = ${n}`, margin+5, margin+10);
+  p.text(`n! = ${f.toLocaleString()}`, margin+5, margin+30);
+
+  label.html(`Choose n = <b>${n}</b>`);
+};
+
+}, "factorial-demo");
 </script>
 <script>
 let bogosortVisualisations = [];
