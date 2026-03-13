@@ -1,7 +1,8 @@
 ---
-title: Hiring hundreds of bogosorts to calculate pi
+title: Hiring hundreds of bogosorts to help me calculate pi
 description: Happy Pi Day! This fine morning I woke up and felt the sudden urge to torture my CPU. And what batter way to do that than run hundreds of instances of one of the most notoriously inefficient sorting algorithms at once?
 redditurl: https://www.reddit.com/r/math/comments/m6obwp/this_year_i_calculated_pi_by_finding_the_area
+hero: posts/2026/03/14/hero.webp
 ---
 
 {% include math.html %}
