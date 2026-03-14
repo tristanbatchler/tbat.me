@@ -756,7 +756,7 @@ function draw() {
     let gridY = demoHeight - gridSide - bottomGridPadding;
     if (gridY < 0) gridY = 0;
     // Add vertical gap between rows so labels don't overlap visuals
-    let rowGap = 50; // px between rows
+    let rowGap = Math.min(50, gridSide * 0.06);
     let totalRowGaps = rowGap * (rows - 1);
     let cellWidth = gridSide / cols;
     let cellHeight = (gridSide - totalRowGaps) / rows;
@@ -768,7 +768,7 @@ function draw() {
         let y = gridY + Math.floor(i / cols) * (cellHeight + rowGap);
         let [shuffle_count, sorted] = bogosortVisualisations[i].update();
         // draw bars leaving room at bottom of each cell for the label
-        let barsHeight = cellHeight - 20 - perCellLabelArea;
+        let barsHeight = Math.max(10, cellHeight - 20 - perCellLabelArea);
         bogosortVisualisations[i].draw(
             x + 10,
             y + 10,
