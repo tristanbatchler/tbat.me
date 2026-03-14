@@ -85,7 +85,10 @@ a sum of terms, rather than a product. Smarter people than me say this is
 a decent play, so I won't question it.
 
 $$
-    \ln(n!) = \ln(1) + \ln(2) + \dots + \ln{n} = \sum_{x=1}^{n} \ln{x}
+    \begin{align*}
+    \ln(n!) &= \ln(1) + \ln(2) + \dots + \ln{n} \\
+            &= \sum_{x=1}^{n} \ln{x}
+    \end{align*}
 $$
 
 That should be fairly obvious, but what might not be is the fact that
@@ -108,7 +111,10 @@ Re-familiarising myself with some of the most boring calculus I forgot,
 we can solve this integral using integration by parts:
 
 $$
-	\sum_{x=1}^{n} \ln{x} \approx \int_{1}^{n} \ln{x} \, dx = \Big[ x \ln{x} - x \Big]_{1}^{n} = n \ln{n} - n + 1
+    \begin{align*}
+	\sum_{x=1}^{n} \ln{x} &\approx \int_{1}^{n} \ln{x} \, dx \\
+                          &= \Big[ x \ln{x} - x \Big]_{1}^{n} = n \ln{n} - n + 1
+    \end{align*}
 $$
 
 If we exponentiate both sides to undo our logarithm, we get
@@ -465,6 +471,16 @@ with the digit $$3$$ should be celebrated. Happy Pi Day!
 
 <script src="https://cdn.jsdelivr.net/npm/p5@2.1.2/lib/p5.min.js"></script>
 <script>
+function stopTouchScrolling(canvas) {
+  document.body.addEventListener('touchstart', (e) => {
+    if (e.target === canvas) e.preventDefault();
+  }, { passive: false });
+  document.body.addEventListener('touchmove', (e) => {
+    if (e.target === canvas) e.preventDefault();
+  }, { passive: false });
+}
+
+
 new p5((p) => {
 
 let rectSlider;
@@ -490,6 +506,7 @@ p.setup = function() {
   rectSlider = p.createSlider(2, 21, 8, 1);
   rectSlider.parent(controls);
 };
+
 
 function ln(x){
   return Math.log(x);

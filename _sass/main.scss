@@ -413,3 +413,7 @@ pre.highlight {
 .math-demo .controls div {
     margin-bottom: 5px;
 }
+
+.math-demo canvas {
+    touch-action: pan-y !important;
+}
