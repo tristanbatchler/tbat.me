@@ -113,7 +113,8 @@ we can solve this integral using integration by parts:
 $$
     \begin{align*}
 	\sum_{x=1}^{n} \ln{x} &\approx \int_{1}^{n} \ln{x} \, dx \\
-                          &= \Big[ x \ln{x} - x \Big]_{1}^{n} = n \ln{n} - n + 1
+                          &= \Big[ x \ln{x} - x \Big]_{1}^{n} \\
+                          &= n \ln{n} - n + 1
     \end{align*}
 $$
 
