@@ -20,41 +20,80 @@
         });
     })();
 
-    window.MathJax = {
-        tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']]
-        },
-        startup: {
-            pageReady: () => {
-                return MathJax.startup.defaultPageReady().then(() => {
-                    try {
-                        const raw = sessionStorage.getItem(window.__mathScrollKey);
-                        if (!raw) {
-                            return;
-                        }
+    (function () {
+        let mathJaxRequested = false;
 
-                        const pos = JSON.parse(raw);
-                        sessionStorage.removeItem(window.__mathScrollKey);
+        function restoreScrollAfterTypeset() {
+            try {
+                const raw = sessionStorage.getItem(window.__mathScrollKey);
+                if (!raw) {
+                    return;
+                }
 
-                        if (Date.now() - (pos.t || 0) > 5 * 60 * 1000) {
-                            return;
-                        }
+                const pos = JSON.parse(raw);
+                sessionStorage.removeItem(window.__mathScrollKey);
 
-                        window.requestAnimationFrame(() => {
-                            window.scrollTo(pos.x || 0, pos.y || 0);
-                        });
-                    } catch (e) {
-                        // Ignore parse/storage failures.
-                    }
+                if (Date.now() - (pos.t || 0) > 5 * 60 * 1000) {
+                    return;
+                }
+
+                window.requestAnimationFrame(() => {
+                    window.scrollTo(pos.x || 0, pos.y || 0);
                 });
-            }
-        },
-        options: {
-            renderActions: {
-                addMenu: []
+            } catch (e) {
+                // Ignore parse/storage failures.
             }
         }
-    };
+
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        restoreScrollAfterTypeset();
+                    });
+                }
+            },
+            options: {
+                renderActions: {
+                    addMenu: []
+                }
+            }
+        };
+
+        function loadMathJaxRuntime() {
+            if (mathJaxRequested) {
+                return;
+            }
+            mathJaxRequested = true;
+
+            const script = document.createElement('script');
+            script.id = 'MathJax-script';
+            script.defer = true;
+            script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+            document.head.appendChild(script);
+        }
+
+        function installMathJaxTriggers() {
+            const passiveOnce = { once: true, passive: true };
+            window.addEventListener('pointerdown', loadMathJaxRuntime, passiveOnce);
+            window.addEventListener('touchstart', loadMathJaxRuntime, passiveOnce);
+            window.addEventListener('wheel', loadMathJaxRuntime, passiveOnce);
+            window.addEventListener('scroll', loadMathJaxRuntime, passiveOnce);
+            window.addEventListener('keydown', loadMathJaxRuntime, { once: true });
+
+            if (window.scrollY > 0 || location.hash) {
+                loadMathJaxRuntime();
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', installMathJaxTriggers, { once: true });
+        } else {
+            installMathJaxTriggers();
+        }
+    })();
 </script>
-<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
