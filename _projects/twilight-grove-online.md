@@ -16,6 +16,10 @@ So, I made a tiny MUD that in about a month, and spent another month delivering 
 build. It only has one quest and two skills, and a few levels. But it has a persistent world and economy, and has over 150 players (only a couple have completed the 
 quest, but it is a very grindy game).
 
+<center>
+<iframe frameborder="0" src="https://itch.io/embed/3856439?bg_color=2d2d33&amp;fg_color=fff8d4&amp;link_color=f29188&amp;border_color=2d2d33" width="552" height="167"><a href="https://saltytaro.itch.io/twilightgrove">Twilight Grove Online by saltytaro</a></iframe>
+</center>
+
 Some fun facts about TGO:
 - The levels (tilemap, entities) are designed in Godot and uploaded straight to the server as .tscn files, straight from the game itself when logged in as the special 
   admin user.
@@ -25,21 +29,6 @@ Some fun facts about TGO:
   the game's config file.
 - The whole game server runs in a docker container with persistent storage on a PostgreSQL database.
 - I got jumpscared by my friend who decided to log in as an undead and chase me around the spawn area while I was testing a new feature at 3am.
-
-## Play the game
-
-<center>
-<iframe
-  style="max-width: 1000px; width: 100%; aspect-ratio: 16 / 9; border: 0;"
-  src="https://twilightgrove.tbat.me"
-  title="Twilight Grove Online"
-  loading="lazy"
-  allow="fullscreen; gamepad; clipboard-read; clipboard-write"
-  allowfullscreen
-></iframe>
-</center>
-
-If your browser blocks the embed, you can play it directly at [twilightgrove.tbat.me](https://twilightgrove.tbat.me), or on [itch.io](https://saltytaro.itch.io/twilightgrove).
 
 ## Screenshots
 
