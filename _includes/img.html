@@ -39,16 +39,16 @@
     {%- if jekyll.environment == 'development' -%}
     <source srcset="/assets/images/{{ image_src }}" media="(max-width: 512px)" />
     <img 
-        class="{{ include.class }}" 
-        loading="{{ include.loading | default: 'lazy' }}" 
-        decoding="{{ include.decoding | default: 'async' }}"
-        {% if include.fetchpriority %}fetchpriority="{{ include.fetchpriority }}"{% endif %}
-        alt="{{ include.alt }}" 
-        src="/assets/images/{{ image_src }}"
-        sizes="(max-width: 512px) 100vw, 512px"
-        srcset="/assets/images/{{ image_src }}"
-        width="{{ scaled_width }}"
-        height="{{ scaled_height }}"
+      class="{{ include.class }}" 
+      loading="{{ include.loading | default: 'lazy' }}" 
+      decoding="{{ include.decoding | default: 'async' }}"
+      {% if include.fetchpriority %}fetchpriority="{{ include.fetchpriority }}"{% endif %}
+      alt="{{ include.alt }}" 
+      src="/assets/images/{{ image_src }}"
+      sizes="(max-width: 512px) 100vw, 512px"
+      srcset="/assets/images/{{ image_src }}"
+      width="{{ scaled_width }}"
+      height="{{ scaled_height }}"
     />
     {%- else -%}
     {%- if mobile_width < scaled_width -%}
@@ -58,15 +58,15 @@
     />
     {%- endif -%}
     <img 
-        class="{{ include.class }}" 
-        loading="{{ include.loading | default: 'lazy' }}" 
+      class="{{ include.class }}" 
+      loading="{{ include.loading | default: 'lazy' }}" 
       decoding="{{ include.decoding | default: 'async' }}"
       {% if include.fetchpriority %}fetchpriority="{{ include.fetchpriority }}"{% endif %}
-        alt="{{ include.alt }}" 
+      alt="{{ include.alt }}" 
       src="{{ image_url }}" 
       sizes="(max-width: {{ scaled_width }}px) 100vw, {{ scaled_width }}px"
-        width="{{ scaled_width }}"
-        height="{{ scaled_height }}"
+      width="{{ scaled_width }}"
+      height="{{ scaled_height }}"
     />
     {%- endif -%}
 </picture>
