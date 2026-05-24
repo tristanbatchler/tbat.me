@@ -12,15 +12,20 @@
 {%- assign original_height = '/assets/images/' | append: image_src | image_size: 'h' | times: 1.0 -%}
 
 {%- assign max_width = include.max_width | default: 512 | times: 1.0 -%}
+{%- assign max_height = include.max_height | default: 512 | times: 1.0 -%}
 
-{%- if original_width > max_width -%}
-  {%- assign scale_ratio = max_width | divided_by: original_width -%}
-  {%- assign scaled_width = max_width | round -%}
-  {%- assign scaled_height = original_height | times: scale_ratio | round -%}
-{%- else -%}
-  {%- assign scaled_width = original_width | round -%}
-  {%- assign scaled_height = original_height | round -%}
+{%- assign width_scale_ratio = max_width | divided_by: original_width -%}
+{%- assign height_scale_ratio = max_height | divided_by: original_height -%}
+{%- assign scale_ratio = width_scale_ratio -%}
+{%- if height_scale_ratio < scale_ratio -%}
+  {%- assign scale_ratio = height_scale_ratio -%}
 {%- endif -%}
+{%- if scale_ratio > 1 -%}
+  {%- assign scale_ratio = 1 -%}
+{%- endif -%}
+
+{%- assign scaled_width = original_width | times: scale_ratio | round -%}
+{%- assign scaled_height = original_height | times: scale_ratio | round -%}
 
 {%- assign mobile_width = scaled_width -%}
 {%- if mobile_width > 512 -%}

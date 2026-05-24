@@ -71,24 +71,8 @@ with a more modern font, but also kept to the rounded card-style layout. Eventua
 borders which I feel is a much more clean, modern design. Who knows, I'l probably going to change it again down the line, but for now, here 
 is a nice snapshot of the design evolution.
 
-<div class="project-screenshot-grid">
-<div class="project-screenshot-item" markdown="1">
-{% include img.html src="website-2023-11-wayback.png" alt="Screenshot of the site from November 2023" %}
-*November 2023*
-</div>
-
-<div class="project-screenshot-item" markdown="1">
-{% include img.html src="website-2024-08-wayback.png" alt="Screenshot of the site from August 2024" %}
-*August 2024*
-</div>
-
-<div class="project-screenshot-item" markdown="1">
-{% include img.html src="website-2025-10-wayback.png" alt="Screenshot of the site from October 2025" %}
-*October 2025*
-</div>
-
-<div class="project-screenshot-item" markdown="1">
-{% include img.html src="website-2026-04-wayback.png" alt="Screenshot of the site from April 2026" %}
-*April 2026*
-</div>
-</div>
+{% include grid.html
+  folder="projects/this-website/grid"
+  captions="November 2023|August 2024|October 2025|April 2026"
+  alts="Screenshot of the site from November 2023|Screenshot of the site from August 2024|Screenshot of the site from October 2025|Screenshot of the site from April 2026"
+%}

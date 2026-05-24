@@ -1,0 +1,36 @@
+{%- assign folder = include.folder | default: '' | remove_first: 'assets/images/' -%}
+{%- assign folder_prefix = '/assets/images/' | append: folder | append: '/' -%}
+{%- assign columns = include.columns | default: 2 -%}
+{%- assign captions = include.captions | default: '' | split: '|' -%}
+{%- assign alts = include.alts | default: '' | split: '|' -%}
+
+<div class="project-screenshot-grid" style="--grid-cols: {{ columns }};">
+{%- assign index = 0 -%}
+
+{%- for file in site.static_files -%}
+  {%- if file.path contains folder_prefix -%}
+    {%- assign ext = file.extname | downcase -%}
+
+    {%- if ext == '.png' or ext == '.jpg' or ext == '.jpeg' or ext == '.webp' or ext == '.gif' or ext == '.avif' -%}
+      {%- assign src = file.path | remove_first: '/assets/images/' -%}
+      {%- assign caption = captions[index] | default: '' | strip -%}
+      {%- assign alt = alts[index] | default: '' | strip -%}
+
+      {%- if caption == '' -%}
+        {%- assign caption = file.name | split: '.' | first | replace: '-', ' ' | replace: '_', ' ' -%}
+      {%- endif -%}
+
+      {%- if alt == '' -%}
+        {%- assign alt = caption -%}
+      {%- endif -%}
+
+      <div class="project-screenshot-item">
+        {% include img.html src=src alt=alt %}
+        <p><em>{{ caption }}</em></p>
+      </div>
+
+      {%- assign index = index | plus: 1 -%}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
+</div>
