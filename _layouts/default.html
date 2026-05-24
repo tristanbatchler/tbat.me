@@ -8,8 +8,10 @@
 
   <meta name="keywords"
     content="Tristan Batchler, portfolio, UQ, University of Queensland, mathematics, computer science" />
-  <link ref="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="icon" type="apple-touch-icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
   {% if page.hero %}
     {% assign hero_src = page.hero %}
     {% assign hero_src_first_char = hero_src | slice: 0, 1 %}
@@ -36,8 +38,8 @@
       <div id="final"></div>
     </div>
   </div>
-  <script src="/assets/scripts/codeblock.min.js"></script>
-  <script src="/assets/scripts/externalLinks.js"></script>
+  <script defer src="/assets/scripts/codeblock.min.js"></script>
+  <script defer src="/assets/scripts/externalLinks.js"></script>
   <script defer src="/assets/scripts/sparkles.min.js"></script>
   {%- if jekyll.environment == 'production' -%}
     <script defer src="https://umami.tbat.me/script.js" data-website-id="ce84cce0-c951-41e0-ad4b-4f70a6f783cb"></script>

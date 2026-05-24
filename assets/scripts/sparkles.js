@@ -1,10 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
     "use strict";
 
-    // Apply sparkle effect to elements with specific classes
-    applySparkleEffect('.sparkle', 40, ["#ff0080", "#ff0080", "#0000FF"], 3, 30);
-    applySparkleEffect('.sparkle-more', 30, ["#ff0080", "#ff0080", "#0000FF"], 10, 10);
-    applySparkleEffect('.sparkle-less', 5, ["#ff0080", "#ff0080", "#0000FF"], 2, 5);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
+    if (!document.querySelector('.sparkle, .sparkle-more, .sparkle-less')) {
+        return;
+    }
+
+    requestAnimationFrame(function () {
+        // Apply sparkle effect to elements with specific classes
+        applySparkleEffect('.sparkle', 40, ["#ff0080", "#ff0080", "#0000FF"], 3, 30);
+        applySparkleEffect('.sparkle-more', 30, ["#ff0080", "#ff0080", "#0000FF"], 10, 10);
+        applySparkleEffect('.sparkle-less', 5, ["#ff0080", "#ff0080", "#0000FF"], 2, 5);
+    });
 });
 
 // Function to apply sparkle effect to elements with specific selector
@@ -98,7 +108,7 @@ class Sparkle {
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.particles.forEach(particle => {
-            const modulus = Math.floor(Math.random() * 7);
+            const modulus = 1 + Math.floor(Math.random() * 7);
             if (Math.floor(time) % modulus === 0) {
                 particle.style = this.sprites[Math.floor(Math.random() * 4)];
             }

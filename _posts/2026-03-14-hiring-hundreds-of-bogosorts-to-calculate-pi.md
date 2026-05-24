@@ -474,38 +474,96 @@ with the digit $$3$$ should be celebrated. Happy Pi Day!
 window.__piDemoInitializers = window.__piDemoInitializers || [];
 window.__piDemoRuntimeRequested = false;
 window.__piDemoRuntimeReady = false;
+window.__piDemoRuntimePromise = null;
+
+function flushPiDemoInitializers() {
+  const initializers = window.__piDemoInitializers || [];
+  while (initializers.length) {
+    const init = initializers.shift();
+    try {
+      init();
+    } catch (error) {
+      console.error("Failed to initialise p5 sketch", error);
+    }
+  }
+}
+
+function registerPiDemoInitializer(init) {
+  if (window.__piDemoRuntimeReady && window.p5) {
+    init();
+    return;
+  }
+
+  (window.__piDemoInitializers || []).push(init);
+}
 
 function loadPiDemoRuntime() {
-  if (window.__piDemoRuntimeRequested || window.__piDemoRuntimeReady) {
-    return;
+  if (window.__piDemoRuntimeReady && window.p5) {
+    flushPiDemoInitializers();
+    return Promise.resolve();
+  }
+
+  if (window.__piDemoRuntimePromise) {
+    return window.__piDemoRuntimePromise;
   }
 
   window.__piDemoRuntimeRequested = true;
 
-  const script = document.createElement("script");
-  script.src = "https://cdn.jsdelivr.net/npm/p5@2.1.2/lib/p5.min.js";
-  script.async = true;
-  script.onload = () => {
-    window.__piDemoRuntimeReady = true;
-    (window.__piDemoInitializers || []).forEach((init) => init());
-  };
-  document.head.appendChild(script);
+  window.__piDemoRuntimePromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/p5@2.1.2/lib/p5.min.js";
+    script.async = true;
+    script.onload = () => {
+      window.__piDemoRuntimeReady = true;
+      flushPiDemoInitializers();
+      resolve();
+    };
+    script.onerror = () => {
+      window.__piDemoRuntimeRequested = false;
+      window.__piDemoRuntimePromise = null;
+      reject(new Error("Failed to load p5 runtime"));
+    };
+    document.head.appendChild(script);
+  });
+
+  return window.__piDemoRuntimePromise;
 }
 
-function installPiDemoTriggers() {
+function installPiDemoProximityLoader() {
   const demos = document.querySelectorAll(".math-demo");
-  demos.forEach((demo) => {
-    demo.addEventListener("pointerdown", loadPiDemoRuntime, { once: true, passive: true });
-    demo.addEventListener("mouseenter", loadPiDemoRuntime, { once: true, passive: true });
-    demo.addEventListener("focusin", loadPiDemoRuntime, { once: true });
+  if (!demos.length || !("IntersectionObserver" in window)) {
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((entry) => entry.isIntersecting)) {
+      observer.disconnect();
+      loadPiDemoRuntime();
+    }
+  }, {
+    root: null,
+    rootMargin: "400px 0px",
+    threshold: 0.01
   });
+
+  demos.forEach((demo) => observer.observe(demo));
+}
+
+function installPiDemoAutoload() {
+  if (document.readyState === "complete") {
+    loadPiDemoRuntime();
+  } else {
+    window.addEventListener("load", loadPiDemoRuntime, { once: true });
+  }
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", installPiDemoTriggers);
+  document.addEventListener("DOMContentLoaded", installPiDemoProximityLoader, { once: true });
 } else {
-  installPiDemoTriggers();
+  installPiDemoProximityLoader();
 }
+
+installPiDemoAutoload();
 
 function stopTouchScrolling(canvas) {
   document.body.addEventListener('touchstart', (e) => {
@@ -517,7 +575,7 @@ function stopTouchScrolling(canvas) {
 }
 
 
-window.__piDemoInitializers.push(() => new p5((p) => {
+registerPiDemoInitializer(() => new p5((p) => {
 
 let rectSlider;
 let rectLabel;
@@ -644,7 +702,7 @@ p.draw = function(){
 }, "riemann-demo"));
 </script>
 <script>
-window.__piDemoInitializers.push(() => new p5((p) => {
+registerPiDemoInitializer(() => new p5((p) => {
 
 let slider;
 let label;
@@ -1031,7 +1089,7 @@ class BogosortVis {
 }
 </script>
 <script>
-window.__piDemoInitializers.push(() => new p5((p) => {
+registerPiDemoInitializer(() => new p5((p) => {
 
 let piSlider;
 let pLabel;

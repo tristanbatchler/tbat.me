@@ -32,6 +32,9 @@
   {%- assign mobile_width = 512 -%}
 {%- endif -%}
 
+{%- assign image_url = site.url | append: '/.netlify/images?url=/assets/images/' | append: image_src | append: '&fm=webp&q=75&w=' | append: scaled_width -%}
+{%- assign mobile_image_url = site.url | append: '/.netlify/images?url=/assets/images/' | append: image_src | append: '&fm=webp&q=75&w=' | append: mobile_width -%}
+
 <picture class="{{ include.class }}">
     {%- if jekyll.environment == 'development' -%}
     <source srcset="/assets/images/{{ image_src }}" media="(max-width: 512px)" />
@@ -48,19 +51,20 @@
         height="{{ scaled_height }}"
     />
     {%- else -%}
+    {%- if mobile_width < scaled_width -%}
     <source 
-        srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ image_src }}&fm=webp&q=75&w={{ mobile_width }}" 
+      srcset="{{ mobile_image_url }}" 
         media="(max-width: 512px)" 
     />
+    {%- endif -%}
     <img 
         class="{{ include.class }}" 
         loading="{{ include.loading | default: 'lazy' }}" 
       decoding="{{ include.decoding | default: 'async' }}"
       {% if include.fetchpriority %}fetchpriority="{{ include.fetchpriority }}"{% endif %}
         alt="{{ include.alt }}" 
-        src="{{ site.url }}/.netlify/images?url=/assets/images/{{ image_src }}&fm=webp&q=75&w={{ scaled_width }}" 
-        sizes="(max-width: 512px) 100vw, 512px"
-        srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ image_src }}&fm=webp&q=75&w={{ mobile_width }} {{ mobile_width }}w, {{ site.url }}/.netlify/images?url=/assets/images/{{ image_src }}&fm=webp&q=75&w={{ scaled_width }} {{ scaled_width }}w"
+      src="{{ image_url }}" 
+      sizes="(max-width: {{ scaled_width }}px) 100vw, {{ scaled_width }}px"
         width="{{ scaled_width }}"
         height="{{ scaled_height }}"
     />
