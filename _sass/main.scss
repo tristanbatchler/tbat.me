@@ -286,6 +286,47 @@ table {
     }
 }
 
+table.no-alternating {
+    tbody tr {
+        &:nth-of-type(even) {
+            background-color: transparent;
+        }
+    }
+}
+
+.project-screenshot-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin: 1rem 0;
+}
+
+.project-screenshot-item {
+    min-width: 0;
+
+    picture,
+    img {
+        max-width: 100% !important;
+    }
+
+    // Prevent hover zoom from clipping in side-by-side cards.
+    img:hover {
+        transform: none !important;
+        filter: none !important;
+        transition-delay: 0s !important;
+    }
+
+    p {
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 760px) {
+    .project-screenshot-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 mark {
     background-color: $background;
     color: $foreground;
