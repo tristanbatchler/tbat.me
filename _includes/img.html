@@ -1,5 +1,10 @@
-{%- assign original_width = '/assets/images/' | append: include.src | image_size: 'w' | times: 1.0 -%}
-{%- assign original_height = '/assets/images/' | append: include.src | image_size: 'h' | times: 1.0 -%}
+{%- assign image_src = include.src -%}
+{%- assign image_src_first_char = image_src | slice: 0, 1 -%}
+{%- if image_src_first_char == '/' -%}
+  {%- assign image_src = image_src | remove_first: '/' -%}
+{%- endif -%}
+{%- assign original_width = '/assets/images/' | append: image_src | image_size: 'w' | times: 1.0 -%}
+{%- assign original_height = '/assets/images/' | append: image_src | image_size: 'h' | times: 1.0 -%}
 
 {%- assign max_width = include.max_width | default: 512 | times: 1.0 -%}
 
@@ -12,31 +17,40 @@
   {%- assign scaled_height = original_height | round -%}
 {%- endif -%}
 
+{%- assign mobile_width = scaled_width -%}
+{%- if mobile_width > 512 -%}
+  {%- assign mobile_width = 512 -%}
+{%- endif -%}
+
 <picture class="{{ include.class }}">
     {%- if jekyll.environment == 'development' -%}
-    <source srcset="/assets/images/{{ include.src }}" media="(max-width: 512px)" />
+    <source srcset="/assets/images/{{ image_src }}" media="(max-width: 512px)" />
     <img 
         class="{{ include.class }}" 
         loading="{{ include.loading | default: 'lazy' }}" 
+      decoding="{{ include.decoding | default: 'async' }}"
+      {% if include.fetchpriority %}fetchpriority="{{ include.fetchpriority }}"{% endif %}
         alt="{{ include.alt }}" 
-        src="/assets/images/{{ include.src }}"
+        src="/assets/images/{{ image_src }}"
         sizes="(max-width: 512px) 100vw, 512px"
-        srcset="/assets/images/{{ include.src }}"
+        srcset="/assets/images/{{ image_src }}"
         width="{{ scaled_width }}"
         height="{{ scaled_height }}"
     />
     {%- else -%}
     <source 
-        srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75" 
+        srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ image_src }}&fm=webp&q=75&w={{ mobile_width }}" 
         media="(max-width: 512px)" 
     />
     <img 
         class="{{ include.class }}" 
         loading="{{ include.loading | default: 'lazy' }}" 
+      decoding="{{ include.decoding | default: 'async' }}"
+      {% if include.fetchpriority %}fetchpriority="{{ include.fetchpriority }}"{% endif %}
         alt="{{ include.alt }}" 
-        src="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75" 
+        src="{{ site.url }}/.netlify/images?url=/assets/images/{{ image_src }}&fm=webp&q=75&w={{ scaled_width }}" 
         sizes="(max-width: 512px) 100vw, 512px"
-        srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ include.src }}&fm=webp&q=75"
+        srcset="{{ site.url }}/.netlify/images?url=/assets/images/{{ image_src }}&fm=webp&q=75&w={{ mobile_width }} {{ mobile_width }}w, {{ site.url }}/.netlify/images?url=/assets/images/{{ image_src }}&fm=webp&q=75&w={{ scaled_width }} {{ scaled_width }}w"
         width="{{ scaled_width }}"
         height="{{ scaled_height }}"
     />

@@ -5,7 +5,7 @@ layout: default
 
 {% if page.hero %}
 <div class="post-hero">
-    {% include img.html src=page.hero alt=page.title class="post-hero-img" max_width=800 %}
+    {% include img.html src=page.hero alt=page.title class="post-hero-img" max_width=800 loading="eager" fetchpriority="high" %}
 </div>
 {% endif %}
 

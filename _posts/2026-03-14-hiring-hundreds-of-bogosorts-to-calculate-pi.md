@@ -296,7 +296,7 @@ CPU as I could. Here's a visualisation of the process (for reference,
 $$10! = 3,628,800$$):
 
 <div id="demo" class="math-demo">
-    <main></main>
+  <div class="canvas-holder"></div>
 </div>
 
 
@@ -470,8 +470,43 @@ Even so, the fact that 320 instances of an algorithm that sorts by pure
 random chance can even semi-consistently produce a number that starts
 with the digit $$3$$ should be celebrated. Happy Pi Day!
 
-<script src="https://cdn.jsdelivr.net/npm/p5@2.1.2/lib/p5.min.js"></script>
 <script>
+window.__piDemoInitializers = window.__piDemoInitializers || [];
+window.__piDemoRuntimeRequested = false;
+window.__piDemoRuntimeReady = false;
+
+function loadPiDemoRuntime() {
+  if (window.__piDemoRuntimeRequested || window.__piDemoRuntimeReady) {
+    return;
+  }
+
+  window.__piDemoRuntimeRequested = true;
+
+  const script = document.createElement("script");
+  script.src = "https://cdn.jsdelivr.net/npm/p5@2.1.2/lib/p5.min.js";
+  script.async = true;
+  script.onload = () => {
+    window.__piDemoRuntimeReady = true;
+    (window.__piDemoInitializers || []).forEach((init) => init());
+  };
+  document.head.appendChild(script);
+}
+
+function installPiDemoTriggers() {
+  const demos = document.querySelectorAll(".math-demo");
+  demos.forEach((demo) => {
+    demo.addEventListener("pointerdown", loadPiDemoRuntime, { once: true, passive: true });
+    demo.addEventListener("mouseenter", loadPiDemoRuntime, { once: true, passive: true });
+    demo.addEventListener("focusin", loadPiDemoRuntime, { once: true });
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", installPiDemoTriggers);
+} else {
+  installPiDemoTriggers();
+}
+
 function stopTouchScrolling(canvas) {
   document.body.addEventListener('touchstart', (e) => {
     if (e.target === canvas) e.preventDefault();
@@ -482,7 +517,7 @@ function stopTouchScrolling(canvas) {
 }
 
 
-new p5((p) => {
+window.__piDemoInitializers.push(() => new p5((p) => {
 
 let rectSlider;
 let rectLabel;
@@ -501,10 +536,13 @@ p.setup = function() {
 
   const controls = container.querySelector(".controls");
 
-  rectLabel = p.createDiv();
+    rectLabel = p.createElement("label");
   rectLabel.parent(controls);
 
   rectSlider = p.createSlider(2, 21, 8, 1);
+    rectSlider.id("riemann-rect-slider");
+    rectSlider.attribute("aria-label", "Number of rectangles for the Riemann approximation");
+    rectLabel.attribute("for", "riemann-rect-slider");
   rectSlider.parent(controls);
 };
 
@@ -603,10 +641,10 @@ p.draw = function(){
   rectLabel.html(`Rectangles = <b>${rects - 1}</b>`);
 };
 
-}, "riemann-demo");
+}, "riemann-demo"));
 </script>
 <script>
-new p5((p) => {
+window.__piDemoInitializers.push(() => new p5((p) => {
 
 let slider;
 let label;
@@ -633,10 +671,13 @@ p.setup = function(){
 
   const controls = container.querySelector(".controls");
 
-  label = p.createDiv();
+    label = p.createElement("label");
   label.parent(controls);
 
   slider = p.createSlider(1,20,10,1);
+    slider.id("factorial-n-slider");
+    slider.attribute("aria-label", "Choose n for factorial curve");
+    label.attribute("for", "factorial-n-slider");
   slider.parent(controls);
 };
 
@@ -700,7 +741,7 @@ p.draw = function(){
   label.html(`Choose n = <b>${n}</b>`);
 };
 
-}, "factorial-demo");
+}, "factorial-demo"));
 </script>
 <script>
 let bogosortVisualisations = [];
@@ -726,13 +767,16 @@ var demoHeight;
 
 function setup() {
     let demo = document.getElementById("demo");
-    const rect = demo.getBoundingClientRect();
-    demoWidth = demo.offsetWidth;
+  const canvasHolder = demo.querySelector(".canvas-holder");
+  demoWidth = canvasHolder ? canvasHolder.offsetWidth : demo.offsetWidth;
     demoHeight = demoWidth;
 
     console.log(`demoWidth: ${demoWidth}, demoHeight: ${demoHeight}`);
 
-    createCanvas(demoWidth, demoHeight);
+  const canvas = createCanvas(demoWidth, demoHeight);
+  if (canvasHolder) {
+    canvas.parent(canvasHolder);
+  }
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
             let minShuffles = 5 * n;
@@ -987,7 +1031,7 @@ class BogosortVis {
 }
 </script>
 <script>
-new p5((p) => {
+window.__piDemoInitializers.push(() => new p5((p) => {
 
 let piSlider;
 let pLabel;
@@ -1006,10 +1050,13 @@ p.setup = function(){
 
   const controls = container.querySelector(".controls");
 
-  pLabel = p.createDiv();
+    pLabel = p.createElement("label");
   pLabel.parent(controls);
 
   piSlider = p.createSlider(1, 4, BOGO_PI, 0.001);
+    piSlider.id("pi-value-slider");
+    piSlider.attribute("aria-label", "Choose a pi value for the p-norm circle");
+    pLabel.attribute("for", "pi-value-slider");
   piSlider.parent(controls);
 };
 
@@ -1057,5 +1104,5 @@ p.draw = function(){
   
 };
 
-}, "circle-demo");
+}, "circle-demo"));
 </script>

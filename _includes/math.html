@@ -1,4 +1,60 @@
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({extensions:["MathMenu.js","MathZoom.js","AssistiveMML.js","a11y/accessibility-menu.js"],jax:["input/TeX","output/CommonHTML"],TeX:{extensions:["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]}});
+<script>
+    (function () {
+        const key = 'math-scroll-pos:' + location.pathname + location.search;
+        window.__mathScrollKey = key;
+
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
+        window.addEventListener('beforeunload', function () {
+            try {
+                sessionStorage.setItem(key, JSON.stringify({
+                    x: window.scrollX || 0,
+                    y: window.scrollY || 0,
+                    t: Date.now()
+                }));
+            } catch (e) {
+                // Ignore storage failures.
+            }
+        });
+    })();
+
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        startup: {
+            pageReady: () => {
+                return MathJax.startup.defaultPageReady().then(() => {
+                    try {
+                        const raw = sessionStorage.getItem(window.__mathScrollKey);
+                        if (!raw) {
+                            return;
+                        }
+
+                        const pos = JSON.parse(raw);
+                        sessionStorage.removeItem(window.__mathScrollKey);
+
+                        if (Date.now() - (pos.t || 0) > 5 * 60 * 1000) {
+                            return;
+                        }
+
+                        window.requestAnimationFrame(() => {
+                            window.scrollTo(pos.x || 0, pos.y || 0);
+                        });
+                    } catch (e) {
+                        // Ignore parse/storage failures.
+                    }
+                });
+            }
+        },
+        options: {
+            renderActions: {
+                addMenu: []
+            }
+        }
+    };
 </script>
+<script id="MathJax-script" defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
